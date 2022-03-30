@@ -14,11 +14,10 @@
 
 ## 截屏
 
-![s1](sreenshots/Screenshot_20220330_202635.png)
-![s2](sreenshots/Screenshot_20220330_202716.png)
-![s3](sreenshots/Screenshot_20220330_202728.png)
-![s4](sreenshots/Screenshot_20220330_202749.png)
-![s5](sreenshots/Screenshot_20220330_202807.png)
+<frgure class="sh">
+<img src = "sreenshots/Screenshot_20220330_202635.png" width="200"/> <img src = "sreenshots/Screenshot_20220330_202716.png" width="200"/> <img src = "sreenshots/Screenshot_20220330_202728.png" width="200"/> <img src = "sreenshots/Screenshot_20220330_202749.png" width="200"/> <img src = "sreenshots/Screenshot_20220330_202807.png" width="200"/>
+</frgure>
+
 
 
 ## 关于Api
