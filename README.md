@@ -12,13 +12,24 @@
 * [fumiama/copymanga](https://github.com/fumiama/copymanga)
 * [misaka10843/copymanga-downloader](https://github.com/misaka10843/copymanga-downloader)
 
+## 截屏
+
+[s1](sreenshots/Screenshot_20220330_202635.png)
+[s2](sreenshots/Screenshot_20220330_202716.png)
+[s3](sreenshots/Screenshot_20220330_202728.png)
+[s4](sreenshots/Screenshot_20220330_202749.png)
+[s5](sreenshots/Screenshot_20220330_202807.png)
+
+
 ## 关于Api
 api 来源于官方app API
 
 ## 后续功能
+为啥会很慢，因为我很懒。这个里面的代码都很简单，即使以后也可以给初学者一定的帮助。
 * 下载
 * 记录位置
 * 登录
+* 搜索
 * 其他
 
 ## License
