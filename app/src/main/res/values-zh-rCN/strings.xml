@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">拷贝漫画</string>
+    <string name="recommend">推荐</string>
+    <string name="day_rank">近24小时</string>
+    <string name="comic_rank">漫画排行榜</string>
+    <string name="month_rank">近30天</string>
+    <string name="week_rank">近7天</string>
+    <string name="all_rank">总榜</string>
+    <string name="hot_manga">热门</string>
+    <string name="new_manga">最新</string>
+    <string name="finish_manga">完结</string>
+    <string name="loading">加载中</string>
+    <string name="chapter">共 %s 章</string>
+    <string name="manga">漫画</string>
+    <string name="author">作者</string>
+    <string name="theme">类别</string>
+    <string name="filter">筛选</string>
+    <string name="sort">类型</string>
+    <string name="order">排序</string>
+    <string name="label_is_loading">标签加载中</string>
+    <string name="error">有些地方发生了错误</string>
+    <string name="retry">重试</string>
+    <string name="start">开始阅读</string>
+    <string name="next_chapter">下一章</string>
+    <string name="non_next">无下一章节</string>
+    <string name="exit">退出</string>
+    <string name="open_source">开源相关</string>
+    <string name="about">关于</string>
+</resources>

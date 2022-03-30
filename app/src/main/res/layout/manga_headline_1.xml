@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:background="?android:attr/selectableItemBackground"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
+    android:id="@+id/linear_id"
+    android:padding="12dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:id="@+id/title_id"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:text="@string/app_name"
+        android:textAppearance="?textAppearanceHeadline5"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_gravity="end"
+        android:src="@drawable/ic_look_more"
+        app:tint="?colorPrimary"
+        android:contentDescription="@string/todo" />
+
+</LinearLayout>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/drawable-anydpi/ic_arrow_back.xml" value="0.2775" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/drawable-anydpi/ic_look_more.xml" value="0.2775" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/drawable-anydpi/ic_manga_next_dark.xml" value="0.255" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/drawable-anydpi/ic_manga_next_light.xml" value="0.255" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2205" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2205" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/bottom_tab.xml" value="0.2" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/categories_item.xml" value="0.3591485507246377" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/chip.xml" value="0.15756578947368421" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/chip_1.xml" value="0.15756578947368421" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/fragment_rank.xml" value="0.5" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/hot_manga_layout.xml" value="0.15756578947368421" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/layout_manga_detail.xml" value="0.3591485507246377" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/layout_manga_list_item.xml" value="0.2" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/layout_manga_rank_back.xml" value="0.3591485507246377" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/layout_rank_manga_detail.xml" value="0.335" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/list_chapter.xml" value="0.23157894736842105" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/list_popup_window_item.xml" value="0.15756578947368421" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/main_page_in.xml" value="0.25" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/manga_banner_mian.xml" value="0.25" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/manga_card_detail_view.xml" value="0.22894736842105262" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/manga_headline_1.xml" value="0.25" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/manga_headline_2.xml" value="0.25" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/manga_info.xml" value="0.2" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/manga_list.xml" value="0.2" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/manga_reader_fragment.xml" value="0.15756578947368421" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/manga_reader_layout.xml" value="0.15756578947368421" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/rank_manga_fragment.xml" value="0.15756578947368421" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/rank_manga_layout.xml" value="0.176" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/sort_tab.xml" value="0.2" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/menu/menu_main.xml" value="0.15756578947368421" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/menu/rank_bottom_item.xml" value="0.15756578947368421" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2205" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/mipmap-anydpi-v26/ic_launcher_copy.xml" value="0.2205" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

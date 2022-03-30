@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_manga_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints,NotSibling" />
+
+    <com.shicheeng.copymanga.view.HeadLineView
+        android:id="@+id/headline_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:headTitle="@string/recommend"
+        tools:ignore="MissingConstraints" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_manga_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.shicheeng.copymanga.view.HeadLineView
+        android:id="@+id/headline_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:headTitle="@string/comic_rank" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_manga_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.shicheeng.copymanga.view.HeadLineView
+        android:id="@+id/headline_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:headTitle="@string/hot_manga" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_manga_4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.shicheeng.copymanga.view.HeadLineView
+        android:id="@+id/headline_4"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:headTitle="@string/new_manga" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_manga_5"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.shicheeng.copymanga.view.HeadLineView
+        android:id="@+id/headline_5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:headTitle="@string/finish_manga" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_manga_6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

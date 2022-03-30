@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="HeadLineView">
+        <attr name="headTitle" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="HeadLineViewChapter">
+        <attr name="headChapterTitle" format="string" />
+
+    </declare-styleable>
+
+</resources>

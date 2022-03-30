@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/fcf44b25e9c58d78093f28f182a50f81/transformed/subsampling-scale-image-view-androidx-3.10.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/fcf44b25e9c58d78093f28f182a50f81/transformed/subsampling-scale-image-view-androidx-3.10.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/fcf44b25e9c58d78093f28f182a50f81/transformed/subsampling-scale-image-view-androidx-3.10.0/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.davemorrissey.labs/subsampling-scale-image-view-androidx/3.10.0/e90320d71bc0ba0b5a7e7974f8f7896572ce59f4/subsampling-scale-image-view-androidx-3.10.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.davemorrissey.labs/subsampling-scale-image-view-androidx/3.10.0/97c1f1131ffd9d54b5ad9a125c42e415b924d0fb/subsampling-scale-image-view-androidx-3.10.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
