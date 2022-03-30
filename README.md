@@ -14,11 +14,11 @@
 
 ## 截屏
 
-[s1](sreenshots/Screenshot_20220330_202635.png)
-[s2](sreenshots/Screenshot_20220330_202716.png)
-[s3](sreenshots/Screenshot_20220330_202728.png)
-[s4](sreenshots/Screenshot_20220330_202749.png)
-[s5](sreenshots/Screenshot_20220330_202807.png)
+![s1](sreenshots/Screenshot_20220330_202635.png)
+![s2](sreenshots/Screenshot_20220330_202716.png)
+![s3](sreenshots/Screenshot_20220330_202728.png)
+![s4](sreenshots/Screenshot_20220330_202749.png)
+![s5](sreenshots/Screenshot_20220330_202807.png)
 
 
 ## 关于Api
