@@ -3,9 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:title="@android:string/search_go"
+        android:icon="@drawable/ic_manga_search"
+        app:showAsAction="ifRoom"
+        android:contentDescription="@android:string/search_go"/>
+
+    <item
+        android:title="@string/login_text"
+        android:icon="@drawable/ic_manga_login"
+        app:showAsAction="ifRoom"
+        android:contentDescription="@string/login_text"/>
+
+    <item
         android:title="@string/about"
+        android:icon="@drawable/ic_manga_info_main"
         android:id="@+id/about_main"
         android:contentDescription="@string/about"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
+
+
 
 </menu>

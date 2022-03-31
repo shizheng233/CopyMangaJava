@@ -5,8 +5,11 @@
       <map>
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/drawable-anydpi/ic_arrow_back.xml" value="0.2775" />
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/drawable-anydpi/ic_look_more.xml" value="0.2775" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/drawable-anydpi/ic_manga_info_main.xml" value="0.213" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/drawable-anydpi/ic_manga_login.xml" value="0.213" />
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/drawable-anydpi/ic_manga_next_dark.xml" value="0.255" />
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/drawable-anydpi/ic_manga_next_light.xml" value="0.255" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/drawable-anydpi/ic_manga_search.xml" value="0.213" />
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2205" />
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2205" />
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/activity_main.xml" value="0.25" />

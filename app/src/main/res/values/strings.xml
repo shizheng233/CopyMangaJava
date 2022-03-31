@@ -30,4 +30,8 @@
     <string name="exit">Exit</string>
     <string name="open_source">Open source</string>
     <string name="about">About</string>
+    <string name="login_text">Login</string>
+    <string name="des">A third-part Android App project of CopyManga</string>
+    <string name="li_des">A third part app of CopyManga</string>
+    <string name="description_text">Description</string>
 </resources>
