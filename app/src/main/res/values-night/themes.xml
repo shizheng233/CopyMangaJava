@@ -31,6 +31,7 @@
         <item name="android:windowLightStatusBar">false</item>
         <item name="barColor">@color/black</item>
         <item name="textColorMe">@color/white</item>
+        <item name="android:navigationBarColor">?colorSurface</item>
     </style>
 
     <style name="AppTheme.About" parent="Theme.Material3.DayNight.NoActionBar">
@@ -38,6 +39,7 @@
         <item name="colorPrimaryDark">?colorSecondary</item>
         <item name="colorAccent">?colorPrimary</item>
 
+        <item name="android:statusBarColor">?attr/colorSurface</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="aboutPageNavigationIcon">@drawable/ic_manga_next_dark</item>
 
