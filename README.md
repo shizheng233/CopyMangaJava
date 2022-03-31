@@ -1,5 +1,5 @@
 # CopyMangaJava
- A thrd-part Android App project of CopyManga
+ A third-part Android App project of CopyManga
  
  一个第三方的拷贝漫画app M3风格
 
