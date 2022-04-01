@@ -23,6 +23,7 @@ public class KeyWordSwap {
     public static final int HANDLER_INFO_7_WHAT = 0x07;
     public static final int HANDLER_INFO_8_WHAT = 0x08;
     public static final int HANDLER_INFO_9_WHAT = 0x09;
+    public static final int HANDLER_INFO_10_WHAT = 10;
     public static final int HANDLER_ERROR = 111111111;
     public static final String FLAG_RECOMMEND = "RECOMMEND_MANGA";
     public static final String FLAG_HOT = "HOT_MANGA";

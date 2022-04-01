@@ -6,7 +6,9 @@
         android:title="@android:string/search_go"
         android:icon="@drawable/ic_manga_search"
         app:showAsAction="ifRoom"
-        android:contentDescription="@android:string/search_go"/>
+        android:id="@+id/id_manga_search"
+        android:contentDescription="@android:string/search_go"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
     <item
         android:title="@string/login_text"

@@ -31,4 +31,5 @@
     <string name="des">一个第三方的拷贝漫画app带有M3风格  这个app,我本来是想使用kotlin写的，但是我意外的发现要习惯kotlin的语法要很长一段时间，于是在一段时间考虑后，我还是使用了Java。  筛选功能在热门下。之所以在热门下，是因为官方网站也是这么做的。</string>
     <string name="li_des">第三方的拷贝漫画app</string>
     <string name="description_text">介绍</string>
+    <string name="search_text">搜索内容</string>
 </resources>

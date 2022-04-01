@@ -34,4 +34,5 @@
     <string name="des">A third-part Android App project of CopyManga</string>
     <string name="li_des">A third part app of CopyManga</string>
     <string name="description_text">Description</string>
+    <string name="search_text">Search text</string>
 </resources>

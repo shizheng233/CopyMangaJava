@@ -2,18 +2,25 @@ package com.shicheeng.copymanga;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.SearchManager;
+import android.app.SearchableInfo;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -142,13 +149,21 @@ public class MainActivity extends AppCompatActivity {
         //线程启动
         thread = new Thread(new MyRunnable());
 
+        setSupportActionBar(toolbar);
+
         toolbar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.about_main){
+            if (item.getItemId() == R.id.about_main) {
                 Intent intent2 = new Intent();
-                intent2.setClass(MainActivity.this,AboutActivity.class);
+                intent2.setClass(MainActivity.this, AboutActivity.class);
                 startActivity(intent2);
                 return true;
             }
+            if (item.getItemId() == R.id.id_manga_search) {
+                SearchView view = (SearchView) item.getActionView();
+
+                return true;
+            }
+
             return false;
         });
 
@@ -162,6 +177,22 @@ public class MainActivity extends AppCompatActivity {
         ExecutorService executorService = Executors.newFixedThreadPool(1);
         executorService.submit(thread);
         executorService.shutdown();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+        MenuItem itemS = menu.findItem(R.id.id_manga_search);
+        SearchView view = (SearchView) itemS.getActionView();
+        SearchManager manager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        view.setSubmitButtonEnabled(true);
+        ComponentName componentName = new ComponentName(this,SearchOutActivity.class);
+        SearchableInfo searchableInfo = manager.getSearchableInfo(componentName);
+        view.setSearchableInfo(searchableInfo);
+        
+        //view.setSearchableInfo();
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     //静态内部类用作方法的集合
