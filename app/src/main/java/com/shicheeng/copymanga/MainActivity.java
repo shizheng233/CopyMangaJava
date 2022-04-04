@@ -163,6 +163,11 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
             }
+            if (item.getItemId() == R.id.id_manga_history){
+                Intent intent2 = new Intent();
+                intent2.setClass(MainActivity.this, MangaHistoryActivity.class);
+                startActivity(intent2);
+            }
 
             return false;
         });

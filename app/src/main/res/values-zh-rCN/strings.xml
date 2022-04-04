@@ -32,4 +32,10 @@
     <string name="li_des">第三方的拷贝漫画app</string>
     <string name="description_text">介绍</string>
     <string name="search_text">搜索内容</string>
+    <string name="history">观看历史</string>
+    <string name="now_reading">正在阅读中</string>
+    <string name="all_history">所有历史</string>
+    <string name="watching">"看到 %s "</string>
+    <string name="keep_reading">继续观看</string>
+    <string name="data_info">历史数据将会保存在本地</string>
 </resources>

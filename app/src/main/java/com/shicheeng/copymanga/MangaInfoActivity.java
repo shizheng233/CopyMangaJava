@@ -25,6 +25,7 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.shicheeng.copymanga.adapter.MangaInfoChapterAdapter;
 import com.shicheeng.copymanga.adapter.MangaInfoChipperAdapter;
@@ -33,8 +34,14 @@ import com.shicheeng.copymanga.data.MangaInfoChapterDataBean;
 import com.shicheeng.copymanga.dialog.BottomDialogFragment;
 import com.shicheeng.copymanga.json.MangaInfoJson;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +62,7 @@ public class MangaInfoActivity extends AppCompatActivity {
     private Thread thread;
     private MaterialCardView mangaCard;
     private ExtendedFloatingActionButton extendedFAB;
+    private String coverUrlQ;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -119,6 +127,36 @@ public class MangaInfoActivity extends AppCompatActivity {
         executorService.shutdown();
     }
 
+    private String getFileSave() {
+        FileInputStream fis = null;
+        try {
+            fis = openFileInput(KeyWordSwap.FILE_NAME);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        InputStreamReader inputStreamReader =
+                new InputStreamReader(fis, StandardCharsets.UTF_8);
+        StringBuilder stringBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
+            String line = reader.readLine();
+            while (line != null) {
+                stringBuilder.append(line).append('\n');
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            // Error occurred when opening raw file for reading.
+        }
+        return stringBuilder.toString();
+    }
+
+    public String getCoverUrlQ() {
+        return coverUrlQ;
+    }
+
+    public void setCoverUrlQ(String coverUrlQ) {
+        this.coverUrlQ = coverUrlQ;
+    }
+
     //创建内部类将方法放入里面
     private class MangaInfoGo {
 
@@ -154,6 +192,7 @@ public class MangaInfoActivity extends AppCompatActivity {
                     intent333.putExtra(KeyWordSwap.UUID_WORD_TYPE, infoList.get(position).getUuidText());
                     intent333.putExtra(KeyWordSwap.CHAPTER_TYPE, infoList.get(position).getChapterTitle());
                     intent333.putExtra(KeyWordSwap.TITLE_TYPE, MangaInfoActivity.this.mangaToolbar.getTitle());
+                    intent333.putExtra(KeyWordSwap.COVER_URL_TYPE,getCoverUrlQ());
                     recyclerView.getContext().startActivity(intent333);
                 }
             });
@@ -162,6 +201,7 @@ public class MangaInfoActivity extends AppCompatActivity {
 
     }
 
+    //背景Run
     private class MyRun implements Runnable {
 
         String pathWord;
@@ -210,6 +250,7 @@ public class MangaInfoActivity extends AppCompatActivity {
         private NestedScrollView scrollView;
         private String pathWord;
         private String title1;
+        private String coverUrl1;
 
         public MyNewHandler(Activity activity) {
             // 使用WeakReference弱引用持有Activity实例
@@ -264,6 +305,7 @@ public class MangaInfoActivity extends AppCompatActivity {
                     Bitmap blurBitmap = ImageUtil.toBlur(url, 10);
                     List<ChipTextBean> themes = (List<ChipTextBean>) hashMap.get(6);
                     String aliasName = (String) hashMap.get(7);
+                    String coverUrl = (String) hashMap.get(8);
                     mangaCoverOut.setImageBitmap(url);
                     mangaCoverBack.setImageBitmap(blurBitmap);
                     mangaToolbar.setTitle(title);
@@ -284,6 +326,8 @@ public class MangaInfoActivity extends AppCompatActivity {
                     recyclerViewChipTheme.setAdapter(adapterThemes);
                     textTitle.setText(title);
                     this.title1 = title;
+                    this.coverUrl1 = coverUrl;
+                    setCoverUrlQ(coverUrl);
                     int bitColor = ImageUtil.getOneColor(blurBitmap);
                     int antiColor = ImageUtil.getAntiColor(bitColor);
                     textTitle.setTextColor(antiColor);
@@ -300,6 +344,7 @@ public class MangaInfoActivity extends AppCompatActivity {
                     break;
 
                 case KeyWordSwap.HANDLER_INFO_2_WHAT:
+                    File file = new File(getFilesDir(), KeyWordSwap.FILE_NAME);
                     JsonObject obj = (JsonObject) msg.obj;
                     JsonArray array = obj.getAsJsonArray("list");
                     MangaInfoGo go = new MangaInfoGo();
@@ -309,17 +354,44 @@ public class MangaInfoActivity extends AppCompatActivity {
                     scrollView.setVisibility(View.VISIBLE);
                     linearProgressIndicator.setVisibility(View.GONE);
                     JsonObject object2 = array.get(0).getAsJsonObject();
-                    extendedFAB.setOnClickListener(view -> {
-                        Intent intent1 = new Intent();
-                        intent1.setClass(extendedFAB.getContext(), MangaReaderActivity.class);
-                        intent1.putExtra(KeyWordSwap.PATH_WORD_TYPE, object2.get("comic_path_word")
-                                .getAsString());
-                        intent1.putExtra(KeyWordSwap.UUID_WORD_TYPE, object2.get("uuid")
-                                .getAsString());
-                        intent1.putExtra(KeyWordSwap.TITLE_TYPE, title1);
-                        intent1.putExtra(KeyWordSwap.CHAPTER_TYPE, object2.get("name").getAsString());
-                        startActivity(intent1);
-                    });
+                    if (file.exists()) {
+                        JsonArray array1 = JsonParser.parseString(getFileSave()).getAsJsonArray();
+                        for (int q = 0; q < array1.size(); q++) {
+                            if (array1.get(q).getAsJsonObject().get("pathWord").getAsString()
+                                    .equals(object2.get("comic_path_word").getAsString())) {
+                                int finalQ = q;
+                                extendedFAB.setOnClickListener(view -> {
+                                    Intent intent1 = new Intent();
+                                    intent1.setClass(extendedFAB.getContext(), MangaReaderActivity.class);
+                                    intent1.putExtra(KeyWordSwap.PATH_WORD_TYPE, object2.get("comic_path_word")
+                                            .getAsString());
+                                    intent1.putExtra(KeyWordSwap.UUID_WORD_TYPE, array1.get(finalQ)
+                                            .getAsJsonObject().get("uuid").getAsString());
+                                    intent1.putExtra(KeyWordSwap.TITLE_TYPE, title1);
+                                    intent1.putExtra(KeyWordSwap.COVER_URL_TYPE,coverUrl1);
+                                    intent1.putExtra(KeyWordSwap.CHAPTER_TYPE, array1.get(finalQ)
+                                            .getAsJsonObject().get("chapter").getAsString());
+
+                                    startActivity(intent1);
+                                });
+                                extendedFAB.setText(R.string.keep_reading);
+                            }
+                        }
+                    } else {
+                        extendedFAB.setOnClickListener(view -> {
+                            Intent intent1 = new Intent();
+                            intent1.setClass(extendedFAB.getContext(), MangaReaderActivity.class);
+                            intent1.putExtra(KeyWordSwap.PATH_WORD_TYPE, object2.get("comic_path_word")
+                                    .getAsString());
+                            intent1.putExtra(KeyWordSwap.UUID_WORD_TYPE, object2.get("uuid")
+                                    .getAsString());
+                            intent1.putExtra(KeyWordSwap.TITLE_TYPE, title1);
+                            intent1.putExtra(KeyWordSwap.COVER_URL_TYPE,coverUrl1);
+                            intent1.putExtra(KeyWordSwap.CHAPTER_TYPE, object2.get("name").getAsString());
+                            startActivity(intent1);
+                        });
+                    }
+
                     extendedFAB.setVisibility(View.VISIBLE);
                     break;
 
@@ -339,4 +411,5 @@ public class MangaInfoActivity extends AppCompatActivity {
 
 
     }
+
 }

@@ -1,7 +1,10 @@
 package com.shicheeng.copymanga;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,6 +12,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,22 +27,36 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.shicheeng.copymanga.bean.JsonABean;
 import com.shicheeng.copymanga.data.MangaReadJson;
 import com.shicheeng.copymanga.fm.MangaReaderFragment;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 public class MangaReaderActivity extends FragmentActivity {
 
+    private boolean activeBar;
     private final Handler mHideHandler = new Handler();
     private MyHandler myHandler;
     private MaterialToolbar toolbar;
     private CoordinatorLayout layout;
     private AppBarLayout layout2;
     private View view_root;
+    //从 Android Studio 复制过来的全屏代码
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -57,6 +75,7 @@ public class MangaReaderActivity extends FragmentActivity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
             }
         }
     };
@@ -68,7 +87,13 @@ public class MangaReaderActivity extends FragmentActivity {
             toolbar.setVisibility(View.VISIBLE);
             view_root.setVisibility(View.VISIBLE);
         }
-    };
+    };//结束
+
+    //变量声明
+    private String title;
+    private String pathWord2;
+    private String subtitle;
+    private String uuid;
     private boolean isLast;
     private ExtendedFloatingActionButton ext_fab;
     private CircularProgressIndicator indicator;
@@ -77,6 +102,7 @@ public class MangaReaderActivity extends FragmentActivity {
     private String nextUuid;
     private String pathWord;
     private String chapterName;
+    private String coverUrlIn;
 
 
     //Main
@@ -95,17 +121,21 @@ public class MangaReaderActivity extends FragmentActivity {
 
 
         Intent intent = getIntent();
-        String title = intent.getStringExtra(KeyWordSwap.TITLE_TYPE);
-        String subtitle = intent.getStringExtra(KeyWordSwap.CHAPTER_TYPE);
-        String uuid = intent.getStringExtra(KeyWordSwap.UUID_WORD_TYPE);
-        String pathWord = intent.getStringExtra(KeyWordSwap.PATH_WORD_TYPE);
+        title = intent.getStringExtra(KeyWordSwap.TITLE_TYPE);
+        subtitle = intent.getStringExtra(KeyWordSwap.CHAPTER_TYPE);
+        uuid = intent.getStringExtra(KeyWordSwap.UUID_WORD_TYPE);
+        pathWord2 = intent.getStringExtra(KeyWordSwap.PATH_WORD_TYPE);
+        coverUrlIn = intent.getStringExtra(KeyWordSwap.COVER_URL_TYPE);
 
-        new Thread(new MyRun(pathWord, uuid)).start();
+        activeBar = (getApplicationContext().getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_YES) != 0;
+
+        new Thread(new MyRun(pathWord2, uuid)).start();
 
         toolbar.setTitle(title);
         toolbar.setSubtitle(subtitle);
 
-        setPathWord(pathWord);
+        setPathWord(pathWord2);
 
         myHandler = new MyHandler();
 
@@ -159,8 +189,16 @@ public class MangaReaderActivity extends FragmentActivity {
             view_root.getWindowInsetsController().show(
                     WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
         } else {
-            view_root.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+            if (activeBar) {
+                view_root.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+            } else {
+                view_root.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                        | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+            }
+
         }
         if (!isLast) {
             ext_fab.show();
@@ -198,6 +236,78 @@ public class MangaReaderActivity extends FragmentActivity {
         this.chapterName = chapterName;
     }
 
+    @Override
+    protected void onDestroy() {
+        File file = new File(getFilesDir(), KeyWordSwap.FILE_NAME);
+        if (file.exists()) {
+            Gson gson = new Gson();
+            String json = getFileSave();
+            JsonArray array = JsonParser.parseString(json).getAsJsonArray();
+            JsonABean jsonABean = new JsonABean(title, subtitle, pathWord2, uuid, coverUrlIn);
+            String json2 = gson.toJson(jsonABean);
+            JsonElement element = JsonParser.parseString(json2).getAsJsonObject();
+            for (int i = 0; i < array.size(); i++) {
+                if (element.getAsJsonObject().get("nameManga")
+                        .getAsString().equals(array.get(i).getAsJsonObject()
+                                .get("nameManga").getAsString())) {
+                    array.remove(i);
+
+                }
+            }
+            array.add(element);
+            Log.i("TAG_111", "sss" + array);
+            setFileSave(array.toString());
+        } else if (!file.exists()) {
+            Gson gson = new Gson();
+            JsonArray jsonArray = new JsonArray();
+            JsonABean jsonABean = new JsonABean(title, subtitle, pathWord2, uuid, coverUrlIn);
+            String json2 = gson.toJson(jsonABean);
+            JsonElement element = JsonParser.parseString(json2).getAsJsonObject();
+            Log.i("TAG_QQQQQ", "onDestroy: " + json2);
+            jsonArray.add(element);
+            Log.i("TAG_QQQQQK", "onDestroy: " + jsonArray);
+            String text = jsonArray.toString();
+            Log.i("TAG_QQQ2QQK", "onDestroy: " + text);
+            setFileSave(text);
+        }
+
+
+        super.onDestroy();
+    }
+
+    private String getFileSave() {
+        FileInputStream fis = null;
+        try {
+            fis = openFileInput(KeyWordSwap.FILE_NAME);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        InputStreamReader inputStreamReader =
+                new InputStreamReader(fis, StandardCharsets.UTF_8);
+        StringBuilder stringBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
+            String line = reader.readLine();
+            while (line != null) {
+                stringBuilder.append(line).append('\n');
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            // Error occurred when opening raw file for reading.
+        }
+        return stringBuilder.toString();
+    }
+
+    private void setFileSave(String text) {
+
+        try {
+            FileOutputStream fos = openFileOutput(KeyWordSwap.FILE_NAME, Context.MODE_PRIVATE);
+            fos.write(text.getBytes());
+            fos.close();
+            Log.i("SSS", "kaishi");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private static class FragmentAdapter extends FragmentStateAdapter {
 
@@ -284,7 +394,6 @@ public class MangaReaderActivity extends FragmentActivity {
                                 ext_fab.hide();
                             }
                         }
-
                     }
                 });
 

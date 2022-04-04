@@ -43,6 +43,8 @@
                 android:resource="@xml/search_view_1" />
         </activity>
 
+        <activity android:name=".MangaHistoryActivity"/>
+
     </application>
 
 </manifest>

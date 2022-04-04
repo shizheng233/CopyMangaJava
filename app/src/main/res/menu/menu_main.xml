@@ -5,7 +5,7 @@
     <item
         android:title="@android:string/search_go"
         android:icon="@drawable/ic_manga_search"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         android:id="@+id/id_manga_search"
         android:contentDescription="@android:string/search_go"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
@@ -13,8 +13,14 @@
     <item
         android:title="@string/login_text"
         android:icon="@drawable/ic_manga_login"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         android:contentDescription="@string/login_text"/>
+
+    <item
+        android:title="@string/history"
+        android:id="@+id/id_manga_history"
+        android:icon="@drawable/ic_manga_history"
+        app:showAsAction="always"/>
 
     <item
         android:title="@string/about"

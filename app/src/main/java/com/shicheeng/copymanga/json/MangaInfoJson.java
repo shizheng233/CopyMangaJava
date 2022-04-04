@@ -88,6 +88,7 @@ public class MangaInfoJson {
             mapWithInfo.put(5, mangaStatus);
             mapWithInfo.put(6, mangaThemes);
             mapWithInfo.put(7, mangaAlias);
+            mapWithInfo.put(8, mangaCoverUrl);
             return mapWithInfo;
         }
     }

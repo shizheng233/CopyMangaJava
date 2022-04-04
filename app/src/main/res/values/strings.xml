@@ -35,4 +35,10 @@
     <string name="li_des">A third part app of CopyManga</string>
     <string name="description_text">Description</string>
     <string name="search_text">Search text</string>
+    <string name="history">HIstory</string>
+    <string name="now_reading">Now reading</string>
+    <string name="all_history">All history</string>
+    <string name="watching">"Watch %s "</string>
+    <string name="keep_reading">Keep</string>
+    <string name="data_info">The history will save in local memory</string>
 </resources>

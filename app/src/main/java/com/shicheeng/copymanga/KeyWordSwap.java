@@ -31,6 +31,8 @@ public class KeyWordSwap {
     public static final String FLAG_FINISH = "FINISH_MANGA";
     public static final String FLAG_ = "FLAG";
     public static final String NON_JSON = "NON_JSON";
+    public static final String FILE_NAME = "myHistory.json";
+    public static final String COVER_URL_TYPE = "url";
 
 
 }
