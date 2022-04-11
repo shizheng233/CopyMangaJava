@@ -56,6 +56,8 @@ public class MangaReaderActivity extends FragmentActivity {
     private CoordinatorLayout layout;
     private AppBarLayout layout2;
     private View view_root;
+    private boolean onlyOnePage ;
+
     //从 Android Studio 复制过来的全屏代码
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -103,6 +105,7 @@ public class MangaReaderActivity extends FragmentActivity {
     private String pathWord;
     private String chapterName;
     private String coverUrlIn;
+    private String thisUuid;
 
 
     //Main
@@ -131,11 +134,13 @@ public class MangaReaderActivity extends FragmentActivity {
                 & Configuration.UI_MODE_NIGHT_YES) != 0;
 
         new Thread(new MyRun(pathWord2, uuid)).start();
+        //Log.i("TAG_OOO", "onCreate: "+uuid);
 
         toolbar.setTitle(title);
         toolbar.setSubtitle(subtitle);
 
         setPathWord(pathWord2);
+        setThisUuid(uuid);
 
         myHandler = new MyHandler();
 
@@ -143,6 +148,10 @@ public class MangaReaderActivity extends FragmentActivity {
 
         toolbar.setNavigationOnClickListener(view -> finish());
 
+        ext_fab.setOnClickListener(view -> {
+            new Thread(new MyRun(pathWord2,getNextUuid())).start();
+            indicator.setVisibility(View.VISIBLE);
+        });
 
     }
 
@@ -236,6 +245,8 @@ public class MangaReaderActivity extends FragmentActivity {
         this.chapterName = chapterName;
     }
 
+
+
     @Override
     protected void onDestroy() {
         File file = new File(getFilesDir(), KeyWordSwap.FILE_NAME);
@@ -243,7 +254,7 @@ public class MangaReaderActivity extends FragmentActivity {
             Gson gson = new Gson();
             String json = getFileSave();
             JsonArray array = JsonParser.parseString(json).getAsJsonArray();
-            JsonABean jsonABean = new JsonABean(title, subtitle, pathWord2, uuid, coverUrlIn);
+            JsonABean jsonABean = new JsonABean(title, subtitle, pathWord2, getThisUuid(), coverUrlIn);
             String json2 = gson.toJson(jsonABean);
             JsonElement element = JsonParser.parseString(json2).getAsJsonObject();
             for (int i = 0; i < array.size(); i++) {
@@ -260,7 +271,7 @@ public class MangaReaderActivity extends FragmentActivity {
         } else if (!file.exists()) {
             Gson gson = new Gson();
             JsonArray jsonArray = new JsonArray();
-            JsonABean jsonABean = new JsonABean(title, subtitle, pathWord2, uuid, coverUrlIn);
+            JsonABean jsonABean = new JsonABean(title, subtitle, pathWord2, getThisUuid(), coverUrlIn);
             String json2 = gson.toJson(jsonABean);
             JsonElement element = JsonParser.parseString(json2).getAsJsonObject();
             Log.i("TAG_QQQQQ", "onDestroy: " + json2);
@@ -309,6 +320,16 @@ public class MangaReaderActivity extends FragmentActivity {
         }
     }
 
+    public String getThisUuid() {
+        return thisUuid;
+    }
+
+    public void setThisUuid(String thisUuid) {
+        this.thisUuid = thisUuid;
+    }
+
+
+    //该viewpager的图片
     private static class FragmentAdapter extends FragmentStateAdapter {
 
         private final HashMap<Integer, String> bitmapHashMap;
@@ -366,6 +387,7 @@ public class MangaReaderActivity extends FragmentActivity {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
+            //截取最重要的，对于漫画图片的消息
             if (msg.what == KeyWordSwap.HANDLER_INFO_7_WHAT) {
 
                 HashMap<Integer, String> bitmapHashMap = (HashMap<Integer, String>) msg.obj;
@@ -382,6 +404,7 @@ public class MangaReaderActivity extends FragmentActivity {
                 });
 
                 setPo(adapter.getItemCount());
+
                 view2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                     @Override
                     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -399,27 +422,41 @@ public class MangaReaderActivity extends FragmentActivity {
 
             }
 
+            //截取下一章uuid的消息，当没有下一章的时候返回消息
             if (msg.what == KeyWordSwap.HANDLER_INFO_8_WHAT) {
                 String nextUid = (String) msg.obj;
+
                 if (nextUid.equals(KeyWordSwap.NON_JSON)) {
                     isLast = true;
                     ext_fab.hide();
+                }else {
+                    setNextUuid(nextUid);
                 }
+                ext_fab.setOnClickListener(view -> {
+                    new Thread(new MyRun(getPathWord(), getNextUuid())).start();
+                    new Thread(new My2Run(getPathWord(), getNextUuid())).start();
+                    indicator.setVisibility(View.VISIBLE);
+                });
                 view2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+
                     @Override
                     public void onPageSelected(int position) {
                         super.onPageSelected(position);
+                        ext_fab.setOnClickListener(view -> {
+                            new Thread(new MyRun(getPathWord(), getNextUuid())).start();
+                            new Thread(new My2Run(getPathWord(), getNextUuid())).start();
+                            indicator.setVisibility(View.VISIBLE);
+                        });
                         if ((getPo() - 1) == position) {
                             if (nextUid.equals(KeyWordSwap.NON_JSON)) {
                                 Snackbar.make(view_root, R.string.non_next, Snackbar.LENGTH_INDEFINITE)
                                         .setAction(R.string.exit, view -> finish()).show();
                                 ext_fab.hide();
                             } else {
-                                setNextUuid(nextUid);
+
                                 ext_fab.setOnClickListener(view -> {
                                     new Thread(new MyRun(getPathWord(), getNextUuid())).start();
                                     new Thread(new My2Run(getPathWord(), getNextUuid())).start();
-
                                     Log.i("UUID", getNextUuid());
                                     Log.i("PW", getPathWord());
                                     indicator.setVisibility(View.VISIBLE);
@@ -431,25 +468,30 @@ public class MangaReaderActivity extends FragmentActivity {
                     }
                 });
 
+
             }
 
+            //截取章节名字的message
             if (msg.what == KeyWordSwap.HANDLER_INFO_9_WHAT) {
                 String name = (String) msg.obj;
                 setChapterName(name);
+                subtitle = name;
                 toolbar.setSubtitle(name);
+
             }
 
+            //截取错误的消息
             if (msg.what == KeyWordSwap.HANDLER_ERROR) {
                 Snackbar.make(view_root, R.string.error, Snackbar.LENGTH_INDEFINITE)
                         .setAction(R.string.retry, view -> {
                             new Thread(new MyRun(getPathWord(), getNextUuid())).start();
-                            new Thread(new My2Run(getPathWord(), getNextUuid())).start();
                         }).show();
             }
 
         }
     }
 
+    //第一个runnable，用于本章获取图片
     private class MyRun implements Runnable {
 
         private final String pathWord;
@@ -482,6 +524,7 @@ public class MangaReaderActivity extends FragmentActivity {
         }
     }
 
+    //第二个Runnable,用于获取下一章的名字
     private class My2Run implements Runnable {
 
         private final String pathWord;
@@ -490,6 +533,7 @@ public class MangaReaderActivity extends FragmentActivity {
         private My2Run(String pathWord, String uuid) {
             this.pathWord = pathWord;
             this.uuid = uuid;
+            setThisUuid(uuid);
         }
 
         @Override

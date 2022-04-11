@@ -14,6 +14,7 @@
         android:title="@string/login_text"
         android:icon="@drawable/ic_manga_login"
         app:showAsAction="always"
+        android:id="@+id/id_manga_login"
         android:contentDescription="@string/login_text"/>
 
     <item

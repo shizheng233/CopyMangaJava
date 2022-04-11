@@ -2,11 +2,14 @@ package com.shicheeng.copymanga;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
@@ -32,6 +36,7 @@ import com.shicheeng.copymanga.adapter.MangaInfoChipperAdapter;
 import com.shicheeng.copymanga.data.ChipTextBean;
 import com.shicheeng.copymanga.data.MangaInfoChapterDataBean;
 import com.shicheeng.copymanga.dialog.BottomDialogFragment;
+import com.shicheeng.copymanga.dialog.LoginDialogFragment;
 import com.shicheeng.copymanga.json.MangaInfoJson;
 
 import java.io.BufferedReader;
@@ -62,8 +67,10 @@ public class MangaInfoActivity extends AppCompatActivity {
     private Thread thread;
     private MaterialCardView mangaCard;
     private ExtendedFloatingActionButton extendedFAB;
-    private String coverUrlQ;
+    private String coverUrlQ, pathWordQ, mangaUUIDQ;
+    private MaterialButton btnAddToCollect;
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,12 +91,15 @@ public class MangaInfoActivity extends AppCompatActivity {
         recyclerViewChipTheme = findViewById(R.id.recycler_manga_info_chip_theme);
         mangaCard = findViewById(R.id.card_manga);
         extendedFAB = findViewById(R.id.expand_fab_info);
+        btnAddToCollect = findViewById(R.id.btn_add_to_collection);
+        SharedPreferences preferences = getSharedPreferences(KeyWordSwap.ONLY_ONE_KEY_AUTHORIZATION, Context.MODE_PRIVATE);
 
 
         //初始化一堆逻辑 创建竖直列表布局
         setSupportActionBar(mangaToolbar);
         Intent intent = getIntent();
         String pathWord = intent.getStringExtra(KeyWordSwap.PATH_WORD_TYPE);
+        this.pathWordQ = pathWord;
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         textChapter.setText(R.string.loading);
@@ -117,6 +127,23 @@ public class MangaInfoActivity extends AppCompatActivity {
         thread = new Thread(myRun);
         executorService.submit(thread);
         thread.start();
+
+
+        if (preferences.contains(KeyWordSwap.FILE_AUTHORIZATION)) {
+            String authorization = preferences.getString(KeyWordSwap.FILE_AUTHORIZATION, null);
+            new Thread(new MyRun4Check(authorization)).start();
+            new Thread(new MyRun4CheckList(authorization)).start();
+            btnAddToCollect.setOnClickListener(view -> {
+                new Thread(new MyRun4Collect(authorization
+                        , 1, mangaUUIDQ)).start();
+                new Thread(new MyRun4CheckList(authorization)).start();
+            });
+        } else {
+            btnAddToCollect.setIcon(getDrawable(R.drawable.ic_manga_add_non));
+            btnAddToCollect.setText(R.string.not_login);
+            btnAddToCollect.setClickable(false);
+        }
+
 
     }
 
@@ -148,6 +175,7 @@ public class MangaInfoActivity extends AppCompatActivity {
         }
         return stringBuilder.toString();
     }
+
 
     public String getCoverUrlQ() {
         return coverUrlQ;
@@ -192,13 +220,59 @@ public class MangaInfoActivity extends AppCompatActivity {
                     intent333.putExtra(KeyWordSwap.UUID_WORD_TYPE, infoList.get(position).getUuidText());
                     intent333.putExtra(KeyWordSwap.CHAPTER_TYPE, infoList.get(position).getChapterTitle());
                     intent333.putExtra(KeyWordSwap.TITLE_TYPE, MangaInfoActivity.this.mangaToolbar.getTitle());
-                    intent333.putExtra(KeyWordSwap.COVER_URL_TYPE,getCoverUrlQ());
+                    intent333.putExtra(KeyWordSwap.COVER_URL_TYPE, getCoverUrlQ());
                     recyclerView.getContext().startActivity(intent333);
                 }
             });
             recyclerView.setAdapter(adapter);
         }
 
+    }
+
+    private class MyRun4Collect implements Runnable {
+
+        private final String authorization;
+        private final int i;
+        private final String uuid;
+
+        public MyRun4Collect(String authorization, int i, String uuid) {
+            this.authorization = authorization;
+            this.i = i;
+            this.uuid = uuid;
+        }
+
+        @Override
+        public void run() {
+            Message message = new Message();
+            message.what = KeyWordSwap.HANDLER_INFO_4_WHAT;
+            try {
+                message.obj = apiName.manga4Collect(uuid, i, authorization);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            myNewHandler.sendMessage(message);
+        }
+    }
+
+    private class MyRun4CheckList implements Runnable {
+
+        String a;
+
+        public MyRun4CheckList(String authorization) {
+            this.a = authorization;
+        }
+
+        @Override
+        public void run() {
+            Message message = new Message();
+            message.what = KeyWordSwap.HANDLER_INFO_6_WHAT;
+            try {
+                message.obj = apiName.mangaCollectApi(a);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            myNewHandler.sendMessage(message);
+        }
     }
 
     //背景Run
@@ -237,6 +311,28 @@ public class MangaInfoActivity extends AppCompatActivity {
         }
 
     }
+
+    private class MyRun4Check implements Runnable {
+
+        private final String authorization;
+
+        public MyRun4Check(String authorization) {
+            this.authorization = authorization;
+        }
+
+        @Override
+        public void run() {
+            Message message = new Message();
+            message.what = KeyWordSwap.HANDLER_INFO_10_WHAT;
+            try {
+                message.obj = apiName.mangaUserinfoGet(authorization);
+            } catch (IOException ignored) {
+
+            }
+            myNewHandler.sendMessage(message);
+        }
+    }
+
 
     private class MyNewHandler extends Handler {
 
@@ -296,6 +392,7 @@ public class MangaInfoActivity extends AppCompatActivity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case KeyWordSwap.HANDLER_INFO_1_WHAT:
+
                     HashMap<Integer, Object> hashMap = (HashMap<Integer, Object>) msg.obj;
                     Bitmap url = (Bitmap) hashMap.get(3);
                     List<ChipTextBean> author = (List<ChipTextBean>) hashMap.get(2);
@@ -306,6 +403,8 @@ public class MangaInfoActivity extends AppCompatActivity {
                     List<ChipTextBean> themes = (List<ChipTextBean>) hashMap.get(6);
                     String aliasName = (String) hashMap.get(7);
                     String coverUrl = (String) hashMap.get(8);
+                    mangaUUIDQ = (String) hashMap.get(9);
+
                     mangaCoverOut.setImageBitmap(url);
                     mangaCoverBack.setImageBitmap(blurBitmap);
                     mangaToolbar.setTitle(title);
@@ -325,11 +424,13 @@ public class MangaInfoActivity extends AppCompatActivity {
                     adapterThemes.setIcon(R.drawable.ic_manga_tag);
                     recyclerViewChipTheme.setAdapter(adapterThemes);
                     textTitle.setText(title);
+
                     this.title1 = title;
                     this.coverUrl1 = coverUrl;
                     setCoverUrlQ(coverUrl);
                     int bitColor = ImageUtil.getOneColor(blurBitmap);
                     int antiColor = ImageUtil.getAntiColor(bitColor);
+
                     textTitle.setTextColor(antiColor);
                     textAuthor.setTextColor(antiColor);
                     textDetail.setTextColor(antiColor);
@@ -368,7 +469,7 @@ public class MangaInfoActivity extends AppCompatActivity {
                                     intent1.putExtra(KeyWordSwap.UUID_WORD_TYPE, array1.get(finalQ)
                                             .getAsJsonObject().get("uuid").getAsString());
                                     intent1.putExtra(KeyWordSwap.TITLE_TYPE, title1);
-                                    intent1.putExtra(KeyWordSwap.COVER_URL_TYPE,coverUrl1);
+                                    intent1.putExtra(KeyWordSwap.COVER_URL_TYPE, coverUrl1);
                                     intent1.putExtra(KeyWordSwap.CHAPTER_TYPE, array1.get(finalQ)
                                             .getAsJsonObject().get("chapter").getAsString());
 
@@ -386,13 +487,45 @@ public class MangaInfoActivity extends AppCompatActivity {
                             intent1.putExtra(KeyWordSwap.UUID_WORD_TYPE, object2.get("uuid")
                                     .getAsString());
                             intent1.putExtra(KeyWordSwap.TITLE_TYPE, title1);
-                            intent1.putExtra(KeyWordSwap.COVER_URL_TYPE,coverUrl1);
+                            intent1.putExtra(KeyWordSwap.COVER_URL_TYPE, coverUrl1);
                             intent1.putExtra(KeyWordSwap.CHAPTER_TYPE, object2.get("name").getAsString());
                             startActivity(intent1);
                         });
                     }
 
                     extendedFAB.setVisibility(View.VISIBLE);
+                    break;
+                case KeyWordSwap.HANDLER_INFO_4_WHAT:
+
+                    String json2 = (String) msg.obj;
+                    Log.d("TAG_AA", "handleMessage: " + json2);
+                    break;
+
+                case KeyWordSwap.HANDLER_INFO_10_WHAT:
+                    String json = (String) msg.obj;
+                    Log.d("TAG_AA", "handleMessage: " + json);
+                    JsonObject object = JsonParser.parseString(json).getAsJsonObject();
+                    if (object.get("code").getAsInt() == 401) {
+                        btnAddToCollect.setClickable(false);
+                    }
+                    break;
+
+                case KeyWordSwap.HANDLER_INFO_6_WHAT:
+                    String json4 = (String) msg.obj;
+                    JsonObject jsonObject = JsonParser.parseString(json4)
+                            .getAsJsonObject().getAsJsonObject("results");
+                    Log.i("TAG_JSON", "handleMessage: " + jsonObject);
+                    JsonArray array1 = jsonObject.getAsJsonArray("list");
+                    for (int i = 0; i < array1.size(); i++) {
+                        JsonObject jsonObject1 = array1.get(i).getAsJsonObject().get("comic")
+                                .getAsJsonObject();
+                        String pathWordCheck = jsonObject1.get("path_word").getAsString();
+                        if (pathWordQ.equals(pathWordCheck)){
+                            btnAddToCollect.setText(getString(R.string.add_yet));
+                            btnAddToCollect.setIcon(getDrawable(R.drawable.ic_manga_add_al));
+                            btnAddToCollect.setClickable(false);
+                        }
+                    }
                     break;
 
                 case KeyWordSwap.HANDLER_ERROR:
@@ -406,6 +539,9 @@ public class MangaInfoActivity extends AppCompatActivity {
                             }).show();
                     linearProgressIndicator.setVisibility(View.GONE);
 
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + msg.what);
             }
         }
 

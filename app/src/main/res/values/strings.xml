@@ -41,4 +41,14 @@
     <string name="watching">"Watch %s "</string>
     <string name="keep_reading">Keep</string>
     <string name="data_info">The history will save in local memory</string>
+    <string name="fav">Collect to website</string>
+    <string name="add_yet">Added yet</string>
+    <string name="not_login">No login</string>
+    <string name="input_token">Input Token</string>
+    <string name="input_tips">Be sure to include and start with \"Token\"</string>
+    <string name="personal_center">Personal</string>
+    <string name="manga_collcet">Collect</string>
+    <string name="manga_browse">Browse（Only Website）</string>
+    <string name="error_non_text">No input text</string>
+    <string name="error_token_out_date">Token is out of data</string>
 </resources>

@@ -21,6 +21,7 @@
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/chip_1.xml" value="0.15756578947368421" />
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/fragment_rank.xml" value="0.5" />
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/hot_manga_layout.xml" value="0.15756578947368421" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/input_layout.xml" value="0.2" />
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/layout_manga_detail.xml" value="0.264" />
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/layout_manga_list_item.xml" value="0.2" />
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/layout_manga_rank_back.xml" value="0.3591485507246377" />
@@ -38,6 +39,9 @@
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/manga_list.xml" value="0.2" />
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/manga_reader_fragment.xml" value="0.15756578947368421" />
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/manga_reader_layout.xml" value="0.15756578947368421" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/persional_data.xml" value="0.15756578947368421" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/persional_data_in.xml" value="0.15756578947368421" />
+        <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/personal_data_in.xml" value="0.15756578947368421" />
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/rank_manga_fragment.xml" value="0.15756578947368421" />
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/rank_manga_layout.xml" value="0.176" />
         <entry key="..\:/Users/ShihCheeng/AndroidStudioProjects/CopyMangaJava/app/src/main/res/layout/search_tab.xml" value="0.15756578947368421" />

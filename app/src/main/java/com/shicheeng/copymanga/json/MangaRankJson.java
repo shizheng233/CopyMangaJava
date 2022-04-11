@@ -48,7 +48,7 @@ public class MangaRankJson {
                     stringAuthor = jsonObject1.get("author").getAsJsonArray()
                             .get(0).getAsJsonObject().get("name").getAsString() + "等";
                 }
-                Log.i("MRJ",stringAuthor);
+               // Log.i("MRJ",stringAuthor);
                 String urlImage = jsonObject1.get("cover").getAsString();
                 String pathWord = jsonObject1.get("path_word").getAsString();
                 bean.setPathWordManga(pathWord);

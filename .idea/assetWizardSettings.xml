@@ -24,9 +24,9 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\ShihCheeng\AppData\Local\Temp\baseline_history_24.xml" />
+                                                <entry key="imagePath" value="C:\Users\ShihCheeng\AppData\Local\Temp\baseline_clear_24.xml" />
                                                 <entry key="opacityPercent" value="60" />
-                                                <entry key="paddingPercent" value="10" />
+                                                <entry key="paddingPercent" value="5" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
@@ -38,7 +38,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/history/baseline_history_24.xml" />
+                                                <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/clear/baseline_clear_24.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -84,7 +84,7 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="ic_manga_history" />
+                                      <entry key="outputName" value="ic_manga_add_non" />
                                     </map>
                                   </option>
                                 </PersistentState>

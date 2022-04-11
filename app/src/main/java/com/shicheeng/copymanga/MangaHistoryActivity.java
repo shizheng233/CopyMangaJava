@@ -84,6 +84,37 @@ public class MangaHistoryActivity extends AppCompatActivity {
         materialToolbar.setNavigationOnClickListener(view -> finish());
     }
 
+    @Override
+    protected void onResume() {
+        JsonArray array1 = JsonParser.parseString(getFileSave()).getAsJsonArray();
+        List<ListBeanManga> mangaList = new ArrayList<>();
+        JsonObject object2 = array1.get(array1.size() - 1).getAsJsonObject();
+        Glide.with(this).load(object2.get("coverUrl").getAsString()).into(imageViewCover);
+        textViewHistoryTitle.setText(object2.get("nameManga").getAsString());
+        textViewChapterName.setText(getString(R.string.watching,object2.get("chapter").getAsString()));
+        for (int i = array1.size() - 2; i >= 0; i--) {
+            JsonObject object1 = array1.get(i).getAsJsonObject();
+            ListBeanManga listBeanManga = new ListBeanManga();
+            listBeanManga.setAuthorManga(object1.get("chapter").getAsString());
+            listBeanManga.setUrlCoverManga(object1.get("coverUrl").getAsString());
+            listBeanManga.setNameManga(object1.get("nameManga").getAsString());
+            listBeanManga.setPathWordManga(object1.get("pathWord").getAsString());
+            mangaList.add(listBeanManga);
+        }
+        MangaListAdapter adapter = new MangaListAdapter(mangaList);
+        GridLayoutManager layoutManager =
+                new GridLayoutManager(this,2,RecyclerView.VERTICAL,false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+        layoutClick.setOnClickListener(view -> {
+            Intent intent = new Intent();
+            intent.setClass(this,MangaInfoActivity.class);
+            intent.putExtra(KeyWordSwap.PATH_WORD_TYPE,object2.get("pathWord").getAsString());
+            startActivity(intent);
+        });
+        super.onResume();
+    }
+
     private String getFileSave() {
         FileInputStream fis = null;
         try {

@@ -44,6 +44,7 @@
         </activity>
 
         <activity android:name=".MangaHistoryActivity"/>
+        <activity android:name=".PersonalDataActivity"/>
 
     </application>
 

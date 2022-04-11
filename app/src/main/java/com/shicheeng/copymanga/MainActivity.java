@@ -7,6 +7,7 @@ import android.app.SearchableInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,15 +30,18 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.shicheeng.copymanga.adapter.BannerMangaAdapter;
 import com.shicheeng.copymanga.adapter.MangaRankOutsideAdapter;
 import com.shicheeng.copymanga.data.BannerList;
 import com.shicheeng.copymanga.data.DataBannerBean;
 import com.shicheeng.copymanga.data.MangaRankOutsideBean;
+import com.shicheeng.copymanga.dialog.LoginDialogFragment;
 import com.shicheeng.copymanga.json.MainBannerJson;
 import com.shicheeng.copymanga.view.HeadLineView;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -55,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private RunOnMain workHandler;
     private NestedScrollView scrollView;
     private ProgressBar progressBar;
+    private SharedPreferences sharedPreferences;
+
 
 
     @Override
@@ -104,14 +110,14 @@ public class MainActivity extends AppCompatActivity {
             intent.setClass(MainActivity.this, MangaListActivity.class);
             intent.putExtra(KeyWordSwap.FLAG_, KeyWordSwap.FLAG_RECOMMEND);
             startActivity(intent);
-            Log.i("SC_222", " " + "点击");
+         //   Log.i("SC_222", " " + "点击");
         });
 
         headLine_2.setOnHeadClickListener(view -> {
             Intent intent = new Intent();
             intent.setClass(MainActivity.this, RankMangaActivity.class);
             startActivity(intent);
-            Log.i("SC_222", " " + "点击");
+          //  Log.i("SC_222", " " + "点击");
         });
 
         headLine_4.setOnHeadClickListener(view -> {
@@ -119,14 +125,14 @@ public class MainActivity extends AppCompatActivity {
             intent.setClass(MainActivity.this, MangaListActivity.class);
             intent.putExtra(KeyWordSwap.FLAG_, KeyWordSwap.FLAG_NEWEST);
             startActivity(intent);
-            Log.i("SC_222", " " + "点击");
+          //  Log.i("SC_222", " " + "点击");
         });
 
         headLine_3.setOnHeadClickListener(view -> {
             Intent intent = new Intent();
             intent.setClass(MainActivity.this, HotMangaActivity.class);
             startActivity(intent);
-            Log.i("SC_222", " " + "点击");
+           // Log.i("SC_222", " " + "点击");
         });
 
         headLine_5.setOnHeadClickListener(view -> {
@@ -134,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
             intent.setClass(MainActivity.this, MangaListActivity.class);
             intent.putExtra(KeyWordSwap.FLAG_, KeyWordSwap.FLAG_FINISH);
             startActivity(intent);
-            Log.i("SC_222", " " + "点击");
+           // Log.i("SC_222", " " + "点击");
         });
 
         //连接线程
@@ -149,9 +155,18 @@ public class MainActivity extends AppCompatActivity {
         //线程启动
         thread = new Thread(new MyRunnable());
 
+        sharedPreferences = getSharedPreferences(
+                KeyWordSwap.ONLY_ONE_KEY_AUTHORIZATION,
+                Context.MODE_PRIVATE);
+        if (sharedPreferences.contains(KeyWordSwap.FILE_AUTHORIZATION)){
+            String authorization = sharedPreferences.getString(KeyWordSwap.FILE_AUTHORIZATION,null);
+            new Thread(new MyRun4Check(authorization)).start();
+        }
+
         setSupportActionBar(toolbar);
 
         toolbar.setOnMenuItemClickListener(item -> {
+
             if (item.getItemId() == R.id.about_main) {
                 Intent intent2 = new Intent();
                 intent2.setClass(MainActivity.this, AboutActivity.class);
@@ -163,10 +178,23 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
             }
-            if (item.getItemId() == R.id.id_manga_history){
+            if (item.getItemId() == R.id.id_manga_history) {
                 Intent intent2 = new Intent();
                 intent2.setClass(MainActivity.this, MangaHistoryActivity.class);
                 startActivity(intent2);
+            }
+            if (item.getItemId() == R.id.id_manga_login) {
+                if (sharedPreferences.contains(KeyWordSwap.FILE_AUTHORIZATION)) {
+                    String authorization = sharedPreferences.getString(KeyWordSwap.FILE_AUTHORIZATION, null);
+                    Intent intent = new Intent();
+                    intent.putExtra(KeyWordSwap.B_INFO, authorization);
+                    intent.putExtra(KeyWordSwap.INTENT_KEY_JSON,1);
+                    intent.setClass(MainActivity.this, PersonalDataActivity.class);
+                    startActivity(intent);
+                } else {
+                    LoginDialogFragment lg = new LoginDialogFragment();
+                    lg.show(getSupportFragmentManager(), "LOGIN_DIALOG");
+                }
             }
 
             return false;
@@ -186,15 +214,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main,menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem itemS = menu.findItem(R.id.id_manga_search);
         SearchView view = (SearchView) itemS.getActionView();
         SearchManager manager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         view.setSubmitButtonEnabled(true);
-        ComponentName componentName = new ComponentName(this,SearchOutActivity.class);
+        ComponentName componentName = new ComponentName(this, SearchOutActivity.class);
         SearchableInfo searchableInfo = manager.getSearchableInfo(componentName);
         view.setSearchableInfo(searchableInfo);
-        
+
         //view.setSearchableInfo();
 
         return super.onCreateOptionsMenu(menu);
@@ -207,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
         static void setJsonToBanner(RecyclerView recyclerView_1, List<BannerList> list) {
             List<DataBannerBean> myList_1 = new ArrayList<>();
             for (int i = 0; i < list.size(); i++) {
-                Log.i("SC_010", "" + list.size());
+             //   Log.i("SC_010", "" + list.size());
                 DataBannerBean bannerBean = new DataBannerBean();
                 JsonObject jsonObject_1 = list.get(i).getJsonObject(); //Banner组下面的各个jsonObject
                 assert jsonObject_1 != null;
@@ -232,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        /*
+        /**
          * 将JSONArray与RecyclerView连接起来
          * @array JsonObject
          *
@@ -265,11 +293,11 @@ public class MainActivity extends AppCompatActivity {
             adapter_1.setOnItemClickListener(new RecyclerViewMangaAdapter.OnItemClickListener() {
                 @Override
                 public void onItem(int position) {
-                    Log.i("SC_016", " " + position);
+                  //  Log.i("SC_016", " " + position);
                     Intent intent = new Intent();
                     intent.setClass(recyclerView_2.getContext(), MangaInfoActivity.class);
                     intent.putExtra(KeyWordSwap.PATH_WORD_TYPE, myList_1.get(position).getPathWordManga());
-                    Log.i("SC_!001", " " + myList_1.get(position).getPathWordManga());
+                 //   Log.i("SC_!001", " " + myList_1.get(position).getPathWordManga());
                     recyclerView_2.getContext().startActivity(intent);
                 }
             });
@@ -277,11 +305,10 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        /*
+        /**
          * 将JSONArray与RecyclerView连接起来(类型二)
          * @array JsonObject
          * */
-
         static void setJsonToRec2(RecyclerView rec_2, JsonArray array) {
             List<ListBeanManga> myList_1 = new ArrayList<>();
             for (int i = 0; i < array.size(); i++) {
@@ -310,18 +337,18 @@ public class MainActivity extends AppCompatActivity {
             adapter_2.setOnItemClickListener(new RecyclerViewMangaAdapter.OnItemClickListener() {
                 @Override
                 public void onItem(int position) {
-                    Log.i("SC_014", " " + position);
+                  //  Log.i("SC_014", " " + position);
                     Intent intent = new Intent();
                     intent.setClass(rec_2.getContext(), MangaInfoActivity.class);
                     intent.putExtra(KeyWordSwap.PATH_WORD_TYPE, myList_1.get(position).getPathWordManga());
-                    Log.i("SC_!001", " " + myList_1.get(position).getPathWordManga());
+                   // Log.i("SC_!001", " " + myList_1.get(position).getPathWordManga());
                     rec_2.getContext().startActivity(intent);
                 }
             });
             rec_2.setAdapter(adapter_2);
         }
 
-        /*
+        /**
          * 将哈希表和recyclerView连接起来
          * @map HashMap
          *
@@ -359,6 +386,27 @@ public class MainActivity extends AppCompatActivity {
                 message1.what = KeyWordSwap.HANDLER_ERROR;
                 workHandler.sendMessage(message1);
             }
+        }
+    }
+
+    private class MyRun4Check implements Runnable{
+
+        private String authorization;
+
+        public MyRun4Check(String authorization){
+            this.authorization = authorization;
+        }
+
+        @Override
+        public void run() {
+            Message message = new Message();
+            message.what = KeyWordSwap.HANDLER_INFO_10_WHAT;
+            try {
+                message.obj = apiName.mangaUserinfoGet(authorization);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            workHandler.handleMessage(message);
         }
     }
 
@@ -429,6 +477,21 @@ public class MainActivity extends AppCompatActivity {
 
                 bar.setVisibility(View.GONE);
             }
+
+            if (msg.what == KeyWordSwap.HANDLER_INFO_10_WHAT){
+                String json = (String) msg.obj;
+                JsonObject object = JsonParser.parseString(json).getAsJsonObject();
+               // Log.d("TAG", "handleMessage: "+object);
+                if (object.get("code").getAsInt() == 401){
+                    Snackbar.make(scrollView, R.string.error_token_out_date,
+                            Snackbar.LENGTH_INDEFINITE)
+                            .show();
+                    sharedPreferences.edit().remove(KeyWordSwap.FILE_AUTHORIZATION).apply();
+                    LoginDialogFragment lg = new LoginDialogFragment();
+                    lg.show(getSupportFragmentManager(), "LOGIN_DIALOG");
+                }
+            }
+
             if (msg.what == KeyWordSwap.HANDLER_ERROR) {
                 thread.interrupt();
                 Snackbar.make(scrollView, R.string.error, Snackbar.LENGTH_INDEFINITE)

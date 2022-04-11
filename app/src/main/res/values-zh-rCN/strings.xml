@@ -38,4 +38,14 @@
     <string name="watching">"看到 %s "</string>
     <string name="keep_reading">继续观看</string>
     <string name="data_info">历史数据将会保存在本地</string>
+    <string name="fav">收藏至网站</string>
+    <string name="add_yet">已添加</string>
+    <string name="not_login">没有登录</string>
+    <string name="input_token">输入 Token</string>
+    <string name="input_tips">一定要包含 “Token” 并且以它开头</string>
+    <string name="personal_center">个人中心</string>
+    <string name="manga_collcet">我的收藏</string>
+    <string name="manga_browse">我的浏览（不支持同步）</string>
+    <string name="error_non_text">没有输入文字</string>
+    <string name="error_token_out_date">Token过期，请重新输入</string>
 </resources>

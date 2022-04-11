@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardElevation="4dp"
+        app:strokeWidth="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+
+            <ImageView
+                android:id="@+id/img_avatar_person"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_margin="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_margin="12dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/manga"
+                    android:layout_marginEnd="4dp"
+                    android:id="@+id/text_personal_nickname"
+                    android:textSize="25sp"
+                    android:maxLines="1"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:id="@+id/text_personal_username"
+                    android:maxLines="1"
+                    android:text="@string/manga"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.shicheeng.copymanga.view.HeadLineView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:headTitle="@string/manga_collcet"
+        android:id="@+id/collect_head_title"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/collect_recycler"/>
+
+    <com.shicheeng.copymanga.view.HeadLineView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:headTitle="@string/manga_browse"
+        android:id="@+id/browse_head_title"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/browse_recycler"/>
+
+</LinearLayout>

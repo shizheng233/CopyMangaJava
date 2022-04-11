@@ -32,7 +32,13 @@ public class KeyWordSwap {
     public static final String FLAG_ = "FLAG";
     public static final String NON_JSON = "NON_JSON";
     public static final String FILE_NAME = "myHistory.json";
+    public static final String FILE_AUTHORIZATION = "authorization";
+    public static final String ONLY_ONE_KEY_AUTHORIZATION = "com.shihcheeng.copymanga.ONE_KEY";
     public static final String COVER_URL_TYPE = "url";
+    public static final String A_INFO = "IN JUMP";
+    public static final String B_INFO = "ON JUMP";
+    public static final String INTENT_KEY_JSON = "INTENT_KEY_JSON";
+    public static final String INTENT_KEY_STRING = "INTENT_KEY_STRING";
 
 
 }

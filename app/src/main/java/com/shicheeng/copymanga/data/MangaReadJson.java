@@ -43,6 +43,8 @@ public class MangaReadJson {
 
     }
 
+
+
     public static String getNextChapterName(String path_word, String nextUuid) throws IOException {
         String url = apiName.mangaPhotoApi(path_word, nextUuid);
 
