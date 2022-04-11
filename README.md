@@ -19,11 +19,11 @@
 如图所示
 ![s1](sreenshots/sss.png)
 一定要连token一起输入。
+
 ## 截屏
 
-<frgure>
-<img src = "sreenshots/1.png" width="200"/> <img src = "sreenshots/2.png" width="200"/> <img src = "sreenshots/3.png" width="200"/> <img src = "sreenshots/4.png" width="200"/> <img src = "sreenshots/5.png" width="200"/> <img src = "sreenshots/6.png" width="200"/> <img src = "sreenshots/7.png" width="200"/> <img src = "sreenshots/8.png" width="200"/> <img src = "sreenshots/9.png" width="200"/>
-</frgure>
+![all](sreenshots/allinone.png)
+[查看](https://github.com/shizheng233/CopyMangaJava/tree/main/sreenshots)所有截图
 
 
 
