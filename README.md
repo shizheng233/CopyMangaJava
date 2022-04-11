@@ -12,6 +12,13 @@
 * [fumiama/copymanga](https://github.com/fumiama/copymanga)
 * [misaka10843/copymanga-downloader](https://github.com/misaka10843/copymanga-downloader)
 
+## 登录
+
+如果需要登录，那么可能需要在[官网](http://www.copymanga.com)上找到Token。
+使用网页浏览器自带的开发者工具（F12）。
+如图所示
+![s1](sreenshots/sss.png)
+一定要连token一起输入。
 ## 截屏
 
 <frgure>
