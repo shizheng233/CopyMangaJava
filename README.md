@@ -1,42 +1,31 @@
 # CopyMangaJava
- A third-part Android App project of CopyManga
- 
- 一个第三方的拷贝漫画app M3风格
+一个第三方的拷贝漫画带有M3风格，支持动态主题。该App已通过Kotlin来实现，只是标题没改。
 
-这个app,我本来是想使用kotlin写的，但是我意外的发现要习惯kotlin的语法要很长一段时间，于是在一段时间考虑后，我还是使用了Java。
+希望大家可以多使用官方App，我写这个App只是用来练习。这个里面的代码都很简单，即使以后也可以给初学者一定的帮助。但我并不推荐您来查看我的代码。如果您想要学习的话，Kotatsu 和 Tachiyomi的代码完全够用。多看几遍就可以弄懂。
 
-目前，该app可以查看漫画和筛选漫画，筛选功能在**热门**下。之所以在热门下，是因为官方网站也是这么做的。后续将会解决掉 **~~下载~~** 和 **~~阅读记录~~** 和 **登录**。
+下载功能只能下载，在联网加载的时候会加载本地下载的漫画，但是我还没完成离线观看的逻辑。下载目录在 _Android/com.shicheeng.copymanga/Downloads_ 下面，您可以自己手动复制到其他地方下观看。
 
+**注意：请务必卸载以前的那个早期版本**
 ## 灵感来源
 
 * [fumiama/copymanga](https://github.com/fumiama/copymanga)
 * [misaka10843/copymanga-downloader](https://github.com/misaka10843/copymanga-downloader)
-
-## 登录
-
-如果需要登录，那么可能需要在[官网](http://www.copymanga.com)上找到Token。
-使用网页浏览器自带的开发者工具（F12）。
-如图所示
-![s1](sreenshots/sss.png)
-一定要连token一起输入。
+* [tachiyomi](https://github.com/tachiyomiorg/tachiyomi)
+* [kotatsu](https://github.com/KotatsuApp/Kotatsu)
 
 ## 截屏
 
-![all](sreenshots/allinone.png)
-[查看](https://github.com/shizheng233/CopyMangaJava/tree/main/sreenshots)所有截图
-
-
+![all](sreenshots/all_in_one.png)
+您可以[查看](https://github.com/shizheng233/CopyMangaJava/tree/main/sreenshots)所有截图
 
 ## 关于Api
 api 来源于官方app API
 
 ## 后续功能
-为啥会很慢，因为我很懒。这个里面的代码都很简单，即使以后也可以给初学者一定的帮助。
-* 下载
+* 下载（仅仅停留在初步阶段）
 * ~~记录位置~~（将历史记录保存在本地）
 * 登录
-* ~~搜索~~(已完成，但是只能显示前16个结果，等有个机会再改进下)
-* 其他
+* ~~搜索~~(已完成)
 
 ## License
 MIT License
