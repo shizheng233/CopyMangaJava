@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.shicheeng.copymanga">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
+        android:name=".MyApp"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher_copy"
+        android:enableOnBackInvokedCallback="true"
+        android:icon="@mipmap/ic_copy"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_copy_round"
+        android:roundIcon="@mipmap/ic_copy"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:targetApi="tiramisu">
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -20,32 +23,12 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/search_view_1" />
         </activity>
-        <activity android:name=".MangaInfoActivity" />
-        <activity android:name=".MangaListActivity" />
-        <activity android:name=".HotMangaActivity" />
-        <activity android:name=".RankMangaActivity" />
         <activity android:name=".MangaReaderActivity" />
-        <activity
-            android:name=".AboutActivity"
-            android:theme="@style/AppTheme.About" />
-        <activity
-            android:name=".SearchOutActivity"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/search_view_1" />
-        </activity>
 
-        <activity android:name=".MangaHistoryActivity"/>
-        <activity android:name=".PersonalDataActivity"/>
-
+        <service
+            android:name=".server.DownloadService"
+            android:exported="false" />
     </application>
 
 </manifest>

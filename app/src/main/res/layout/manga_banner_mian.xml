@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp">
+    android:layout_margin="12dp"
+    android:orientation="vertical"
+    tools:viewBindingIgnore="true">
 
     <com.google.android.material.card.MaterialCardView
+        style="@style/Widget.Material3.CardView.Filled"
         android:layout_width="match_parent"
         android:layout_height="190dp"
         android:layout_marginStart="8dp"
-        android:layout_marginBottom="2dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        app:cardElevation="4dp"
-        app:cardCornerRadius="4dp"
-        app:strokeWidth="0dp">
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="2dp">
 
         <ImageView
+            android:id="@+id/banner_pic"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:id="@+id/banner_pic"/>
+            android:contentDescription="@string/image_content" />
 
 
     </com.google.android.material.card.MaterialCardView>
 
     <TextView
+        android:id="@+id/brief_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
         android:layout_marginStart="8dp"
-        android:textAppearance="?textAppearanceBody2"
-        android:textColor="?android:attr/textColorSecondary"
-        android:id="@+id/brief_text"
         android:ellipsize="end"
-        android:maxLines="1"/>
+        android:maxLines="1"
+        android:text="@string/app_name"
+        android:textAppearance="?textAppearanceBody2"
+        android:textColor="?android:attr/textColorSecondary" />
 
 </LinearLayout>

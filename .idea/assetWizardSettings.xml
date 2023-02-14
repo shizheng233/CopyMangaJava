@@ -24,9 +24,9 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\ShihCheeng\AppData\Local\Temp\baseline_clear_24.xml" />
+                                                <entry key="imagePath" value="C:\Users\ShihCheeng\AppData\Local\Temp\baseline_save_24.xml" />
                                                 <entry key="opacityPercent" value="60" />
-                                                <entry key="paddingPercent" value="5" />
+                                                <entry key="paddingPercent" value="10" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
@@ -38,7 +38,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/clear/baseline_clear_24.xml" />
+                                                <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/save/baseline_save_24.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -84,7 +84,7 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="ic_manga_add_non" />
+                                      <entry key="outputName" value="ic_save_manga" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -114,9 +114,8 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\ShihCheeng" />
-                                                <entry key="scalingPercent" value="77" />
-                                                <entry key="trimmed" value="true" />
+                                                <entry key="imagePath" value="C:\Users\ShihCheeng\Desktop\开发\xuelunyan.png" />
+                                                <entry key="scalingPercent" value="56" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -151,7 +150,7 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="outputName" value="ic_launcher_copy" />
+                                      <entry key="outputName" value="ic_copy" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -337,7 +336,39 @@
         </entry>
         <entry key="vectorWizard">
           <value>
-            <PersistentState />
+            <PersistentState>
+              <option name="children">
+                <map>
+                  <entry key="vectorAssetStep">
+                    <value>
+                      <PersistentState>
+                        <option name="children">
+                          <map>
+                            <entry key="clipartAsset">
+                              <value>
+                                <PersistentState>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialiconsoutlined/warning/outline_warning_24.xml" />
+                                    </map>
+                                  </option>
+                                </PersistentState>
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                        <option name="values">
+                          <map>
+                            <entry key="outputName" value="ic_outline_warning_24" />
+                            <entry key="sourceFile" value="C:\Users\ShihCheeng\AndroidStudioProjects\CopyMangaJava" />
+                          </map>
+                        </option>
+                      </PersistentState>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </PersistentState>
           </value>
         </entry>
       </map>

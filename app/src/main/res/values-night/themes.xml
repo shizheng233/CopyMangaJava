@@ -26,23 +26,27 @@
         <item name="colorOutline">@color/md_theme_dark_outline</item>
         <item name="colorOnSurfaceInverse">@color/md_theme_dark_inverseOnSurface</item>
         <item name="colorSurfaceInverse">@color/md_theme_dark_inverseSurface</item>
-        <item name="colorPrimaryInverse">@color/md_theme_dark_primaryInverse</item>
-        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="barColor">@color/black</item>
         <item name="textColorMe">@color/white</item>
-        <item name="android:navigationBarColor">?colorSurface</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="dialogPreferenceStyle">@style/Widget.CopyManga.Dialog.Perf</item>
+        <item name="preferenceStyle">@style/Widget.CopyManga.Perf</item>
+        <item name="switchPreferenceCompatStyle">@style/Widget.CopyManga.Switch.Perf</item>
+        <item name="alertDialogTheme">@style/AppTheme.MyOldAlertDialog</item>
+        <item name="chipStyle">@style/Widget.CopyManga.Chip</item>
     </style>
 
     <style name="AppTheme.About" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">?colorSurface</item>
         <item name="colorPrimaryDark">?colorSecondary</item>
         <item name="colorAccent">?colorPrimary</item>
-
         <item name="android:statusBarColor">?attr/colorSurface</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="aboutPageNavigationIcon">@drawable/ic_manga_next_dark</item>
 
     </style>
+
+
 
 </resources>

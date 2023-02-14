@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Widget.CopyManga.Switch.Perf" parent="Preference.SwitchPreferenceCompat.Material">
+        <item name="widgetLayout">@layout/layout_widget_switch_pref</item>
+    </style>
+
+    <style name="Widget.CopyManga.Dialog.Perf" parent="Preference.DialogPreference.Material">
+
+    </style>
+
+    <style name="Widget.CopyManga.Perf" parent="Preference.Material" />
+
+    <style name="RoundStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="AppTheme.MyOldAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="dialogCornerRadius">28dp</item>
+        <item name="cornerFamily">rounded</item>
+        <item name="android:colorBackground">?attr/colorSurface</item>
+        <item name="android:layout">@layout/m3_alert_dialog</item>
+    </style>
+
+    <style name="Widget.CopyManga.ToggleButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:checkable">true</item>
+        <item name="android:textAlignment">textStart</item>
+        <item name="iconPadding">16dp</item>
+    </style>
+
+    <style name="Widget.CopyManga.ToggleButton.Vertical">
+        <item name="android:textAlignment">center</item>
+        <item name="iconPadding">2dp</item>
+        <item name="android:singleLine">false</item>
+        <item name="android:lines">2</item>
+        <item name="android:maxLines">2</item>
+        <item name="iconGravity">top</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingStart">6dp</item>
+        <item name="android:paddingEnd">6dp</item>
+        <item name="android:elegantTextHeight">false</item>
+        <item name="shapeAppearance">?shapeAppearanceCornerMedium</item>
+    </style>
+
+    <style name="Widget.CopyManga.Chip" parent="Widget.Material3.Chip.Suggestion">
+        <item name="chipSurfaceColor">?attr/colorSurface</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="strokeColor">?attr/colorOutline</item>
+        <item name="rippleColor">?attr/colorControlHighlight</item>
+
+        <!-- Custom chip states -->
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+
+        <!-- Smaller text/height -->
+        <item name="chipMinHeight">28dp</item>
+
+        <!-- Collapse horizontal margin -->
+        <item name="chipMinTouchTargetSize">28dp</item>
+    </style>
+</resources>

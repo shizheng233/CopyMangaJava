@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: com.mikepenz:aboutlibraries-core-android-debug:10.5.2@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/d0c1f39fa873a4dc7182f27856ee9b76/transformed/aboutlibraries-core-debug/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/d0c1f39fa873a4dc7182f27856ee9b76/transformed/aboutlibraries-core-debug/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mikepenz/aboutlibraries-core-android-debug/10.5.2/66841d233bf4a7d4291b4d602fc8c1e007b67c1f/aboutlibraries-core-android-debug-10.5.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mikepenz/aboutlibraries-core-android-debug/10.5.2/536a8554a433a6bdcca6b1e8a2ed887c82a7e407/aboutlibraries-core-android-debug-10.5.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

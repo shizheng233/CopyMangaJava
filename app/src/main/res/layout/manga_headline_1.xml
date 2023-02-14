@@ -18,7 +18,7 @@
         android:maxLines="1"
         android:ellipsize="end"
         android:text="@string/app_name"
-        android:textAppearance="?textAppearanceHeadline5"/>
+        android:textAppearance="?textAppearanceTitleLarge"/>
 
     <ImageView
         android:layout_width="wrap_content"

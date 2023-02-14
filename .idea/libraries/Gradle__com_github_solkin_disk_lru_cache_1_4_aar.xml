@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.solkin:disk-lru-cache:1.4@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/b1b26799aacbf9c1cefe35f4f0249034/transformed/disk-lru-cache-1.4/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/b1b26799aacbf9c1cefe35f4f0249034/transformed/disk-lru-cache-1.4/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.solkin/disk-lru-cache/1.4/b9088d64cc20b367947c1dd7d05d956f5360cbba/disk-lru-cache-1.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

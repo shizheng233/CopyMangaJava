@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="orientation_array">
+        <item>@string/japanese_r_to_l</item>
+        <item>@string/korea_chinese_top_to_bottom</item>
+        <item>@string/manga_mode_l_t_r</item>
+    </string-array>
+
+    <integer-array name="orientation_array_value">
+        <item>@string/japanese_r_to_l</item>
+        <item>@string/korea_chinese_top_to_bottom</item>
+        <item>@string/manga_mode_l_t_r</item>
+    </integer-array>
+
+</resources>

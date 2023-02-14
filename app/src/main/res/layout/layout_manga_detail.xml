@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -9,14 +8,11 @@
 
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="190dp"
-        android:layout_height="260dp"
+        style="@style/Widget.Material3.CardView.Filled"
+        android:layout_width="165dp"
+        android:layout_height="250dp"
         android:layout_gravity="center"
-        android:layout_margin="4dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp"
-        app:strokeColor="@color/stroke_color"
-        app:strokeWidth="1dp">
+        android:layout_margin="4dp">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -40,8 +36,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:orientation="vertical"
-        android:layout_marginStart="4dp">
+        android:layout_marginStart="4dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/title_manga_item"
@@ -49,9 +45,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:ellipsize="end"
-            android:textSize="15sp"
             android:maxLines="1"
-            android:text="@string/app_name" />
+            android:text="@string/app_name"
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/author_manga_item"

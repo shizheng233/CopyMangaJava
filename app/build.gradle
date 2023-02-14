@@ -1,24 +1,32 @@
 plugins {
     id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'org.jetbrains.kotlin.plugin.parcelize'
+    id 'androidx.navigation.safeargs'
+    id 'com.mikepenz.aboutlibraries.plugin'
+
 }
 
 android {
 
-    compileSdk 32
+
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.shicheeng.copymanga"
         minSdk 26
-        targetSdk 32
+        targetSdk 33
         versionCode 1
-        versionName "1.0.2"
+        versionName "1.0.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -26,27 +34,91 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    viewBinding {
+        enabled = true
+    }
+    namespace 'com.shicheeng.copymanga'
 }
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.6.0-beta01'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    implementation 'com.google.code.gson:gson:2.9.0'
-    implementation 'com.drakeet.about:about:2.5.0'
-    implementation 'com.drakeet.multitype:multitype:4.3.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.code.gson:gson:2.9.1'
     // define a BOM and its version
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.3"))
 
-    implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
+
+    //SSIV
+    implementation 'com.github.KotatsuApp:subsampling-scale-image-view:1b19231b2f'
+
+    //Okhttp
     // define any required OkHttp artifacts without version
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
-    implementation 'com.github.bumptech.glide:glide:4.13.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
+    implementation 'com.squareup.okio:okio:3.3.0'
+
+    //Glide
+    implementation 'com.github.bumptech.glide:glide:4.13.2'
+    implementation 'androidx.work:work-runtime-ktx:2.7.1'
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.core:core-ktx:+'
+    implementation 'androidx.core:core-ktx:+'
+    implementation 'androidx.core:core-ktx:+'
+
+    kapt 'com.github.bumptech.glide:compiler:4.13.2'
+
+
+    def lifecycle_version = "2.6.0-alpha03"
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    // ViewModel utilities for Compose
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    //Service
+    implementation "androidx.lifecycle:lifecycle-service:$lifecycle_version"
+    implementation "androidx.fragment:fragment-ktx:1.5.5"
+    implementation "androidx.activity:activity-ktx:1.6.1"
+    implementation 'androidx.palette:palette:1.0.0'
+
+    //Cache
+    implementation 'com.github.solkin:disk-lru-cache:1.4'
+
+    // For control over item selection of both touch and mouse driven selection
+    implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
+
+    //Navigation
+    def nav_version = "2.5.3"
+    // Kotlin
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
+    //Paging3
+    def paging_version = "3.1.1"
+    implementation "androidx.paging:paging-runtime:$paging_version"
+
+    def fragment_version = "1.5.5"
+    // Kotlin
+    implementation "androidx.fragment:fragment-ktx:$fragment_version"
+    // Testing Fragments in Isolation
+    debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
+
+    //Room
+    implementation "androidx.room:room-ktx:2.4.3"
+    kapt "androidx.room:room-compiler:2.4.3"
+    androidTestImplementation "androidx.room:room-testing:2.4.3"
+
+    //AboutLibrary
+    def latestAboutLibsRelease = "10.5.2"
+    implementation "com.mikepenz:aboutlibraries-core:$latestAboutLibsRelease"
+    implementation "com.mikepenz:aboutlibraries:${latestAboutLibsRelease}"
+
+    //Android Pref
+    implementation 'androidx.preference:preference-ktx:1.2.0'
 
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }

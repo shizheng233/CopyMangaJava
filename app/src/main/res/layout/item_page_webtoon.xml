@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.shicheeng.copymanga.fm.reader.webtoon.WebtoonImageView
+        android:id="@+id/biv_pager_webtoon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:panEnabled="false"
+        app:quickScaleEnabled="false"
+        app:zoomEnabled="false"/>
+
+    <include layout="@layout/layout_image_load" />
+
+    <include
+        android:id="@+id/error_layout"
+        layout="@layout/layout_error" />
+
+</FrameLayout>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/manga_detail_info_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:divider="?colorOutline"
+    android:dividerPadding="4dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:showDividers="middle">
+
+    <TextView
+        android:id="@+id/manga_detail_info_state"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawablePadding="4dp"
+        android:gravity="center_horizontal"
+        android:padding="4dp"
+        android:textSize="12sp"
+        app:drawableTopCompat="@drawable/ic_baseline_loop"
+        tools:text="连载中" />
+
+    <TextView
+        android:id="@+id/manga_detail_info_region"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawablePadding="4dp"
+        android:gravity="center_horizontal"
+        android:padding="4dp"
+        android:textSize="12sp"
+        app:drawableTopCompat="@drawable/ic_baseline_region"
+        tools:text="日本" />
+
+    <TextView
+        android:id="@+id/manga_detail_info_chapter_size"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawablePadding="4dp"
+        android:gravity="center_horizontal"
+        android:padding="4dp"
+        android:textSize="12sp"
+        app:drawableTopCompat="@drawable/ic_outline_page"
+        tools:text="共124章" />
+
+
+    <TextView
+        android:id="@+id/manga_detail_info_popular"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawablePadding="4dp"
+        android:gravity="center_horizontal"
+        android:padding="4dp"
+        android:textSize="12sp"
+        app:drawableTopCompat="@drawable/ic_baseline_hot"
+        tools:text="23.5W" />
+
+
+</LinearLayout>

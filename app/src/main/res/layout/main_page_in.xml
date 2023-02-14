@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-    <androidx.recyclerview.widget.RecyclerView
+    <com.shicheeng.copymanga.view.MyRecyclerView
         android:id="@+id/recycler_view_manga_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,7 +19,7 @@
         app:headTitle="@string/recommend"
         tools:ignore="MissingConstraints" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.shicheeng.copymanga.view.MyRecyclerView
         android:id="@+id/recycler_view_manga_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -31,10 +30,16 @@
         android:layout_height="wrap_content"
         app:headTitle="@string/comic_rank" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_manga_3"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/rank_tab_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/rank_view_pager_1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <com.shicheeng.copymanga.view.HeadLineView
         android:id="@+id/headline_3"
@@ -42,7 +47,7 @@
         android:layout_height="wrap_content"
         app:headTitle="@string/hot_manga" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.shicheeng.copymanga.view.MyRecyclerView
         android:id="@+id/recycler_view_manga_4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -50,13 +55,13 @@
     <com.shicheeng.copymanga.view.HeadLineView
         android:id="@+id/headline_4"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:headTitle="@string/new_manga" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.shicheeng.copymanga.view.MyRecyclerView
         android:id="@+id/recycler_view_manga_5"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
 
     <com.shicheeng.copymanga.view.HeadLineView
         android:id="@+id/headline_5"
@@ -64,7 +69,7 @@
         android:layout_height="wrap_content"
         app:headTitle="@string/finish_manga" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.shicheeng.copymanga.view.MyRecyclerView
         android:id="@+id/recycler_view_manga_6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

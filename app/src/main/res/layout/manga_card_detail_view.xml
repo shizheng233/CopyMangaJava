@@ -1,168 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/small_cover"
+        android:layout_width="120dp"
+        android:layout_height="170dp"
+        android:layout_gravity="bottom"
         android:layout_margin="16dp"
-        android:text="@string/manga"
-        android:textSize="15sp" />
+        android:contentDescription="@string/todo"
+        android:scaleType="centerCrop"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearance="@style/RoundStyle"
+        app:strokeColor="?colorOnSecondary"
+        app:strokeWidth="1dp"
+        tools:ignore="ImageContrastCheck" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_manga"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:checkable="true"
-        android:clickable="true"
-        android:focusable="true"
-        app:cardElevation="4dp"
-        app:strokeWidth="0dp">
-
-        <ImageView
-            android:id="@+id/background_cover"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/todo"
-            android:fitsSystemWindows="true"
-            android:scaleType="centerCrop"
-            tools:ignore="ImageContrastCheck" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="horizontal">
-
-
-            <ImageView
-                android:id="@+id/small_cover"
-                android:layout_width="120dp"
-                android:layout_height="170dp"
-                android:layout_gravity="bottom"
-                android:layout_margin="16dp"
-                android:contentDescription="@string/todo"
-                android:scaleType="centerCrop"
-                tools:ignore="ImageContrastCheck" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="17dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="17dp"
-                android:orientation="vertical">
-
-
-                <TextView
-                    android:id="@+id/mangaTitleText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top"
-                    android:maxLines="3"
-                    android:layout_marginEnd="4dp"
-                    android:ellipsize="end"
-                    android:text="@string/manga"
-                    android:textAppearance="?textAppearanceHeadline6" />
-
-                <TextView
-                    android:id="@+id/mangaAuthorText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginEnd="8dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="@string/manga"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/mangaDetailText"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_gravity="bottom"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="8dp"
-                    android:ellipsize="end"
-                    android:layout_weight="1"
-                    android:maxLines="1"
-                    android:text="@string/manga" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_add_to_collection"
-                    style="@style/Widget.Material3.Button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginEnd="8dp"
-                    android:text="@string/fav"
-                    app:icon="@drawable/ic_manga_add_to" />
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-
-    </com.google.android.material.card.MaterialCardView>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/mangaTitleText"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/author"
-        android:textSize="15sp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_manga_info_chip"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp" />
+        android:layout_gravity="top"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:textAppearance="?textAppearanceHeadline6"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@+id/small_cover"
+        app:layout_constraintTop_toTopOf="@+id/small_cover"
+        tools:text="我的病弱吸血鬼" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/mangaAuthorText"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/theme"
-        android:textSize="15sp" />
+        android:layout_gravity="top"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:textSize="15sp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@+id/small_cover"
+        app:layout_constraintTop_toBottomOf="@+id/mangaTitleText"
+        tools:text="我的病弱吸血鬼,我的病弱吸血鬼" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <TextView
+        android:id="@+id/manga_detail_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:maxLines="3"
+        app:layout_constraintTop_toBottomOf="@id/manga_detail_bar"
+        tools:text="你會成為…我的公主吧？" />
+
+
+    <TextView
+        android:id="@+id/manga_info_author"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="?colorTertiary"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/mangaAuthorText"
+        app:layout_constraintStart_toEndOf="@+id/small_cover"
+        app:layout_constraintStart_toStartOf="@+id/mangaAuthorText"
+        app:layout_constraintTop_toBottomOf="@+id/mangaAuthorText"
+        tools:text="厘のミキ" />
+
+    <TextView
+        android:id="@+id/manga_detail_last_update"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="@+id/manga_info_author"
+        app:layout_constraintStart_toStartOf="@+id/manga_info_author"
+        app:layout_constraintTop_toBottomOf="@+id/manga_info_author"
+        tools:text="最后更新：2002-12-21" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/manga_detail_barrier_header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:barrierMargin="8dp"
+        app:constraint_referenced_ids="small_cover,manga_detail_last_update" />
+
+    <include
+        android:id="@+id/manga_detail_bar"
+        layout="@layout/layout_manga_detail_sheet"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/manga_detail_barrier_header" />
+
+
+    <com.google.android.material.chip.ChipGroup
         android:id="@+id/recycler_manga_info_chip_theme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp" />
-
-    <TextView
-        android:id="@+id/text_chapter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="@string/chapter"
-        android:textSize="15sp" />
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/manga_detail_desc" />
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_manga_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        tools:ignore="MissingConstraints" />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_manga_info_chip_theme" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

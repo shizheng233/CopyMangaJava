@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/pref_main">
+
+        <com.shicheeng.copymanga.dialog.ListPreferenceXTheme
+            app:entries="@array/orientation_array"
+            app:key="pref_orientation_key"
+            app:title="@string/pref_orintation"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="pref_is_use_foreign_api"
+            app:summary="@string/use_forgin_region_summary"
+            app:title="@string/use_forgin_region" />
+
+        <Preference
+            app:iconSpaceReserved="true"
+            app:layout="@layout/layout_setting_wraning_region"
+            app:selectable="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/system">
+
+        <Preference
+            app:key="key_clear_cache"
+            app:title="@string/clear_cache" />
+
+        <Preference
+            app:key="key_clear_cache_pager"
+            app:title="@string/clear_pager_cache" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/download_manga">
+
+        <Preference
+            app:key="key_see_download_manga"
+            app:summary="@string/see_the_download"
+            app:title="@string/download_manga" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/perf_about">
+
+        <Preference
+            app:key="app_project_website"
+            app:summary="@string/pref_app_summary"
+            app:title="@string/pref_app" />
+
+        <Preference
+            app:icon="@drawable/ic_manga_info_main"
+            app:key="app_info"
+            app:summary="@string/pref_about_summary"
+            app:title="@string/about" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

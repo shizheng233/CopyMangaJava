@@ -1,16 +1,11 @@
 package com.shicheeng.copymanga.adapter;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.shicheeng.copymanga.R;
 import com.shicheeng.copymanga.data.MangaSortBean;
@@ -20,7 +15,8 @@ import java.util.List;
 public class PopMenuAdapter extends BaseAdapter {
 
     List<MangaSortBean> beans;
-    public PopMenuAdapter(List<MangaSortBean> list){
+
+    public PopMenuAdapter(List<MangaSortBean> list) {
         this.beans = list;
     }
 
@@ -44,8 +40,8 @@ public class PopMenuAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
 
-         view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.list_popup_window_item,viewGroup,false);
+        view = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.list_popup_window_item, viewGroup, false);
         TextView textView = view.findViewById(R.id.text_list_item);
         textView.setText(beans.get(i).getPathName());
 

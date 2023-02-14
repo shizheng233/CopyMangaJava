@@ -18,13 +18,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.shicheeng.copymanga.KeyWordSwap;
-import com.shicheeng.copymanga.PersonalDataActivity;
+import com.shicheeng.copymanga.util.KeyWordSwap;
 import com.shicheeng.copymanga.R;
-import com.shicheeng.copymanga.apiName;
+import com.shicheeng.copymanga.util.ApiName;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -74,7 +72,7 @@ public class LoginDialogFragment extends BottomSheetDialogFragment {
             Message message = new Message();
             message.what = KeyWordSwap.HANDLER_INFO_1_WHAT;
             try {
-                message.obj = apiName.mangaUserinfoGet(authorization);
+                message.obj = ApiName.mangaUserinfoGet(authorization);
                 handler.sendMessage(message);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -93,7 +91,7 @@ public class LoginDialogFragment extends BottomSheetDialogFragment {
                 JsonObject jsonObject = JsonParser.parseString(s).getAsJsonObject();
                 if (jsonObject.get("code").getAsInt() == 200){
                     Intent intent = new Intent();
-                    intent.setClass(getContext(), PersonalDataActivity.class);
+                    //intent.setClass(getContext(), PersonalDataActivity.class);
                     intent.putExtra(KeyWordSwap.A_INFO,jsonObject.toString());
                     intent.putExtra(KeyWordSwap.INTENT_KEY_JSON,0);
                     intent.putExtra(KeyWordSwap.B_INFO,authorization);

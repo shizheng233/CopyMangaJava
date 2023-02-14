@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/manga_reader_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".MangaReaderActivity">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/manga_reader_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/manga_reader_circular_progress_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center"
+        android:layout_marginTop="24dp"
+        android:text="@string/in_loading_next_chapter"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/manga_reader_page_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="24dp"
+        android:elevation="1dp"
+        android:text="@string/in_loading_next_chapter"
+        android:textColor="@android:color/white" />
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar_reader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior"
+        tools:ignore="MissingConstraints">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/manga_reader_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorSurface"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="?textColorMe" />
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/manga_reader_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/manga_reader_nav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            android:layoutDirection="rtl"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/manga_reader_previous"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/above_chapter"
+                android:tooltipText="@string/above_chapter"
+                app:srcCompat="@drawable/ic_skip_previous_24"
+                app:tint="?colorOnSurface" />
+
+            <LinearLayout
+                android:id="@+id/manga_reader_seeker"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/manga_reader_chapter_now_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:minWidth="32dp"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="15sp"
+                    tools:text="1" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/manga_reader_slider"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/slider_bar_cd"
+                    android:maxHeight="?attr/actionBarSize"
+                    android:minHeight="?attr/actionBarSize"
+                    android:stepSize="1"
+                    app:tickVisible="false"
+                    tools:ignore="NestedWeights" />
+
+                <TextView
+                    android:id="@+id/manga_reader_chapter_total_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:minWidth="32dp"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="15sp"
+                    tools:text="15" />
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/manga_reader_next"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/next_chapter"
+                android:tooltipText="@string/next_chapter"
+                app:srcCompat="@drawable/ic_skip_next_24"
+                app:tint="?colorOnSurface" />
+
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/manga_reader_bottom_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorSurface"
+            android:paddingTop="16dp">
+
+            <TextView
+                android:id="@+id/reader_manga_mode_tip"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:textAppearance="?textAppearanceTitleMedium"
+                app:layout_constraintBottom_toTopOf="@+id/guideline3"
+                app:layout_constraintEnd_toStartOf="@+id/manga_reader_setting"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="READER MODE" />
+
+            <TextView
+                android:id="@+id/reader_manga_subtitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?textAppearanceBodySmall"
+                app:layout_constraintEnd_toEndOf="@+id/reader_manga_mode_tip"
+                app:layout_constraintStart_toStartOf="@+id/reader_manga_mode_tip"
+                app:layout_constraintTop_toTopOf="@+id/guideline3"
+                tools:text="DATE" />
+
+
+            <ImageButton
+                android:id="@+id/manga_reader_setting"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="@string/above_chapter"
+                android:tooltipText="@string/above_chapter"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_setting_outline"
+                app:tint="?colorControlNormal" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
