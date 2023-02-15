@@ -132,7 +132,6 @@ class InfoFragment : Fragment() {
         }, viewLifecycleOwner, Lifecycle.State.CREATED)
 
         mangaInfoViewModel.chaptersModel.observe(viewLifecycleOwner) {
-            Log.i("TAG-CHAPTER", "onViewCreated: $it")
             adapter.submitList(emptyList())
             adapter.submitList(it)
             infoList = it

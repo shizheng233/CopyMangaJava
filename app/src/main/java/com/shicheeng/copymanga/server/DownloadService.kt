@@ -17,11 +17,8 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.data.LastMangaDownload
-import com.shicheeng.copymanga.util.DownloadJob
-import com.shicheeng.copymanga.util.FileUtil
+import com.shicheeng.copymanga.util.*
 import com.shicheeng.copymanga.util.KeyWordSwap.*
-import com.shicheeng.copymanga.util.throttle
-import com.shicheeng.copymanga.util.whileActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -64,7 +61,7 @@ class DownloadService :
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        val mangaDownload = intent?.getParcelableExtra(CHAPTER_TYPE, LastMangaDownload::class.java)
+        val mangaDownload = intent?.getParcelableExtraCompat<LastMangaDownload>(CHAPTER_TYPE)
 
         return if (mangaDownload != null) {
             val job = downloadManga(mangaDownload, startId)

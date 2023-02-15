@@ -3,7 +3,9 @@
 package com.shicheeng.copymanga.util
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.os.Parcelable
 import android.util.TypedValue
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
@@ -80,6 +82,10 @@ fun <T> LiveData<T>.observeWithPrevious(owner: LifecycleOwner, observer: Buffere
         observer.onChanged(it, previous)
         previous = it
     }
+}
+
+inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(key: String): T? {
+    return getParcelableExtra(key) as T?
 }
 
 fun RecyclerView.findCurrentPagePosition(): Int {
