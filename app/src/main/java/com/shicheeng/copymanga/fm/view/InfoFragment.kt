@@ -3,12 +3,10 @@ package com.shicheeng.copymanga.fm.view
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
-import androidx.core.view.isVisible
+import androidx.core.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -90,6 +88,15 @@ class InfoFragment : Fragment() {
                 if (isShowAll) Int.MAX_VALUE else 3
         }
         binding.mangaInfoIncludeView.recyclerMangaInfo.isNestedScrollingEnabled = true
+        binding.mangaInfoIncludeView.recyclerMangaInfo.setHasFixedSize(true)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.expandFabInfo) { root: View, windowInsetsCompat: WindowInsetsCompat ->
+            val insets = windowInsetsCompat.getInsets(WindowInsetsCompat.Type.systemBars())
+            root.updatePadding(left = insets.left, right = insets.right)
+            binding.expandFabInfo.updateLayoutParams<MarginLayoutParams> {
+                bottomMargin = insets.bottom
+            }
+            windowInsetsCompat
+        }
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(object : MenuProvider {
 
@@ -144,6 +151,7 @@ class InfoFragment : Fragment() {
             MangaChapterListItemLookUp(binding.mangaInfoIncludeView.recyclerMangaInfo),
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
+
         adapter.tracker = track
         track?.addLongChangeObserver {
             downloadList = buildList {
@@ -243,9 +251,11 @@ class InfoFragment : Fragment() {
         //The sheet bar of Manga's State
         binding.mangaInfoIncludeView.mangaDetailBar.mangaDetailInfoState.text =
             data.info.mangaStatus
+
         //The manga's last update
         binding.mangaInfoIncludeView.mangaDetailLastUpdate.text =
             getString(R.string.last_update, data.info.mangaLastUpdate)
+
         //The manga's author
         binding.mangaInfoIncludeView.mangaInfoAuthor.text = data.info.authorList
         binding.mangaInfoIncludeView.recyclerMangaInfo.isVisible = true

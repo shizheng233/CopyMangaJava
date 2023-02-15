@@ -5,15 +5,17 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.RippleDrawable
 import android.os.Build
 import android.os.Bundle
+import android.transition.Slide
+import android.transition.TransitionManager
+import android.transition.TransitionSet
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.ColorUtils
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
-import androidx.core.view.isVisible
+import androidx.core.graphics.Insets
+import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.navArgs
 import androidx.viewpager2.widget.ViewPager2.*
@@ -71,9 +73,6 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
         windowsPaddingUp(binding.root, binding.appbarReader, binding.mangaReaderBottomToolbar)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        windowInsetsController.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-
         pathWord = mangaReaderNavArgs.pathWord
         uuid = mangaReaderNavArgs.mangaChapterItem.uuidText
         binding.mangaReaderToolbar.title = mangaReaderNavArgs.mangaTitle
@@ -112,15 +111,14 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
     }
 
     private fun initializeBottomMenu() {
-
+        setSupportActionBar(binding.mangaReaderToolbar)
         //The bottom menu.refer to Tachiyomi
         val materialShape = (binding.mangaReaderToolbar.background as MaterialShapeDrawable).apply {
-            alpha = 233
-            elevation =
-                resources.getDimension(com.google.android.material.R.dimen.m3_sys_elevation_level2)
+            elevation = resources.getDimension(com.google.android.material.R.dimen.m3_sys_elevation_level2)
+            alpha = 242
         }
-        binding.mangaReaderBottomToolbar.background = materialShape.copy(this)
-        binding.mangaReaderSeeker.background = materialShape.copy(this)?.apply {
+        binding.mangaReaderBottomToolbar.background = materialShape.copy(this@MangaReaderActivity)
+        binding.mangaReaderSeeker.background = materialShape.copy(this@MangaReaderActivity)?.apply {
             setCornerSize(999f)
         }
 
@@ -148,13 +146,11 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
             materialShape.resolvedTintColor,
             materialShape.alpha,
         )
-        binding.mangaReaderToolbar.setBackgroundColor(toolbarColor)
         window.statusBarColor = toolbarColor
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             window.navigationBarColor = toolbarColor
         }
     }
-
 
     private fun onUIChange(state: ReaderState?, old: ReaderState?) {
 
@@ -273,18 +269,22 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
     private fun hideSystemBar(
         isHide: Boolean,
     ) {
+        val transition = TransitionSet()
+            .setOrdering(TransitionSet.ORDERING_TOGETHER)
+            .addTransition(Slide(Gravity.TOP).addTarget(binding.appbarReader))
+            .addTransition(Slide(Gravity.BOTTOM).addTarget(binding.mangaReaderBottomSheet))
+        TransitionManager.beginDelayedTransition(binding.root, transition)
+        binding.mangaReaderBottomSheet.isGone = isHide
+        binding.appbarReader.isGone = isHide
         if (isHide) {
             windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-            binding.mangaReaderBottomSheet.isVisible = false
-            binding.mangaReaderToolbar.isVisible = false
+            windowInsetsController.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         } else {
-            binding.mangaReaderBottomSheet.isVisible = true
-            binding.mangaReaderToolbar.isVisible = true
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
         }
 
     }
-
 
 }
