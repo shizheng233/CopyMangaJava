@@ -31,7 +31,7 @@ import com.shicheeng.copymanga.viewmodel.HomeViewModel
 import com.shicheeng.copymanga.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), View.OnAttachStateChangeListener {
 
 
     private var _binding: ActivityMainBinding? = null
@@ -45,6 +45,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = ActivityMainBinding.inflate(inflater, container, false)
+        binding.root.addOnAttachStateChangeListener(this)
         bindState()
         return binding.root
     }
@@ -142,15 +143,17 @@ class MainFragment : Fragment() {
         binding.included1.headline5.setOnHeadClickListener {
             it.findNavController().navigate(R.id.action_mainFragment_to_finishedFragment)
         }
+    }
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _: View, windowInsetsCompat: WindowInsetsCompat ->
-            val insets = windowInsetsCompat.getInsets(WindowInsetsCompat.Type.systemBars())
-            binding.included1.recyclerViewManga6.updateLayoutParams<MarginLayoutParams> {
-                bottomMargin = insets.bottom
-            }
-
-            WindowInsetsCompat.CONSUMED
+    override fun onViewAttachedToWindow(v: View) {
+        val insetsCompat = ViewCompat.getRootWindowInsets(v)
+        val systemBarInsets = insetsCompat?.getInsets(WindowInsetsCompat.Type.systemBars())
+        binding.included1.recyclerViewManga6.updateLayoutParams<MarginLayoutParams> {
+            bottomMargin = systemBarInsets?.bottom ?: 0
         }
+    }
+
+    override fun onViewDetachedFromWindow(v: View) {
 
     }
 

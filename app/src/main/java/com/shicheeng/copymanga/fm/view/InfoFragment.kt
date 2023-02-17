@@ -4,7 +4,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.*
 import androidx.fragment.app.Fragment
@@ -35,7 +34,7 @@ import com.shicheeng.copymanga.viewmodel.MangaInfoViewModel
 import com.shicheeng.copymanga.viewmodel.MangaInfoViewModelFactory
 import kotlinx.coroutines.launch
 
-class InfoFragment : Fragment() {
+class InfoFragment : Fragment(), View.OnAttachStateChangeListener {
 
     private var _binding: MangaInfoBinding? = null
     private val binding get() = _binding!!
@@ -69,10 +68,12 @@ class InfoFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = MangaInfoBinding.inflate(inflater, container, false)
-        binding.bindMangaInfoToRecyclerView()
+        bindMangaInfoToRecyclerView()
+        binding.root.addOnAttachStateChangeListener(this)
         bindState()
         return binding.root
     }
+
 
     override fun onResume() {
         mangaInfoViewModel.onHistoryWanna()
@@ -88,15 +89,7 @@ class InfoFragment : Fragment() {
                 if (isShowAll) Int.MAX_VALUE else 3
         }
         binding.mangaInfoIncludeView.recyclerMangaInfo.isNestedScrollingEnabled = true
-        binding.mangaInfoIncludeView.recyclerMangaInfo.setHasFixedSize(true)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.expandFabInfo) { root: View, windowInsetsCompat: WindowInsetsCompat ->
-            val insets = windowInsetsCompat.getInsets(WindowInsetsCompat.Type.systemBars())
-            root.updatePadding(left = insets.left, right = insets.right)
-            binding.expandFabInfo.updateLayoutParams<MarginLayoutParams> {
-                bottomMargin = insets.bottom
-            }
-            windowInsetsCompat
-        }
+        binding.mangaInfoIncludeView.recyclerMangaInfo.adapter = adapter
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(object : MenuProvider {
 
@@ -160,6 +153,22 @@ class InfoFragment : Fragment() {
                 }
             }
         }
+
+    }
+
+    override fun onViewAttachedToWindow(v: View) {
+        val insetsCompat = ViewCompat.getRootWindowInsets(v)
+        val systemBarInsets = insetsCompat?.getInsets(WindowInsetsCompat.Type.systemBars())
+        binding.expandFabInfo.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            bottomMargin = systemBarInsets?.bottom?.plus(binding.expandFabInfo.marginBottom)
+                ?: binding.expandFabInfo.marginBottom
+        }
+        binding.mangaInfoIncludeView.recyclerMangaInfo.updatePadding(
+            bottom = systemBarInsets?.bottom ?: 0
+        )
+    }
+
+    override fun onViewDetachedFromWindow(v: View) {
 
     }
 
@@ -302,7 +311,7 @@ class InfoFragment : Fragment() {
     }
 
 
-    private fun MangaInfoBinding.bindMangaInfoToRecyclerView() {
+    private fun bindMangaInfoToRecyclerView() {
 
         adapter.setOnItemClickListener {
             val action =
@@ -316,9 +325,6 @@ class InfoFragment : Fragment() {
                 )
             findNavController().navigate(action)
         }
-
-        mangaInfoIncludeView.recyclerMangaInfo.adapter = adapter
-
 
     }
 

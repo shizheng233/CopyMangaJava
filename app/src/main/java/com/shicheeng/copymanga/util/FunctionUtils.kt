@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Parcelable
 import android.util.TypedValue
+import android.view.View
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.LifecycleOwner

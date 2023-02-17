@@ -1,5 +1,6 @@
 package com.shicheeng.copymanga.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
@@ -20,7 +21,7 @@ import kotlinx.coroutines.withContext
 class MangaInfoViewModel(
     private val pathWord: String,
     private val repository: MangaHistoryRepository,
-    private val fileUtil: FileUtil,
+    fileUtil: FileUtil,
 ) : ViewModel() {
 
     sealed class UiState {
@@ -41,6 +42,7 @@ class MangaInfoViewModel(
     private val delegate = InfoDataDelegate(pathWord, fileUtil)
 
     val chaptersModel = combine(chapterHistory, mangaChapters) { history, chapters ->
+        Log.i("TAG-CHAPTER", ": $chapterHistory")
         delegate.mapChapters(history, chapters ?: JsonObject())
     }.asLiveData(viewModelScope.coroutineContext)
 
@@ -56,8 +58,10 @@ class MangaInfoViewModel(
             withContext(Dispatchers.Default) {
                 val mangaInfoContent = MangaInfoJson.getMangaInfo(pathWord)
                 val mangaChapterContent = MangaInfoJson.getMangaContent(pathWord)
+                Log.i("TAG.LOAD LIST", "onDataLoad: $mangaChapterContent")
                 val mangaHistory = repository.getHistoryByMangaPathWord(pathWord)
                 _mangaChapters.emit(mangaChapterContent)
+                _chapterHistory.emit(mangaHistory)
                 _uiState.emit(
                     UiState.Success(
                         MangaInfo(

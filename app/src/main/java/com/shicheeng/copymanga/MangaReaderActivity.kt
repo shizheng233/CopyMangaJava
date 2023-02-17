@@ -3,22 +3,18 @@ package com.shicheeng.copymanga
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.drawable.RippleDrawable
-import android.os.Build
 import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.transition.TransitionSet
 import android.view.Gravity
 import android.view.KeyEvent
-import android.view.WindowManager
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
-import androidx.core.graphics.ColorUtils
-import androidx.core.graphics.Insets
 import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.navArgs
-import androidx.viewpager2.widget.ViewPager2.*
+import androidx.viewpager2.widget.ViewPager2.LAYOUT_DIRECTION_LTR
+import androidx.viewpager2.widget.ViewPager2.LAYOUT_DIRECTION_RTL
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.snackbar.Snackbar
 import com.shicheeng.copymanga.app.AppAttachCompatActivity
@@ -65,19 +61,20 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
     private lateinit var readerHistoryDataModel: MangaHistoryDataModel
     private var isLast: Boolean = false
 
-    @RequiresApi(Build.VERSION_CODES.R)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMangaReaderBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        windowsPaddingUp(binding.root, binding.appbarReader, binding.mangaReaderBottomToolbar)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        windowsPaddingUp(binding.root, binding.mangaReaderToolbar, binding.mangaReaderBottomToolbar)
 
         pathWord = mangaReaderNavArgs.pathWord
         uuid = mangaReaderNavArgs.mangaChapterItem.uuidText
         binding.mangaReaderToolbar.title = mangaReaderNavArgs.mangaTitle
         sharedPref = AppSetting.getInstance(this)
         readerManager = ReaderManager(supportFragmentManager, R.id.manga_reader_container)
+
 
         viewModel.readerModel.observe(this, this::initializeReaderMode)
         viewModel.information.observeWithPrevious(this, this::onUIChange)
@@ -86,7 +83,7 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
         viewModel.errorHandler.observe(this, this::onError)
         viewModel.loadingCounter.observe(this, this::onLoading)
 
-        binding.mangaReaderToolbar.setNavigationOnClickListener { this.finish() }
+
         initializeBottomMenu()
         binding.mangaReaderSlider.setLabelFormatter(PageSliderFormatter())
         ReaderSliderAttach(this, viewModel).attach(binding.mangaReaderSlider)
@@ -110,11 +107,15 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
         }
     }
 
+
     private fun initializeBottomMenu() {
         setSupportActionBar(binding.mangaReaderToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.mangaReaderToolbar.setNavigationOnClickListener { finish() }
         //The bottom menu.refer to Tachiyomi
         val materialShape = (binding.mangaReaderToolbar.background as MaterialShapeDrawable).apply {
-            elevation = resources.getDimension(com.google.android.material.R.dimen.m3_sys_elevation_level2)
+            elevation =
+                resources.getDimension(com.google.android.material.R.dimen.m3_sys_elevation_level2)
             alpha = 242
         }
         binding.mangaReaderBottomToolbar.background = materialShape.copy(this@MangaReaderActivity)
@@ -141,15 +142,7 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
                 readerManager.currentReaderMode ?: return@setOnClickListener
             )
         }
-
-        val toolbarColor = ColorUtils.setAlphaComponent(
-            materialShape.resolvedTintColor,
-            materialShape.alpha,
-        )
-        window.statusBarColor = toolbarColor
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            window.navigationBarColor = toolbarColor
-        }
+        
     }
 
     private fun onUIChange(state: ReaderState?, old: ReaderState?) {
@@ -269,19 +262,19 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
     private fun hideSystemBar(
         isHide: Boolean,
     ) {
+        // window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         val transition = TransitionSet()
             .setOrdering(TransitionSet.ORDERING_TOGETHER)
-            .addTransition(Slide(Gravity.TOP).addTarget(binding.appbarReader))
+            .addTransition(Slide(Gravity.TOP).addTarget(binding.mangaReaderToolbar))
             .addTransition(Slide(Gravity.BOTTOM).addTarget(binding.mangaReaderBottomSheet))
         TransitionManager.beginDelayedTransition(binding.root, transition)
         binding.mangaReaderBottomSheet.isGone = isHide
-        binding.appbarReader.isGone = isHide
+        binding.mangaReaderToolbar.isGone = isHide
         if (isHide) {
             windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
             windowInsetsController.systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         } else {
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
         }
 

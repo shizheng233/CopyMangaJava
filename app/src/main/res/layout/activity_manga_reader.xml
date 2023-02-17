@@ -37,22 +37,14 @@
         android:textColor="@android:color/white"
         android:textStyle="bold" />
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar_reader"
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/manga_reader_toolbar"
+        style="@style/Widget.Material3.Toolbar.Surface"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior">
+        android:minHeight="?actionBarSize" />
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/manga_reader_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?colorSurface"
-            app:navigationIcon="@drawable/ic_arrow_back"
-            app:navigationIconTint="?textColorMe" />
-
-
-    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:id="@+id/manga_reader_bottom_sheet"

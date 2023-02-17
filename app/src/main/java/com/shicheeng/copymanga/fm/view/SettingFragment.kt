@@ -3,6 +3,12 @@ package com.shicheeng.copymanga.fm.view
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
 import androidx.preference.ListPreference
@@ -15,7 +21,17 @@ import com.shicheeng.copymanga.util.FileCacheUtils
 import kotlinx.coroutines.launch
 import java.io.File
 
-class SettingFragment : PreferenceFragmentCompat() {
+class SettingFragment : PreferenceFragmentCompat(), View.OnAttachStateChangeListener {
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
+        val c = super.onCreateView(inflater, container, savedInstanceState)
+        c.addOnAttachStateChangeListener(this)
+        return c
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 
@@ -107,6 +123,16 @@ class SettingFragment : PreferenceFragmentCompat() {
 
     private fun File.getSize(): String {
         return FileCacheUtils.getFormatSize(FileCacheUtils.getFolderSize(this).toDouble())
+    }
+
+    override fun onViewAttachedToWindow(v: View) {
+        val insetsCompat = ViewCompat.getRootWindowInsets(v)
+        val systemBarInsets = insetsCompat?.getInsets(WindowInsetsCompat.Type.systemBars())
+        v.updatePadding(bottom = systemBarInsets?.bottom ?: 0)
+    }
+
+    override fun onViewDetachedFromWindow(v: View) {
+
     }
 
 }

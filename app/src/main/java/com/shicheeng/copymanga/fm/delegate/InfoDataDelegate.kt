@@ -11,11 +11,6 @@ class InfoDataDelegate(
 ) {
 
 
-    fun loadInfo() {
-
-    }
-
-
     fun mapChapters(
         historyDataModel: MangaHistoryDataModel?,
         jsonObject: JsonObject?,
