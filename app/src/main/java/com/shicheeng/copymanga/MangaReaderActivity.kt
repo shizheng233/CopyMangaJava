@@ -9,7 +9,11 @@ import android.transition.TransitionManager
 import android.transition.TransitionSet
 import android.view.Gravity
 import android.view.KeyEvent
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.viewModels
+import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.Insets
 import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.navArgs
@@ -67,7 +71,18 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
         binding = ActivityMangaReaderBinding.inflate(layoutInflater)
         setContentView(binding.root)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        windowsPaddingUp(binding.root, binding.mangaReaderToolbar, binding.mangaReaderBottomToolbar)
+
+        windowsInsets(binding.root) { view: View, insets: Insets ->
+            binding.mangaReaderToolbar
+                .updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                    topMargin = insets.top
+                }
+            binding.mangaReaderBottomToolbar.updatePadding(bottom = insets.bottom)
+            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+            }
+        }
 
         pathWord = mangaReaderNavArgs.pathWord
         uuid = mangaReaderNavArgs.mangaChapterItem.uuidText
@@ -142,7 +157,12 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
                 readerManager.currentReaderMode ?: return@setOnClickListener
             )
         }
-        
+
+        val toolbarColor = ColorUtils.setAlphaComponent(
+            materialShape.resolvedTintColor,
+            materialShape.alpha
+        )
+        window.statusBarColor = toolbarColor
     }
 
     private fun onUIChange(state: ReaderState?, old: ReaderState?) {
@@ -176,6 +196,7 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
                 ).show()
             }
         }
+
         binding.mangaReaderSlider.valueTo = (state.totalPage.toFloat() - 1)
         binding.mangaReaderSlider.value = state.currentPage.toFloat()
         binding.mangaReaderPageIndicator.text =

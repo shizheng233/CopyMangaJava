@@ -7,7 +7,6 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Parcelable
 import android.util.TypedValue
-import android.view.View
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.LifecycleOwner
@@ -26,6 +25,8 @@ import com.google.gson.JsonParser
 import com.shicheeng.copymanga.adapter.MangaListAdapter
 import com.shicheeng.copymanga.adapter.MangaLoadStateAdapter
 import com.shicheeng.copymanga.data.ChipTextBean
+import java.text.SimpleDateFormat
+import java.util.*
 
 fun JsonArray.authorNameReformation(): String =
     if (size() == 1) get(0).asJsonObject["name"].asString else get(0).asJsonObject["name"].asString + " 等"
@@ -166,6 +167,13 @@ fun Long.formNumberToRead(): String {
         else -> this.toString()
     }
 
+}
+
+
+fun Long.toTimeReadable(): String {
+    val date = Date(this)
+    val sfd = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)
+    return sfd.format(date)
 }
 
 fun interface BufferedObserver<T> {

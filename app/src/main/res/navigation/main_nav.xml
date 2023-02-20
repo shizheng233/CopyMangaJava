@@ -43,6 +43,9 @@
         <action
             android:id="@+id/action_mainFragment_to_downloadInfoFragment"
             app:destination="@id/downloadInfoFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_personalFragment"
+            app:destination="@id/personalFragment" />
     </fragment>
     <fragment
         android:id="@+id/infoFragment"
@@ -150,7 +153,7 @@
     <fragment
         android:id="@+id/settingFragment"
         android:name="com.shicheeng.copymanga.fm.view.SettingFragment"
-        android:label="@string/setting" >
+        android:label="@string/setting">
         <action
             android:id="@+id/action_settingFragment_to_about_libraries"
             app:destination="@id/about_libraries" />
@@ -166,6 +169,14 @@
         <action
             android:id="@+id/action_downloadInfoFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/personalFragment"
+        android:name="com.shicheeng.copymanga.fm.view.PersonalFragment"
+        android:label="@string/personal_center">
+        <action
+            android:id="@+id/action_personalFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
     </fragment>
 
 </navigation>

@@ -21,8 +21,8 @@
 
     <item
         android:id="@+id/id_manga_history"
-        android:icon="@drawable/ic_manga_history"
-        android:title="@string/history"
+        android:icon="@drawable/ic_person_center"
+        android:title="@string/personal_center"
         app:showAsAction="always" />
 
     <item
@@ -31,7 +31,6 @@
         android:icon="@drawable/ic_setting_outline"
         android:title="@string/setting"
         app:showAsAction="always" />
-
 
 
 </menu>

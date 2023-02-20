@@ -107,4 +107,5 @@
     <string name="reader_mode_tip">选择阅读模式</string>
     <string name="local">本地加载</string>
     <string name="in_loading_next_chapter">加载章节中</string>
+    <string name="personal">个人</string>
 </resources>

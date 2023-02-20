@@ -9,8 +9,7 @@
     <com.shicheeng.copymanga.view.MyRecyclerView
         android:id="@+id/recycler_view_manga_1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints,NotSibling" />
+        android:layout_height="wrap_content"/>
 
     <com.shicheeng.copymanga.view.HeadLineView
         android:id="@+id/headline_1"

@@ -114,7 +114,7 @@ class MainFragment : Fragment(), View.OnAttachStateChangeListener {
                         true
                     }
                     R.id.id_manga_history -> {
-                        val action = MainFragmentDirections.actionMainFragmentToHistoryFragment()
+                        val action = MainFragmentDirections.actionMainFragmentToPersonalFragment()
                         findNavController().navigate(action)
                         true
                     }

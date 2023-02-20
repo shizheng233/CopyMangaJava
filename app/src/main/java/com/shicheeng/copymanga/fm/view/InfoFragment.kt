@@ -108,14 +108,24 @@ class InfoFragment : Fragment(), View.OnAttachStateChangeListener {
                                         infoList?.forEach { add(it.toDownloadChapter()) }
                                     }
                                     pushDownload(
-                                        LastMangaDownload(titleManga ?: return@createDialog, list)
+                                        LastMangaDownload(
+                                            titleManga ?: return@createDialog,
+                                            urlCover,
+                                            list
+                                        )
                                     )
                                 }
                             } else {
                                 val list = buildList {
                                     downloadList?.forEach { add(it.toDownloadChapter()) }
                                 }
-                                pushDownload(LastMangaDownload(titleManga ?: return false, list))
+                                pushDownload(
+                                    LastMangaDownload(
+                                        titleManga ?: return false,
+                                        urlCover,
+                                        list
+                                    )
+                                )
                                 track?.clearSelection()
                             }
 

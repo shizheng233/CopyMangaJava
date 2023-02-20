@@ -112,4 +112,5 @@
     <string name="local">Local</string>
     <string name="in_loading_next_chapter">Loading chapter</string>
     <string name="chapter_page_indicator" translatable="false">%d / %d</string>
+    <string name="personal">Personal</string>
 </resources>

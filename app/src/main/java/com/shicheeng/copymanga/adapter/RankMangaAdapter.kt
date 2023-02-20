@@ -53,7 +53,7 @@ class RankMangaAdapter :
         val textHotNumber: TextView = itemView.findViewById(R.id.rank_manga_hot_number)
     }
 
-    object DiffRank : DiffUtil.ItemCallback<MangaRankMiniModel>() {
+    private object DiffRank : DiffUtil.ItemCallback<MangaRankMiniModel>() {
 
         override fun areItemsTheSame(
             oldItem: MangaRankMiniModel,

@@ -30,6 +30,7 @@ data class LastMangaDownload(
      * 漫画名字
      */
     val mangaName: String,
+    val coverUrl:String,
     val list: List<MangaDownloadChapterInfoModel>) :
     Parcelable
 

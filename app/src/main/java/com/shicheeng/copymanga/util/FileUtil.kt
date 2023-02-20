@@ -3,14 +3,15 @@ package com.shicheeng.copymanga.util
 import android.content.Context
 import android.os.Environment
 import android.os.SystemClock
-import android.util.Log
+import androidx.core.net.toUri
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.shicheeng.copymanga.data.LastMangaDownload
 import com.shicheeng.copymanga.data.MangaDownloadChapterInfoModel
+import com.shicheeng.copymanga.data.MangaReaderPage
+import com.shicheeng.copymanga.data.PersonalInnerDataModel
 import com.shicheeng.copymanga.json.MangaInfoJson
 import com.shicheeng.copymanga.server.DownloadStateChapter
-import com.shicheeng.copymanga.data.MangaReaderPage
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Semaphore
@@ -89,7 +90,6 @@ class FileUtil(
                             urlsAndWord.urlList.size,
                             wordPosition
                         )
-
                     }
                 }
                 stateFlow.value =
@@ -97,6 +97,7 @@ class FileUtil(
                 chapters.forEach { mangaChapter ->
                     updateOrCreate(mangaChapter, file, contentModel.mangaName)
                 }
+                downloadCover(contentModel.coverUrl, contentModel.mangaName)
                 stateFlow.value = DownloadStateChapter.DONE(startId, contentModel)
             } catch (e: CancellationException) {
                 stateFlow.value = DownloadStateChapter.CANCEL(startId, contentModel)
@@ -105,7 +106,6 @@ class FileUtil(
                 stateFlow.value =
                     DownloadStateChapter.ERROR(startId, contentModel, e)
             }
-
         }
 
     }
@@ -169,9 +169,9 @@ class FileUtil(
         if (ts == null) {
             val ss = createJson(chapter, title)
             jsonFile.add(ss)
-            Log.i("TAG-NULL", "updateMangaSavedInformation: ")
+
         } else {
-            Log.i("TAG-NonNULL", "updateMangaSavedInformation: ")
+
             val ss = ts.asJsonObject
             val array = ss["manga_downloaded"].asJsonArray
             val arrayObject = JsonObject()
@@ -209,6 +209,16 @@ class FileUtil(
         fileOut.close()
     }
 
+    private suspend fun downloadCover(url: String, mangaName: String) =
+        withContext(Dispatchers.IO) {
+            val savePath =
+                "${context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/${mangaName}/cover.png"
+            val fileOutputStream = FileOutputStream(savePath)
+            withGet(url) {
+                it.copyTo(fileOutputStream)
+            }
+        }
+
     private fun createJson(chapter: MangaDownloadChapterInfoModel, title: String): JsonObject {
         val main = JsonObject()
         main.addProperty("path_word", chapter.pathWord)
@@ -244,6 +254,34 @@ class FileUtil(
         return json?.get("manga_downloaded")?.asJsonArray?.find { x -> x.asJsonObject["uuid"].asString == uuid }?.asJsonObject
     }
 
+    fun findDownloadManga(): Flow<List<PersonalInnerDataModel>> {
+        val files = context
+            .getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.listFiles() ?: return emptyFlow()
+        val list = buildList {
+            files.forEach {
+                if (it.isDirectory) {
+                    val model = PersonalInnerDataModel(
+                        it.name,
+                        ("${it.path}/cover.png").toUri(),
+                        findChapterPathWordWithName(it.name)
+                    )
+                    add(model)
+                }
+            }
+        }
+        return flowOf(list)
+    }
+
+
+    private fun findChapterPathWordWithName(name: String): String? {
+        if (!file.exists()) {
+            return null
+        }
+        val json = file.readText().parserAsJson().asJsonArray.find { x ->
+            x.asJsonObject["name"].asString == name
+        }?.asJsonObject
+        return json?.get("path_word")?.asString
+    }
 
     fun ifChapterDownloaded(pathWord: String?, uuid: String?): List<MangaReaderPage> {
         if (!file.exists()) {
@@ -260,9 +298,9 @@ class FileUtil(
             "${context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/${mangaName}/${chapterName}"
         val file = File(savePath)
         return buildList {
-            file.listFiles()?.forEachIndexed {index,file ->
+            file.listFiles()?.forEachIndexed { index, file ->
                 if (file.extension == "png") {
-                    add(MangaReaderPage(file.path,uuid,index))
+                    add(MangaReaderPage(file.path, uuid, index))
                 }
             }
         }

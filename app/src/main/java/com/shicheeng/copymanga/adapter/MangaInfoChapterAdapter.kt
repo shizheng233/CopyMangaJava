@@ -96,7 +96,7 @@ class MangaInfoChapterAdapter :
     }
 
 
-    object Diff : DiffUtil.ItemCallback<MangaInfoChapterDataBean>() {
+    private object Diff : DiffUtil.ItemCallback<MangaInfoChapterDataBean>() {
         override fun areItemsTheSame(
             oldItem: MangaInfoChapterDataBean,
             newItem: MangaInfoChapterDataBean,

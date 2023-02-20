@@ -1,6 +1,5 @@
 package com.shicheeng.copymanga.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +19,7 @@ import com.shicheeng.copymanga.util.KeyWordSwap
 class MangaListAdapter :
     PagingDataAdapter<ListBeanManga, MangaListAdapter.NewViewHolder>(DiffBackCall) {
 
-    companion object{
+    companion object {
         const val VIEW_TYPE_MAIN = 1
     }
 
@@ -56,7 +55,7 @@ class MangaListAdapter :
         var materialCardView: MaterialCardView = itemView.findViewById(R.id.manga_list_card_click)
     }
 
-    object DiffBackCall : DiffUtil.ItemCallback<ListBeanManga>() {
+    private object DiffBackCall : DiffUtil.ItemCallback<ListBeanManga>() {
 
         override fun areItemsTheSame(oldItem: ListBeanManga, newItem: ListBeanManga): Boolean {
             return oldItem === newItem
