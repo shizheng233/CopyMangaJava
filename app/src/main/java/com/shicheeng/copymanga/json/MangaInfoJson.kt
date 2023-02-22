@@ -19,7 +19,7 @@ object MangaInfoJson {
     private val setting = (MyApp.appContext as MyApp).appPreference
 
     val headers: Headers = Headers.Builder()
-        .add("region", if (setting.getBoolean("pref_is_use_foreign_api", false)) "0" else "1")
+        .add("region", if (setting.getBoolean("pref_is_use_foreign_api", false)) "1" else "0")
         .add("webp", "0")
         .add("platform", "1")
         .add("version", "2022.12.02")
@@ -28,9 +28,9 @@ object MangaInfoJson {
         .build()
 
     /**
-     *
-     * @param path_word 漫画的path word
-     * @return 带有信息的数据模型
+     * Get manga info.
+     * @param path_word The manga's PathWord
+     * @return The data model of data
      */
     fun getMangaInfo(path_word: String?): MangaInfoData {
         val url = ApiName.mangaInfoAdapter(path_word)

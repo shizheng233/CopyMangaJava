@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
+import androidx.core.view.marginBottom
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.shicheeng.copymanga.adapter.MangaListAdapter
 import com.shicheeng.copymanga.adapter.MangaLoadStateAdapter
+import com.shicheeng.copymanga.app.BaseFragment
 import com.shicheeng.copymanga.databinding.HotMangaLayoutBinding
 import com.shicheeng.copymanga.dialog.SortDialogFragment
 import com.shicheeng.copymanga.util.KeyWordSwap
@@ -23,21 +26,15 @@ import com.shicheeng.copymanga.viewmodel.ExploreMangaViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class ExploreFragment : Fragment() {
-
-    private var _binding: HotMangaLayoutBinding? = null
-    private val binding get() = _binding!!
+class ExploreFragment : BaseFragment<HotMangaLayoutBinding>() {
 
     private val exploreMangaViewModel by viewModels<ExploreMangaViewModel>()
 
-    override fun onCreateView(
+    override fun onViewBindingIn(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        _binding = HotMangaLayoutBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ): HotMangaLayoutBinding = HotMangaLayoutBinding.inflate(inflater, container, false)
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -98,9 +95,13 @@ class ExploreFragment : Fragment() {
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
+    override fun onFragmentInsets(systemBarInsets: Insets?, view: View) {
+        if (systemBarInsets == null) {
+            return
+        }
+        binding.fabHot.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            bottomMargin = binding.fabHot.marginBottom + systemBarInsets.bottom
+        }
     }
 
 }
