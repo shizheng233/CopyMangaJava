@@ -24,6 +24,7 @@
 -keep class com.shicheeng.copymanga.data.LastMangaDownload
 -keep class com.shicheeng.copymanga.data.MangaDownloadChapterInfoModel
 -keep class com.shicheeng.copymanga.data.MangaDownloads
+-keep class com.shicheeng.copymanga.data.PersonalInnerDataModel
 
 # Please add these rules to your existing keep rules in order to suppress warnings.
 # This is generated automatically by the Android Gradle plugin.

@@ -62,7 +62,7 @@
     <string name="exit_reader">退出阅读</string>
     <string name="no_history">没有观看历史</string>
     <string name="image_load_failure">图片未能成功加载</string>
-    <string name="reader_page"> · 看到 %d 页</string>
+    <string name="reader_page"> • 看到 %d 页</string>
     <string name="continue_read">继续阅读</string>
     <string name="orientation_page">排向</string>
     <string name="japanese_r_to_l">从右向左</string>

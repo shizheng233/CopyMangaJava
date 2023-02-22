@@ -31,7 +31,8 @@ class PersonalFragment : BaseFragment<FragmentPersonalBinding>() {
     override fun onViewBindingIn(
         inflater: LayoutInflater,
         container: ViewGroup?,
-    ): FragmentPersonalBinding = FragmentPersonalBinding.inflate(inflater, container, false)
+    ): FragmentPersonalBinding = FragmentPersonalBinding
+        .inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,12 +45,22 @@ class PersonalFragment : BaseFragment<FragmentPersonalBinding>() {
         adapter.setOnHeaderViewOnClickListener {
             when (it) {
                 R.string.history -> {
-                    val action =
-                        PersonalFragmentDirections.actionPersonalFragmentToHistoryFragment()
+                    val action = PersonalFragmentDirections
+                        .actionPersonalFragmentToHistoryFragment()
+                    findNavController().navigate(action)
+                }
+                R.string.download_manga -> {
+                    val action = PersonalFragmentDirections
+                        .actionPersonalFragmentToDownloadFragment()
                     findNavController().navigate(action)
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        model.updateDownloadList()
     }
 
     override fun onFragmentInsets(systemBarInsets: Insets?, view: View) {

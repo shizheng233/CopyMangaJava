@@ -26,10 +26,7 @@ import com.shicheeng.copymanga.data.LastMangaDownload
 import com.shicheeng.copymanga.data.MangaInfoChapterDataBean
 import com.shicheeng.copymanga.databinding.MangaInfoBinding
 import com.shicheeng.copymanga.server.DownloadService
-import com.shicheeng.copymanga.util.FileUtil
-import com.shicheeng.copymanga.util.KeyWordSwap
-import com.shicheeng.copymanga.util.addChips
-import com.shicheeng.copymanga.util.addLongChangeObserver
+import com.shicheeng.copymanga.util.*
 import com.shicheeng.copymanga.viewmodel.MangaInfoViewModel
 import com.shicheeng.copymanga.viewmodel.MangaInfoViewModelFactory
 import kotlinx.coroutines.launch
@@ -163,7 +160,6 @@ class InfoFragment : Fragment(), View.OnAttachStateChangeListener {
                 }
             }
         }
-
     }
 
     override fun onViewAttachedToWindow(v: View) {

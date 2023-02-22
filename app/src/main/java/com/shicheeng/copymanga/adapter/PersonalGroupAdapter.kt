@@ -1,8 +1,11 @@
 package com.shicheeng.copymanga.adapter
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -11,6 +14,8 @@ import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.data.MangaHistoryDataModel
 import com.shicheeng.copymanga.data.PersonalInnerDataModel
 import com.shicheeng.copymanga.databinding.PersionalDataBinding
+import com.shicheeng.copymanga.fm.view.PersonalFragmentDirections
+import com.shicheeng.copymanga.util.KeyWordSwap
 import com.shicheeng.copymanga.util.toTimeReadable
 
 class PersonalGroupAdapter : ListAdapter<Any, PersonalGroupViewHolder>(Diff) {
@@ -59,14 +64,28 @@ class PersonalGroupViewHolder(parent: ViewGroup) : ViewHolder(
         when (any) {
             is MangaHistoryDataModel -> {
                 binding.personalInnerTextDate.isVisible = true
-                Glide.with(binding.root).load(any.url).into(binding.personalInnerImage)
+                val url = Uri.parse(any.url)
+                if (url.scheme == "https") {
+                    Glide.with(binding.root).load(any.url).into(binding.personalInnerImage)
+                } else {
+                    binding.personalInnerImage.setImageURI(url)
+                }
                 binding.personalInnerTextTitle.text = any.name
                 binding.personalInnerTextDate.text = any.time.toTimeReadable()
+                binding.root.setOnClickListener {
+                    val bundle = bundleOf(KeyWordSwap.PATH_WORD_TYPE to any.pathWord)
+                    it.findNavController().navigate(R.id.infoFragment, bundle)
+                }
             }
             is PersonalInnerDataModel -> {
                 binding.personalInnerTextDate.isVisible = false
                 binding.personalInnerImage.setImageURI(any.url)
                 binding.personalInnerTextTitle.text = any.name
+                binding.root.setOnClickListener {
+                    val action = PersonalFragmentDirections
+                        .actionPersonalFragmentToDownloadMangaInfoDialogFragment(any)
+                    it.findNavController().navigate(action)
+                }
             }
         }
     }

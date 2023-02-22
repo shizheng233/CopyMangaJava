@@ -177,6 +177,34 @@
         <action
             android:id="@+id/action_personalFragment_to_historyFragment"
             app:destination="@id/historyFragment" />
+        <action
+            android:id="@+id/action_personalFragment_to_downloadFragment"
+            app:destination="@id/downloadFragment" />
+        <action
+            android:id="@+id/action_personalFragment_to_downloadMangaInfoDialogFragment"
+            app:destination="@id/downloadMangaInfoDialogFragment" />
+        <action
+            android:id="@+id/action_personalFragment_to_infoFragment"
+            app:destination="@id/infoFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/downloadMangaInfoDialogFragment"
+        android:name="com.shicheeng.copymanga.dialog.DownloadMangaInfoDialogFragment"
+        android:label="DownloadMangaInfoDialogFragment">
+        <argument
+            android:name="base_manga_data"
+            app:argType="com.shicheeng.copymanga.data.PersonalInnerDataModel" />
+        <action
+            android:id="@+id/action_downloadMangaInfoDialogFragment_to_mangaReaderActivity2"
+            app:destination="@id/mangaReaderActivity2" />
+    </dialog>
+    <fragment
+        android:id="@+id/downloadFragment"
+        android:name="com.shicheeng.copymanga.fm.view.DownloadFragment"
+        android:label="@string/download_manga">
+        <action
+            android:id="@+id/action_downloadFragment_to_downloadMangaInfoDialogFragment"
+            app:destination="@id/downloadMangaInfoDialogFragment" />
     </fragment>
 
 </navigation>

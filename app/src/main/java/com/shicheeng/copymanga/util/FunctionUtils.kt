@@ -2,13 +2,16 @@
 
 package com.shicheeng.copymanga.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Parcelable
 import android.util.TypedValue
+import android.view.MotionEvent
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.selection.SelectionTracker
@@ -169,12 +172,19 @@ fun Long.formNumberToRead(): String {
 
 }
 
-
+/**
+ * Format long to Time
+ *
+ * The format -> 2023/2/22 12:15
+ */
 fun Long.toTimeReadable(): String {
     val date = Date(this)
-    val sfd = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)
+    val sfd = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.CHINESE)
     return sfd.format(date)
 }
+
+fun RecyclerView.gridLayout(spanCount: Int): GridLayoutManager =
+    GridLayoutManager(context, spanCount, RecyclerView.VERTICAL, false)
 
 fun interface BufferedObserver<T> {
     fun onChanged(t: T, prev: T?)

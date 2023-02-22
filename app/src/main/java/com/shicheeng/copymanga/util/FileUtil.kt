@@ -6,10 +6,7 @@ import android.os.SystemClock
 import androidx.core.net.toUri
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import com.shicheeng.copymanga.data.LastMangaDownload
-import com.shicheeng.copymanga.data.MangaDownloadChapterInfoModel
-import com.shicheeng.copymanga.data.MangaReaderPage
-import com.shicheeng.copymanga.data.PersonalInnerDataModel
+import com.shicheeng.copymanga.data.*
 import com.shicheeng.copymanga.json.MangaInfoJson
 import com.shicheeng.copymanga.server.DownloadStateChapter
 import kotlinx.coroutines.*
@@ -281,6 +278,35 @@ class FileUtil(
             x.asJsonObject["name"].asString == name
         }?.asJsonObject
         return json?.get("path_word")?.asString
+    }
+
+    fun findChaptersWithPathWord(data: PersonalInnerDataModel): List<MangaInfoChapterDataBean> {
+        if (!file.exists()) {
+            return emptyList()
+        }
+        val json = file.readText().parserAsJson().asJsonArray.find { x ->
+            x.asJsonObject["path_word"].asString == data.pathWord
+        }?.asJsonObject
+        checkNotNull(json) { "NON FIND JSON OF THIS MANGA" }
+        val chapters = json.get("manga_downloaded")?.asJsonArray ?: return emptyList()
+        val list = buildList {
+            chapters.forEach {
+                val chapter = it.asJsonObject
+                val name = chapter["chapter_name"].asString
+                val uuid = chapter["uuid"].asString
+                val time = "LOCAL"
+                val bean = MangaInfoChapterDataBean(
+                    name,
+                    time,
+                    uuid,
+                    readerProgress = null,
+                    pathWord = data.pathWord ?: return emptyList(),
+                    isSaved = true
+                )
+                add(bean)
+            }
+        }
+        return list
     }
 
     fun ifChapterDownloaded(pathWord: String?, uuid: String?): List<MangaReaderPage> {

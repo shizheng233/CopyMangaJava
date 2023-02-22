@@ -9,13 +9,14 @@ import com.shicheeng.copymanga.data.PersonalDataModel
 import com.shicheeng.copymanga.resposity.MangaHistoryRepository
 import com.shicheeng.copymanga.util.FileUtil
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 
 class PersonalViewModel(
-    fileUtil: FileUtil,
+    private val fileUtil: FileUtil,
     historyRepository: MangaHistoryRepository,
 ) : ViewModel() {
 
-    private val downloadMangaList = fileUtil.findDownloadManga()
+    private var downloadMangaList = fileUtil.findDownloadManga()
     private val historyList = historyRepository.allHistoryDao
 
     val combineOfList = combine(downloadMangaList, historyList) { download, history ->
@@ -24,6 +25,10 @@ class PersonalViewModel(
             PersonalDataModel(R.string.download_manga, download)
         )
     }.asLiveData(viewModelScope.coroutineContext)
+
+    fun updateDownloadList() = viewModelScope.launch {
+        downloadMangaList = fileUtil.findDownloadManga()
+    }
 
 }
 

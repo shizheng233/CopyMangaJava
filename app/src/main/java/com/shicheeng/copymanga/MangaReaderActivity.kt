@@ -7,10 +7,7 @@ import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.transition.TransitionSet
-import android.view.Gravity
-import android.view.KeyEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.activity.viewModels
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.Insets
@@ -197,12 +194,17 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
             }
         }
 
-        binding.mangaReaderSlider.valueTo = (state.totalPage.toFloat() - 1)
-        binding.mangaReaderSlider.value = state.currentPage.toFloat()
         binding.mangaReaderPageIndicator.text =
             getString(R.string.chapter_page_indicator, (state.currentPage + 1), state.totalPage)
         binding.mangaReaderChapterTotalNumber.text = state.totalPage.toString()
         binding.mangaReaderChapterNowNumber.text = (state.currentPage.plus(1)).toString()
+        if (state.totalPage == 1) {
+            binding.mangaReaderSeeker.isInvisible = true
+        } else {
+            binding.mangaReaderSeeker.isInvisible = false
+            binding.mangaReaderSlider.valueTo = (state.totalPage.toFloat() - 1)
+            binding.mangaReaderSlider.value = state.currentPage.toFloat()
+        }
     }
 
     private fun onHistoryModelAttach(historyDataModel: MangaHistoryDataModel?) {
@@ -297,6 +299,7 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         } else {
             windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         }
 
     }

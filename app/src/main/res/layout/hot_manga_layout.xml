@@ -13,8 +13,8 @@
         android:indeterminate="true" />
 
     <include
-        layout="@layout/layout_error"
-        android:id="@+id/error_layout"/>
+        android:id="@+id/error_layout"
+        layout="@layout/layout_error" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_manga_hot"
@@ -30,8 +30,8 @@
         android:layout_margin="24dp"
         android:contentDescription="@string/todo"
         app:hideOnScroll="true"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         app:srcCompat="@drawable/ic_manga_filter" />
-
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
