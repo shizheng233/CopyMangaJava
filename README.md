@@ -1,7 +1,7 @@
 # CopyMangaJava
 ![GitHub all releases](https://img.shields.io/github/downloads/shizheng233/CopyMangaJava/total?label=%E4%B8%8B%E8%BD%BD&style=flat-square) ![Android Version Require](https://img.shields.io/badge/%E5%AE%89%E5%8D%93%E7%89%88%E6%9C%AC-%3E%3D%209.0-brightgreen?style=flat-square)
 
-一个第三方的拷贝漫画带有M3风格，支持动态主题。该App已通过Kotlin来实现，只是标题没改。
+一个第三方的拷贝漫画带有M3风格，支持动态主题。该App已通过Kotlin来实现，只是标题没改。注意：如果您感觉加载慢的话而且没有使用VPN的话，建议打开设置中的“使用境外CDN”,说不定可以加载得出来。
 
 希望大家可以多使用官方App，我写这个App只是用来练习。这个里面的代码都很简单，即使以后也可以给初学者一定的帮助。但我并不推荐您来查看我的代码。如果您想要学习的话，Kotatsu 和 Tachiyomi的代码完全够用。多看几遍就可以弄懂。
 
