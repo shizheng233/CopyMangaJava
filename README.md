@@ -17,7 +17,16 @@
 
 ## 截屏
 
-![all](sreenshots/all_in_one.png)
+<div>
+<img src="./sreenshots/Screenshot_1676374214.png" width=32%/>
+<img src="./sreenshots/Screenshot_1676374228.png" width=32%/>
+<img src="./sreenshots/Screenshot_1676374313.png" width=32%/>
+<img src="./sreenshots/Screenshot_1676374324.png" width=32%/>
+<img src="./sreenshots/Screenshot_1676374332.png" width=32%/>
+<img src="./sreenshots/Screenshot_1677055762.png" width=32%/>
+<img src="./sreenshots/Screenshot_1677055791.png" width=32%/>
+<img src="./sreenshots/Screenshot_1677055806.png" width=32%/>
+</div>
 您可以[查看](https://github.com/shizheng233/CopyMangaJava/tree/main/sreenshots)所有截图
 
 ## 关于Api
