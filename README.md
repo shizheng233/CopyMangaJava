@@ -27,7 +27,6 @@
 <img src="./sreenshots/Screenshot_1677055791.png" width=32%/>
 <img src="./sreenshots/Screenshot_1677055806.png" width=32%/>
 </div>
-您可以[查看](https://github.com/shizheng233/CopyMangaJava/tree/main/sreenshots)所有截图
 
 ## 关于Api
 api 来源于官方app API
