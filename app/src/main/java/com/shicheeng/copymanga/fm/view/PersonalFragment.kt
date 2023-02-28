@@ -64,10 +64,7 @@ class PersonalFragment : BaseFragment<FragmentPersonalBinding>() {
     }
 
     override fun onFragmentInsets(systemBarInsets: Insets?, view: View) {
-        if (systemBarInsets == null) {
-            return
-        }
-        binding.personalRecyclerView.updatePadding(bottom = systemBarInsets.bottom)
+        binding.personalRecyclerView.updatePadding(bottom = systemBarInsets?.bottom ?: 0)
     }
 
 

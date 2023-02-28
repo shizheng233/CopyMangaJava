@@ -21,9 +21,8 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment(), View.OnAttachStateCh
         savedInstanceState: Bundle?,
     ): View {
         _binding = onViewBindingIn(inflater, container)
-        val view = binding.root
-        view.addOnAttachStateChangeListener(this)
-        return view
+        binding.root.addOnAttachStateChangeListener(this)
+        return binding.root
     }
 
     override fun onViewAttachedToWindow(v: View) {

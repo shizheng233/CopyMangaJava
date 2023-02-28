@@ -6,6 +6,7 @@ import androidx.preference.PreferenceManager
 
 class AppSetting {
 
+
     companion object {
         @Volatile
         private var INSTANCE: SharedPreferences? = null

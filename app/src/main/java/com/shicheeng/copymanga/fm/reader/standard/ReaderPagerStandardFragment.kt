@@ -8,4 +8,5 @@ class ReaderPagerStandardFragment : ReaderPageFragment() {
     override fun changeDirection(): Int {
         return View.LAYOUT_DIRECTION_LTR
     }
+
 }

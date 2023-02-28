@@ -31,7 +31,7 @@ class ReaderViewModel(
 
     private val _pagePosition = MutableLiveData<Int>()
 
-    private val _hide = MutableLiveData(true)
+    private val _hide = MutableLiveData(false)
     val hide: LiveData<Boolean> = _hide
 
     private val _loadingCounter = MutableLiveData(false)
@@ -122,8 +122,12 @@ class ReaderViewModel(
         information.postValue(readerState)
     }
 
-    fun menuHide(hide: Boolean) {
-        _hide.postValue(hide)
+    fun menuHide() {
+        if (_hide.value == true) {
+            _hide.postValue(false)
+        } else {
+            _hide.postValue(true)
+        }
     }
 
     fun saveCurrentState(nowState: MangaState? = null) {

@@ -8,9 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.shicheeng.copymanga.data.ListBeanManga
 import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.adapter.RecyclerViewMangaAdapter.MangaViewHolder
+import com.shicheeng.copymanga.data.ListBeanManga
 
 class RecyclerViewMangaAdapter(private val mangaList: List<ListBeanManga>) :
     RecyclerView.Adapter<MangaViewHolder>() {
@@ -40,7 +40,9 @@ class RecyclerViewMangaAdapter(private val mangaList: List<ListBeanManga>) :
         Glide.with(holder.itemView)
             .load(mangaList[position].urlCoverManga)
             .centerCrop().into(holder.mangaCover)
-        holder.itemView.setOnClickListener { view: View? -> onItemClick.invoke(view, position) }
+        holder.itemView.setOnClickListener { view: View? ->
+            onItemClick.invoke(view, position)
+        }
     }
 
     override fun getItemCount(): Int {

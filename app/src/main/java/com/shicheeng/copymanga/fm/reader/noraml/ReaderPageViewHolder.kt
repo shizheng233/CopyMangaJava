@@ -1,7 +1,8 @@
 package com.shicheeng.copymanga.fm.reader.noraml
 
+import android.annotation.SuppressLint
 import android.net.Uri
-import android.view.View
+import android.view.MotionEvent
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.davemorrissey.labs.subscaleview.ImageSource
@@ -9,6 +10,7 @@ import com.shicheeng.copymanga.databinding.ItemPageBinding
 import com.shicheeng.copymanga.fm.domain.PagerLoader
 import com.shicheeng.copymanga.fm.reader.BaseReaderViewHolder
 
+@SuppressLint("ClickableViewAccessibility")
 class ReaderPageViewHolder(
     binding: ItemPageBinding,
     imageLoader: PagerLoader,
@@ -16,18 +18,14 @@ class ReaderPageViewHolder(
 ) :
     BaseReaderViewHolder<ItemPageBinding>(binding, imageLoader) {
 
+    private var url: String? = null
+
     init {
         binding.bivPager.bindToLifecycle(owner)
         binding.bivPager.addOnImageEventListener(delegate)
     }
 
-    private var url: String? = null
-
-    override fun onBind(url: String, onHolderImageClick: (View) -> Unit) {
-
-        binding.bivPager.setOnClickListener {
-            onHolderImageClick.invoke(it)
-        }
+    override fun onBind(url: String) {
         this.url = url
     }
 

@@ -12,6 +12,7 @@ import androidx.activity.viewModels
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.Insets
 import androidx.core.view.*
+import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.navArgs
 import androidx.viewpager2.widget.ViewPager2.LAYOUT_DIRECTION_LTR
@@ -31,14 +32,19 @@ import com.shicheeng.copymanga.fm.reader.ReaderManager
 import com.shicheeng.copymanga.fm.reader.ReaderMode
 import com.shicheeng.copymanga.fm.reader.noraml.PageSliderFormatter
 import com.shicheeng.copymanga.util.*
+import com.shicheeng.copymanga.view.control.ReaderControl
 import com.shicheeng.copymanga.viewmodel.ReaderViewModel
 import com.shicheeng.copymanga.viewmodel.ReaderViewModelFactory
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
-class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack,
-    PageSelectPosition {
+class MangaReaderActivity : AppAttachCompatActivity(),
+    ConfigPagerSheet.CallBack,
+    PageSelectPosition,
+    GestureHelper.GestureListener, ReaderControl.ControlDelegateListener {
 
     private val mangaReaderNavArgs: MangaReaderActivityArgs by navArgs()
     private lateinit var binding: ActivityMangaReaderBinding
@@ -55,13 +61,19 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
     private val windowInsetsController by lazy {
         WindowCompat.getInsetsController(window, window.decorView)
     }
+    private val delayDismissUi = Runnable { hideSystemBar(true) }
     private lateinit var pathWord: String
     private lateinit var uuid: String
     private lateinit var sharedPref: SharedPreferences
     private lateinit var readerManager: ReaderManager
     private lateinit var readerHistoryDataModel: MangaHistoryDataModel
+    private lateinit var gestureHelper: GestureHelper
+    private lateinit var control: ReaderControl
     private var isLast: Boolean = false
+    private var gestureInsets: Insets = Insets.NONE
 
+    override val readerMode: ReaderMode?
+        get() = readerManager.currentReaderMode
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +81,8 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
         setContentView(binding.root)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        windowsInsets(binding.root) { view: View, insets: Insets ->
+        windowsInsets(binding.root) { view, insets, systemGesture ->
+            gestureInsets = systemGesture
             binding.mangaReaderToolbar
                 .updateLayoutParams<ViewGroup.MarginLayoutParams> {
                     topMargin = insets.top
@@ -86,15 +99,14 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
         binding.mangaReaderToolbar.title = mangaReaderNavArgs.mangaTitle
         sharedPref = AppSetting.getInstance(this)
         readerManager = ReaderManager(supportFragmentManager, R.id.manga_reader_container)
-
+        gestureHelper = GestureHelper(this, this)
+        control = ReaderControl(this, (application as MyApp).appPreference)
 
         viewModel.readerModel.observe(this, this::initializeReaderMode)
         viewModel.information.observeWithPrevious(this, this::onUIChange)
-        viewModel.hide.observe(this, this::hideSystemBar)
         viewModel.historyData.observe(this, this::onHistoryModelAttach)
         viewModel.errorHandler.observe(this, this::onError)
         viewModel.loadingCounter.observe(this, this::onLoading)
-
 
         initializeBottomMenu()
         binding.mangaReaderSlider.setLabelFormatter(PageSliderFormatter())
@@ -116,6 +128,12 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
         rebuildReaderNavigation(readerMode)
         if (readerManager.currentReaderMode != readerMode) {
             readerManager.replace(readerMode)
+        }
+        if (binding.mangaReaderToolbar.isVisible) {
+            lifecycle.coroutineScope.launch {
+                delay(TimeUnit.SECONDS.toMillis(1))
+                delayDismissUi.run()
+            }
         }
     }
 
@@ -227,6 +245,39 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
         }
     }
 
+    override fun onTouch(area: Int) {
+        control.onGridTouch(area, binding.mangaReaderContainer)
+    }
+
+    override fun onProcessTouch(rawX: Int, rawY: Int): Boolean {
+        return if (
+            rawX <= gestureInsets.left ||
+            rawY <= gestureInsets.top ||
+            rawX >= binding.root.width - gestureInsets.right ||
+            rawY >= binding.root.height - gestureInsets.bottom ||
+            binding.mangaReaderToolbar.hasGlobalPoint(rawX, rawY) ||
+            binding.mangaReaderBottomToolbar.hasGlobalPoint(rawX, rawY)
+        ) {
+            false
+        } else {
+            val touchable = window.peekDecorView()?.touchables
+            touchable?.none { it.hasGlobalPoint(rawX, rawY) } ?: true
+        }
+    }
+
+    override fun scrollPage(delta: Int) {
+        readerManager.currentReader?.moveDelta(delta)
+    }
+
+    override fun hide() {
+        hideSystemBar(binding.mangaReaderToolbar.isVisible)
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        gestureHelper.dispatchTouchEvent(ev)
+        return super.dispatchTouchEvent(ev)
+    }
+
     private fun loadChapter(isNext: Boolean) {
         val uuid = viewModel.getCurrentReaderState().uuid
         val predicate: ((MangaInfoChapterDataBean) -> Boolean) = { it.uuidText == uuid }
@@ -285,7 +336,6 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
     private fun hideSystemBar(
         isHide: Boolean,
     ) {
-        // window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         val transition = TransitionSet()
             .setOrdering(TransitionSet.ORDERING_TOGETHER)
             .addTransition(Slide(Gravity.TOP).addTarget(binding.mangaReaderToolbar))
@@ -293,13 +343,14 @@ class MangaReaderActivity : AppAttachCompatActivity(), ConfigPagerSheet.CallBack
         TransitionManager.beginDelayedTransition(binding.root, transition)
         binding.mangaReaderBottomSheet.isGone = isHide
         binding.mangaReaderToolbar.isGone = isHide
+        binding.mangaReaderPageIndicator.isVisible = isHide
         if (isHide) {
             windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
             windowInsetsController.systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         } else {
-            windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
         }
 
     }

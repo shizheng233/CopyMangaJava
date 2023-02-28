@@ -20,10 +20,7 @@ abstract class BaseReaderViewHolder<VB : ViewBinding>(
     protected val delegate = PageHolderDelegate(imageLoader, this)
 
 
-    fun bind(url: String, onHolderImageClick: (View) -> Unit) {
-        onBind(url) {
-            onHolderImageClick.invoke(it)
-        }
+    fun bind(url: String) {
         delegate.onBind(url)
     }
 
@@ -31,6 +28,6 @@ abstract class BaseReaderViewHolder<VB : ViewBinding>(
         delegate.onRecycler()
     }
 
-    abstract fun onBind(url: String, onHolderImageClick: (View) -> Unit)
+    abstract fun onBind(url: String)
 
 }

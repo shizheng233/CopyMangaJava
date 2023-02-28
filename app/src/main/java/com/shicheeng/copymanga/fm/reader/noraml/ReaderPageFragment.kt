@@ -16,7 +16,6 @@ import kotlinx.coroutines.async
 open class ReaderPageFragment : BaseReader<FragmentReaderNormalBinding>() {
 
     private var pageAdapter: ReaderPageAdapter? = null
-    private var hide: Boolean = false
 
     override fun onCreateViewInflater(
         inflater: LayoutInflater,
@@ -27,15 +26,6 @@ open class ReaderPageFragment : BaseReader<FragmentReaderNormalBinding>() {
         super.onViewCreated(view, savedInstanceState)
         binding.mangaReaderViewpager2.layoutDirection = changeDirection()
         pageAdapter = ReaderPageAdapter(viewLifecycleOwner, viewModel.pagerLoaderIn)
-        pageAdapter?.setOnItemClickListener { _, _ ->
-            viewModel.menuHide(hide)
-            hide = !hide
-        }
-
-        pageAdapter?.setOnViewHolderImageClickListener {
-            viewModel.menuHide(hide)
-            hide = !hide
-        }
 
         with(binding.mangaReaderViewpager2) {
             adapter = pageAdapter
@@ -49,7 +39,6 @@ open class ReaderPageFragment : BaseReader<FragmentReaderNormalBinding>() {
 
             })
         }
-
     }
 
     open fun changeDirection(): Int {

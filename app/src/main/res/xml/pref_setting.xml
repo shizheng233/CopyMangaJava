@@ -24,6 +24,18 @@
 
     <PreferenceCategory app:title="@string/system">
 
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="key_touch_quick"
+            app:summary="@string/quick_touch_summary"
+            app:title="@string/quick_touch" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="disable_update"
+            app:summary="@string/disable_update_summary"
+            app:title="@string/disable_update_detect" />
+
         <Preference
             app:key="key_clear_cache"
             app:title="@string/clear_cache" />
@@ -31,6 +43,7 @@
         <Preference
             app:key="key_clear_cache_pager"
             app:title="@string/clear_pager_cache" />
+
 
     </PreferenceCategory>
 

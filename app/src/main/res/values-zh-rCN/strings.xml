@@ -108,4 +108,12 @@
     <string name="local">本地加载</string>
     <string name="in_loading_next_chapter">加载章节中</string>
     <string name="personal">个人</string>
+    <string name="quick_touch">快速点击</string>
+    <string name="quick_touch_summary">点击屏幕上下部分来翻页</string>
+    <string name="new_version">有更新</string>
+    <string name="update">更新</string>
+    <string name="website_look">查看网页</string>
+    <string name="version_name">版本 -></string>
+    <string name="disable_update_detect">暂停更新</string>
+    <string name="disable_update_summary">有可能会错误某些重要的修复</string>
 </resources>

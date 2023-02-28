@@ -289,8 +289,7 @@ class MainFragment : Fragment(), View.OnAttachStateChangeListener {
                 beanManga.authorManga = mangaAuthor
                 myList1.add(beanManga)
             }
-            val adapter1 =
-                RecyclerViewMangaAdapter(myList1)
+            val adapter1 = RecyclerViewMangaAdapter(myList1)
             adapter1.setOnItemClickListener { v, position ->
                 val bundle = bundleOf(KeyWordSwap.PATH_WORD_TYPE to myList1[position].pathWordManga)
                 v?.findNavController()?.navigate(R.id.infoFragment, bundle)
@@ -315,8 +314,7 @@ class MainFragment : Fragment(), View.OnAttachStateChangeListener {
                 beanManga.authorManga = mangaAuthorList
                 myList1.add(beanManga)
             }
-            val adapter2 =
-                RecyclerViewMangaAdapter(myList1)
+            val adapter2 = RecyclerViewMangaAdapter(myList1)
             adapter2.setOnItemClickListener { v, position ->
                 val bundle = bundleOf(KeyWordSwap.PATH_WORD_TYPE to myList1[position].pathWordManga)
                 v?.findNavController()?.navigate(R.id.infoFragment, bundle)

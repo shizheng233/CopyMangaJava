@@ -20,7 +20,6 @@ import kotlinx.coroutines.async
 class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 
     private var webtoonReaderAdapter: WebtoonReaderAdapter? = null
-    private var hide: Boolean = false
     private val scrollInterpolator = AccelerateDecelerateInterpolator()
 
     override fun onCreateViewInflater(
@@ -33,14 +32,6 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         webtoonReaderAdapter = WebtoonReaderAdapter(viewLifecycleOwner, viewModel.pagerLoaderIn)
-        webtoonReaderAdapter?.setOnItemClickListener { s, p ->
-            viewModel.menuHide(hide)
-            hide = !hide
-        }
-        webtoonReaderAdapter?.setOnViewHolderImageClickListener {
-            viewModel.menuHide(hide)
-            hide = !hide
-        }
 
         with(binding.mangaReaderWebtoonRecyclerview) {
             setHasFixedSize(true)

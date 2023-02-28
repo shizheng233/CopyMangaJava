@@ -2,16 +2,15 @@
 
 package com.shicheeng.copymanga.util
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Parcelable
 import android.util.TypedValue
-import android.view.MotionEvent
+import android.view.View
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.selection.SelectionTracker
@@ -29,6 +28,7 @@ import com.shicheeng.copymanga.adapter.MangaListAdapter
 import com.shicheeng.copymanga.adapter.MangaLoadStateAdapter
 import com.shicheeng.copymanga.data.ChipTextBean
 import java.text.SimpleDateFormat
+import java.time.Instant
 import java.util.*
 
 fun JsonArray.authorNameReformation(): String =
@@ -173,18 +173,48 @@ fun Long.formNumberToRead(): String {
 }
 
 /**
+ * Time convert
+ */
+fun String.timeStampConvert(): String {
+    val sfd = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.ROOT)
+    val timeStamp = Instant.parse(this).toEpochMilli()
+    return sfd.format(timeStamp)
+}
+
+/**
+ * Copy from Kotatsu
+ */
+fun View.hasGlobalPoint(x: Int, y: Int): Boolean {
+    if (visibility != View.VISIBLE) {
+        return false
+    }
+    val rect = Rect()
+    getGlobalVisibleRect(rect)
+    return rect.contains(x, y)
+}
+
+/**
  * Format long to Time
  *
  * The format -> 2023/2/22 12:15
  */
 fun Long.toTimeReadable(): String {
     val date = Date(this)
-    val sfd = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.CHINESE)
+    val sfd = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.ROOT)
     return sfd.format(date)
 }
 
 fun RecyclerView.gridLayout(spanCount: Int): GridLayoutManager =
     GridLayoutManager(context, spanCount, RecyclerView.VERTICAL, false)
+
+/**
+ * Copy from Kotatsu
+ */
+fun <T> Collection<T>.asArrayList(): ArrayList<T> = if (this is ArrayList<*>) {
+    this as ArrayList<T>
+} else {
+    ArrayList(this)
+}
 
 fun interface BufferedObserver<T> {
     fun onChanged(t: T, prev: T?)

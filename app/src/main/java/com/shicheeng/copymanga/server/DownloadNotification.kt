@@ -9,6 +9,7 @@ import android.util.SparseArray
 import androidx.core.app.NotificationCompat
 import androidx.core.util.forEach
 import androidx.core.util.isNotEmpty
+import androidx.navigation.NavDeepLinkBuilder
 import com.shicheeng.copymanga.R
 
 class DownloadNotification(
@@ -22,6 +23,15 @@ class DownloadNotification(
     private val downloadGroupIDINT = 0x121A
     private val states = SparseArray<DownloadStateChapter>()
     private val groupNotification = NotificationCompat.Builder(context, channelId)
+    private val listPending = NavDeepLinkBuilder(context)
+        .setGraph(R.navigation.main_nav)
+        .setDestination(R.id.downloadInfoFragment)
+        .createPendingIntent()
+    private val downloadPending = NavDeepLinkBuilder(context)
+        .setGraph(R.navigation.main_nav)
+        .setDestination(R.id.downloadFragment)
+        .createPendingIntent()
+
 
     init {
         groupNotification.setSilent(true)
@@ -96,6 +106,8 @@ class DownloadNotification(
                 states.size().toString()
             )
         )
+        groupNotification.setContentIntent(if (!isAllDone) listPending else downloadPending)
+        groupNotification.setAutoCancel(isAllDone)
         groupNotification.setNumber(states.size())
         groupNotification.setSmallIcon(
             if (isInProgress) android.R.drawable.stat_sys_download else android.R.drawable.stat_sys_download_done,
@@ -157,6 +169,7 @@ class DownloadNotification(
         fun notify(state: DownloadStateChapter) {
             notification.setContentTitle(state.chapter.mangaName)
             notification.clearActions()
+            notification.setContentIntent(listPending)
             when (state) {
                 is DownloadStateChapter.WAITING -> {
                     notification.setOngoing(true)
@@ -190,7 +203,7 @@ class DownloadNotification(
                     notification.setWhen(System.currentTimeMillis())
                 }
                 is DownloadStateChapter.ERROR -> {
-                    Log.e("TAG_ERROR", "notify: ${state.error}", )
+                    Log.e("TAG_ERROR", "notify: ${state.error}")
                     notification.setOngoing(false)
                     notification.setContentText(state.error.message)
                     notification.setProgress(0, 0, false)

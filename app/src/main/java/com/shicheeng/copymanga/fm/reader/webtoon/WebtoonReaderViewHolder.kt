@@ -1,7 +1,6 @@
 package com.shicheeng.copymanga.fm.reader.webtoon
 
 import android.net.Uri
-import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.davemorrissey.labs.subscaleview.ImageSource
@@ -17,19 +16,15 @@ class WebtoonReaderViewHolder(
 ) :
     BaseReaderViewHolder<ItemPageWebtoonBinding>(itemPageWebtoonBinding, imageLoader) {
 
+    private var url: String? = null
+
     init {
         binding.bivPagerWebtoon.bindToLifecycle(owner)
         binding.bivPagerWebtoon.regionDecoderFactory = SkiaPooledImageRegionDecoder.Factory()
         binding.bivPagerWebtoon.addOnImageEventListener(delegate)
     }
 
-    private var url: String? = null
-
-    override fun onBind(url: String, onHolderImageClick: (View) -> Unit) {
-
-        binding.bivPagerWebtoon.setOnClickListener {
-            onHolderImageClick.invoke(it)
-        }
+    override fun onBind(url: String) {
         this.url = url
     }
 

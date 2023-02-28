@@ -107,10 +107,18 @@
     <string name="download_manga">Download</string>
     <string name="download_is_empty">Download items is empty</string>
     <string name="see_the_download">See the downloading content</string>
-    <string name="manga_mode_l_t_r">Manga mode: L to R</string>
+    <string name="manga_mode_l_t_r">Reader mode: left to right</string>
     <string name="reader_mode_tip">Select the Reader mode</string>
     <string name="local">Local</string>
     <string name="in_loading_next_chapter">Loading chapter</string>
     <string name="chapter_page_indicator" translatable="false">%d / %d</string>
     <string name="personal">Personal</string>
+    <string name="quick_touch">Quick touch</string>
+    <string name="quick_touch_summary">Tap the bottom of srceen to scroll page</string>
+    <string name="new_version">New version was found</string>
+    <string name="update">Update</string>
+    <string name="website_look">Website</string>
+    <string name="version_name">Version -></string>
+    <string name="disable_update_detect">Disable detect new version</string>
+    <string name="disable_update_summary">Maybe miss some important fixes</string>
 </resources>

@@ -33,6 +33,8 @@ public class ApiName {
     private static final String mangaUser4Collect = "https://copymanga.net/api/v2/web/collect";
     private static final String mangaBrowses = "https://copymanga.com/api/kb/web/browses?limit=12&offset=0&free_type=1&format=json";
 
+    public static final String updateMetadata = "https://api.github.com/repos/shizheng233/CopyMangaJava/releases?page=1&per_page=10";
+
     /**
      * 漫画搜索的api
      *

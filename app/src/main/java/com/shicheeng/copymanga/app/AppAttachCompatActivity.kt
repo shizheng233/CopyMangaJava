@@ -9,9 +9,9 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.MaterialToolbar
 
 open class AppAttachCompatActivity : AppCompatActivity() {
+
 
     fun windowsPaddingUp(viewRoot: View, bar: AppBarLayout) {
         ViewCompat.setOnApplyWindowInsetsListener(viewRoot) { view: View, windowInsetsCompat: WindowInsetsCompat ->
@@ -26,13 +26,19 @@ open class AppAttachCompatActivity : AppCompatActivity() {
         }
     }
 
-    inline fun windowsInsets(root: View, crossinline update: (v: View, insets: Insets) -> Unit) {
+    inline fun windowsInsets(
+        root: View,
+        crossinline update: (v: View, insets: Insets, gestureInsets: Insets) -> Unit,
+    ) {
         ViewCompat.setOnApplyWindowInsetsListener(root) { view: View, windowInsetsCompat: WindowInsetsCompat ->
             val insets = windowInsetsCompat.getInsets(WindowInsetsCompat.Type.systemBars())
-            update(view, insets)
+            val systemGestureInsets =
+                windowInsetsCompat.getInsets(WindowInsetsCompat.Type.systemGestures())
+            update(view, insets, systemGestureInsets)
             WindowInsetsCompat.CONSUMED
         }
     }
+
 
     protected open fun onInsetsAttach(insets: Insets) {
 

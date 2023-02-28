@@ -349,7 +349,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialiconsoutlined/warning/outline_warning_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/security_update/baseline_security_update_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -359,7 +359,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_outline_warning_24" />
+                            <entry key="outputName" value="baseline_security_update_24" />
                             <entry key="sourceFile" value="C:\Users\ShihCheeng\AndroidStudioProjects\CopyMangaJava" />
                           </map>
                         </option>

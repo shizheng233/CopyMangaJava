@@ -13,8 +13,12 @@ class WebtoonReaderAdapter(
 ) : BaseReaderAdapter<WebtoonReaderViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): WebtoonReaderViewHolder =
-        WebtoonReaderViewHolder(ItemPageWebtoonBinding.inflate(LayoutInflater.from(parent.context),
-            parent,
-            false), imageLoader, owner)
+        WebtoonReaderViewHolder(
+            ItemPageWebtoonBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            ), imageLoader, owner
+        )
 
 }
