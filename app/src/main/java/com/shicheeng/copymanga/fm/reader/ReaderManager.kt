@@ -7,7 +7,7 @@ import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.fm.reader.noraml.ReaderPageFragment
 import com.shicheeng.copymanga.fm.reader.standard.ReaderPagerStandardFragment
 import com.shicheeng.copymanga.fm.reader.webtoon.WebtoonReaderFragment
-import java.util.*
+import java.util.EnumMap
 
 class ReaderManager(
     private val supportFragmentManager: FragmentManager,
@@ -54,7 +54,7 @@ enum class ReaderMode(@IdRes val id: Int) {
     STANDARD(R.string.manga_mode_l_t_r);
 
     companion object {
-        fun idOf(id: Int) = values().firstOrNull{
+        fun idOf(id: Int?) = values().firstOrNull {
             it.id == id
         }
     }

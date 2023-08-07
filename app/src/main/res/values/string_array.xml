@@ -6,10 +6,18 @@
         <item>@string/manga_mode_l_t_r</item>
     </string-array>
 
-    <integer-array name="orientation_array_value">
-        <item>@string/japanese_r_to_l</item>
-        <item>@string/korea_chinese_top_to_bottom</item>
-        <item>@string/manga_mode_l_t_r</item>
-    </integer-array>
+    <string-array name="api_header">
+        <item>copymanga.org</item>
+        <item>copymanga.info</item>
+        <item>copymanga.net</item>
+        <item>copymanga.site</item>
+    </string-array>
+
+    <string-array name="api_header_value">
+        <item>copymanga.org</item>
+        <item>copymanga.info</item>
+        <item>copymanga.net</item>
+        <item>copymanga.site</item>
+    </string-array>
 
 </resources>

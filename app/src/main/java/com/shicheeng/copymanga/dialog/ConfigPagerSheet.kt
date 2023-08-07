@@ -22,7 +22,7 @@ class ConfigPagerSheet : BottomSheetDialogFragment(),
         super.onCreate(savedInstanceState)
         mode = arguments?.getInt(MODE_BUNDLE)?.let {
             ReaderMode.idOf(it)
-        } ?: ReaderMode.STANDARD
+        } ?: ReaderMode.NORMAL
     }
 
     override fun onCreateView(
@@ -65,7 +65,7 @@ class ConfigPagerSheet : BottomSheetDialogFragment(),
         mode = newMode
     }
 
-    private fun findCallBackSetMode():CallBack? {
+    private fun findCallBackSetMode(): CallBack? {
         return (parentFragment as? CallBack) ?: (activity as? CallBack)
     }
 

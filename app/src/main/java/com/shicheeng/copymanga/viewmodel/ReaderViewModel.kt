@@ -1,38 +1,68 @@
 package com.shicheeng.copymanga.viewmodel
 
-import android.content.SharedPreferences
 import androidx.annotation.AnyThread
-import androidx.lifecycle.*
-import com.shicheeng.copymanga.data.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.shicheeng.copymanga.data.MangaHistoryDataModel
+import com.shicheeng.copymanga.data.MangaReaderPage
+import com.shicheeng.copymanga.data.MangaState
+import com.shicheeng.copymanga.data.ReaderContent
+import com.shicheeng.copymanga.data.ReaderState
+import com.shicheeng.copymanga.data.local.LocalChapter
+import com.shicheeng.copymanga.data.local.toMangaState
 import com.shicheeng.copymanga.fm.domain.ChapterLoader
 import com.shicheeng.copymanga.fm.domain.PagerLoader
 import com.shicheeng.copymanga.fm.reader.ReaderMode
 import com.shicheeng.copymanga.resposity.MangaHistoryRepository
+import com.shicheeng.copymanga.resposity.MangaInfoRepository
+import com.shicheeng.copymanga.ui.screen.setting.SettingPref
 import com.shicheeng.copymanga.util.FileUtil
-import kotlinx.coroutines.*
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import javax.inject.Provider
+import javax.inject.Singleton
+import kotlin.collections.set
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-class ReaderViewModel(
+/**
+ * @param pagerLoader 为创建多个实例，请勿使用[Singleton]注解。并使用[Provider]多次提供。
+ */
+class ReaderViewModel @AssistedInject constructor(
     private val repository: MangaHistoryRepository,
-    private val sharedPreferences: SharedPreferences,
-    private val pagerLoader: PagerLoader,
-    private val fileUtil: FileUtil,
-    private val list: Array<MangaInfoChapterDataBean>,
-    private val initChapter: MangaInfoChapterDataBean,
+    pagerLoader: Provider<PagerLoader>,
+    private val settingPref: SettingPref,
+    @Assisted private val fileUtil: FileUtil,
+    @Assisted("path_word") private val currentPathWord: String?,
+    @Assisted("uuid") private val currentChapterUUID: String?,
+    private val mangaInfoRepository: MangaInfoRepository,
 ) : ViewModel() {
 
 
-    private val chapterLoader = ChapterLoader(fileUtil)
+    private val list by lazy {
+        runBlocking {
+            mangaInfoRepository.fetchMangaChapters(
+                pathWord = requireNotNull(currentPathWord)
+            )
+        }
+    }
+
+    private val initChapter = list.find { x -> x.uuid == currentChapterUUID } ?: list[0]
+    private val chapterLoader = ChapterLoader(fileUtil, mangaInfoRepository)
     private var loadJob: Job? = null
-    private val chapters: LinkedHashMap<String, MangaInfoChapterDataBean> get() = chapterLoader.chapters
-
-    private val _pagePosition = MutableLiveData<Int>()
-
-    private val _hide = MutableLiveData(false)
-    val hide: LiveData<Boolean> = _hide
+    private val chapters: LinkedHashMap<String, LocalChapter> get() = chapterLoader.chapters
 
     private val _loadingCounter = MutableLiveData(false)
     val loadingCounter: LiveData<Boolean> get() = _loadingCounter
@@ -41,11 +71,11 @@ class ReaderViewModel(
     val errorHandler: LiveData<Throwable> get() = _errorHandler
 
     val information = MutableLiveData<ReaderState>(null)
-    val historyData = MutableLiveData<MangaHistoryDataModel?>(null)
+    private val historyData = MutableLiveData<MangaHistoryDataModel?>(null)
     val state = MutableStateFlow(initChapter.toMangaState())
     val mangaContent = MutableLiveData(ReaderContent(emptyList(), null))
     val readerModel = MutableLiveData<ReaderMode>()
-    val pagerLoaderIn = pagerLoader
+    val pagerLoaderIn: PagerLoader = pagerLoader.get()
 
     init {
         loadImp()
@@ -56,16 +86,6 @@ class ReaderViewModel(
         loadJob?.cancel()
         loadImp()
     }
-
-    fun insertOrUpdateHistory(mangaHistoryDataModel: MangaHistoryDataModel) =
-        viewModelScope.launch {
-            repository.addOrUpdateHistory(
-                mangaHistoryDataModel.pathWord,
-                mangaHistoryDataModel,
-                this
-            )
-        }
-
 
     private fun loadPrevNextChapter(uuid: String?, isNext: Boolean) {
         loadJob = loadJop(Dispatchers.Default) {
@@ -89,7 +109,6 @@ class ReaderViewModel(
 
     fun onPagePositionChange(position: Int) {
         val pages = mangaContent.value?.list ?: return
-        _pagePosition.postValue(position)
         pages.getOrNull(position)?.let {
             state.update { mangaState ->
                 mangaState.copy(uuid = it.uuid ?: return, page = it.index)
@@ -102,7 +121,7 @@ class ReaderViewModel(
     }
 
     override fun onCleared() {
-        pagerLoader.close()
+        pagerLoaderIn.close()
         super.onCleared()
     }
 
@@ -110,23 +129,27 @@ class ReaderViewModel(
     private fun onInfoChange() {
         val state = getCurrentReaderState()
         val chapter = state.uuid.let(chapters::get)
-        val positionChapter = list.indexOfFirst { it.uuidText == state.uuid }
+        val positionChapter = list.indexOfFirst { it.uuid == state.uuid }
         val readerState = ReaderState(
-            chapterName = chapter?.chapterTitle,
-            subTime = chapter?.chapterTime,
-            uuid = chapter?.uuidText,
-            totalPage = if (chapter == null) 0 else chapterLoader[chapter.uuidText],
+            chapterName = chapter?.name,
+            subTime = chapter?.datetime_created,
+            uuid = chapter?.uuid,
+            totalPage = if (chapter == null) 0 else chapterLoader[chapter.uuid],
             currentPage = state.page,
-            chapterPosition = positionChapter
+            chapterPosition = positionChapter,
+            mangaName = historyData.value?.name
         )
         information.postValue(readerState)
-    }
-
-    fun menuHide() {
-        if (_hide.value == true) {
-            _hide.postValue(false)
-        } else {
-            _hide.postValue(true)
+        viewModelScope.launch {
+            val newHistoryData = historyData.value
+                ?.copy(
+                    positionPage = state.page,
+                    positionChapter = positionChapter,
+                    time = System.currentTimeMillis()
+                )
+            if (newHistoryData != null) {
+                repository.update(newHistoryData)
+            }
         }
     }
 
@@ -136,11 +159,15 @@ class ReaderViewModel(
         }
     }
 
+
     fun switchMode(readerMode: ReaderMode) = viewModelScope.launch {
         readerModel.value = readerMode
         mangaContent.value?.run {
             mangaContent.value = copy(state = getCurrentReaderState())
         }
+        val renew = historyData.value?.copy(readerModeId = readerMode.id) ?: return@launch
+        repository.update(renew)
+        historyData.postValue(renew)
     }
 
     fun switchChapter(uuid: String?) {
@@ -149,31 +176,46 @@ class ReaderViewModel(
             loadJob = loadJop(Dispatchers.Default) {
                 prevJob?.cancelAndJoin()
                 mangaContent.postValue(ReaderContent(emptyList(), null))
-                chapterLoader.loadSingleChapter(initChapter.pathWord, uuid)
+                chapterLoader.loadSingleChapter(initChapter.comicPathWord, uuid)
                 mangaContent.postValue(ReaderContent(chapterLoader.snapshot(), MangaState(uuid, 0)))
             }
+        }
+    }
+
+    fun saveLocalChapterState(int: Int) {
+        viewModelScope.launch {
+            val currentChapter =
+                list.find { it.uuid == getCurrentReaderState().uuid } ?: return@launch
+            val newChapterTemp = currentChapter.copy(
+                readIndex = int,
+                isReadProgress = int != 0
+            )
+            repository.updateLocalChapter(newChapterTemp)
         }
     }
 
     private fun loadImp() {
         loadJob = loadJop(Dispatchers.Default) {
             list.forEach {
-                chapters[it.uuidText] = it
+                chapters[it.uuid] = it
             }
-            loadHistory(initChapter.pathWord)
-            val mode = when (sharedPreferences.getString(
-                "pref_orientation_key", ReaderMode.NORMAL.name
-            )) {
-                ReaderMode.NORMAL.name -> ReaderMode.NORMAL
-                ReaderMode.WEBTOON.name -> ReaderMode.WEBTOON
-                ReaderMode.STANDARD.name -> ReaderMode.STANDARD
-                else -> return@loadJop
-            }
+            loadHistory(initChapter.comicPathWord)
+            val mode = detectReaderMode()
             readerModel.postValue(mode)
-            chapterLoader.loadSingleChapter(initChapter.pathWord, state.value.uuid)
+            chapterLoader.loadSingleChapter(initChapter.comicPathWord, state.value.uuid)
             onInfoChange()
             mangaContent.postValue(ReaderContent(chapterLoader.snapshot(), state.value))
         }
+    }
+
+    /**
+     * 检测漫画模式
+     */
+    private suspend fun detectReaderMode(): ReaderMode {
+        val modeId = repository.getHistoryByMangaPathWord(
+            currentPathWord ?: initChapter.comicPathWord
+        )?.readerModeId
+        return ReaderMode.idOf(modeId) ?: ReaderMode.valueOf(settingPref.readerMode)
     }
 
     private fun loadJop(
@@ -191,43 +233,15 @@ class ReaderViewModel(
         }
     }
 
-}
-
-
-class ReaderViewModelFactory(
-    private val repository: MangaHistoryRepository,
-    private val sharedPreferences: SharedPreferences,
-    private val pagerLoader: PagerLoader,
-    private val fileUtil: FileUtil,
-    private val list: Array<MangaInfoChapterDataBean>,
-    private val initChapter: MangaInfoChapterDataBean,
-) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ReaderViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return ReaderViewModel(
-                repository,
-                sharedPreferences,
-                pagerLoader,
-                fileUtil,
-                list,
-                initChapter,
-            ) as T
-        }
-        throw IllegalArgumentException("UNKNOWN MODEL CLASS")
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            fileUtil: FileUtil,
+            @Assisted("path_word") currentPathWord: String?,
+            @Assisted("uuid") currentChapterUUID: String?,
+        ): ReaderViewModel
     }
+
 }
 
-fun MangaHistoryRepository.addOrUpdateHistory(
-    pathWord: String,
-    mangaHistoryDataModel: MangaHistoryDataModel,
-    coroutineScope: CoroutineScope,
-): Job = coroutineScope.launch {
-    if (getHistoryByMangaPathWord(pathWord) != null) {
-        update(mangaHistoryDataModel)
-    } else {
-        insert(mangaHistoryDataModel)
-    }
-}
 

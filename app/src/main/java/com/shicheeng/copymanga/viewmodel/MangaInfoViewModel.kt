@@ -1,116 +1,172 @@
 package com.shicheeng.copymanga.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.google.gson.JsonObject
-import com.shicheeng.copymanga.data.*
-import com.shicheeng.copymanga.fm.delegate.InfoDataDelegate
-import com.shicheeng.copymanga.json.MangaInfoJson
+import com.shicheeng.copymanga.data.MangaHistoryDataModel
+import com.shicheeng.copymanga.data.local.LocalChapter
 import com.shicheeng.copymanga.resposity.MangaHistoryRepository
-import com.shicheeng.copymanga.util.FileUtil
-import kotlinx.coroutines.Dispatchers
+import com.shicheeng.copymanga.resposity.MangaInfoRepository
+import com.shicheeng.copymanga.ui.screen.setting.SettingPref
+import com.shicheeng.copymanga.util.UIState
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class MangaInfoViewModel(
-    private val pathWord: String,
+@OptIn(ExperimentalCoroutinesApi::class)
+class MangaInfoViewModel @AssistedInject constructor(
+    @Assisted private val pathWord: String,
     private val repository: MangaHistoryRepository,
-    fileUtil: FileUtil,
+    private val infoRepository: MangaInfoRepository,
+    private val setting: SettingPref,
 ) : ViewModel() {
 
-    sealed class UiState {
-        data class Success(val data: MangaInfo) : UiState()
-        object Loading : UiState()
-        data class Error(val error: Exception) : UiState()
-    }
+    private val _historyFlowChapter = repository.fetchMangaChapterByPathWordFlow(pathWord)
 
+    private val _chapter = MutableStateFlow<UIState<List<LocalChapter>>>(UIState.Loading)
+    val chapters = _chapter.asStateFlow()
+    private val _mangaInfo = MutableStateFlow<UIState<MangaHistoryDataModel>>(UIState.Loading)
+    val mangaInfo = _mangaInfo.asStateFlow()
 
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
-    val uiState = _uiState.asStateFlow()
+    private val _selectedChapter = MutableStateFlow<List<LocalChapter>>(emptyList())
+    val selectChapter = _selectedChapter.asStateFlow()
 
-    private val _chapterHistory = MutableStateFlow<MangaHistoryDataModel?>(null)
-    private val chapterHistory = _chapterHistory.asStateFlow()
-    private val _mangaChapters = MutableStateFlow<JsonObject?>(null)
-    private val mangaChapters = _mangaChapters.asStateFlow()
+    val lastWatchChapter = combine(
+        flow = _chapter,
+        flow2 = _mangaInfo
+    ) { uiStateChapter: UIState<List<LocalChapter>>, uiStateInfo: UIState<MangaHistoryDataModel> ->
+        when {
+            uiStateChapter is UIState.Success && uiStateInfo is UIState.Success -> {
+                if (uiStateChapter.content.isNotEmpty()){
+                    uiStateChapter.content[uiStateInfo.content.positionChapter]
+                }else null
+            }
+            else -> {
+                null
+            }
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = null
+    )
 
-    private val delegate = InfoDataDelegate(pathWord, fileUtil)
-
-    val chaptersModel = combine(chapterHistory, mangaChapters) { history, chapters ->
-        Log.i("TAG-CHAPTER", ": $chapterHistory")
-        delegate.mapChapters(history, chapters ?: JsonObject())
-    }.asLiveData(viewModelScope.coroutineContext)
 
     init {
-        onDataLoad()
-        onHistoryWanna()
+        onInfoLoad()
+        onChapterLoad()
+        viewModelScope.launch {
+            repository.fetchMangaChapterByPathWordFlow(pathWord).collectLatest {
+                it?.let {
+                    _chapter.emit(UIState.Success(it))
+                }
+            }
+
+        }
     }
 
-    fun onDataLoad() = viewModelScope.launch {
-
-        _uiState.emit(UiState.Loading)
+    fun onInfoLoad() = viewModelScope.launch {
+        _chapter.emit(UIState.Loading)
         try {
-            withContext(Dispatchers.Default) {
-                val mangaInfoContent = MangaInfoJson.getMangaInfo(pathWord)
-                val mangaChapterContent = MangaInfoJson.getMangaContent(pathWord)
-                Log.i("TAG.LOAD LIST", "onDataLoad: $mangaChapterContent")
-                val mangaHistory = repository.getHistoryByMangaPathWord(pathWord)
-                _mangaChapters.emit(mangaChapterContent)
-                _chapterHistory.emit(mangaHistory)
-                _uiState.emit(
-                    UiState.Success(
-                        MangaInfo(
-                            mangaHistory,
-                            mangaChapterContent,
-                            mangaInfoContent
-                        )
-                    )
-                )
-            }
+            val mangaInfoContent = infoRepository.fetchMangaInfo(pathWord)
+            _mangaInfo.emit(UIState.Success(mangaInfoContent))
         } catch (e: Exception) {
-            _uiState.emit(UiState.Error(e))
+            e.printStackTrace()
+            _mangaInfo.emit(UIState.Error(e))
         }
-
     }
 
-    fun onHistoryWanna() = viewModelScope.launch {
-        try {
-            withContext(Dispatchers.IO) {
-                val mangaHistory = repository.getHistoryByMangaPathWord(pathWord)
-                _chapterHistory.emit(mangaHistory)
+    fun selectItem(item: LocalChapter, isAdd: Boolean) = viewModelScope.launch {
+        _selectedChapter.update {
+            if (isAdd) {
+                it.plus(item)
+            } else {
+                it.minus(item)
             }
-        } catch (_: Exception) {
-
         }
     }
 
-}
+    fun deselectedAllItem() {
+        _selectedChapter.update {
+            emptyList()
+        }
+    }
 
-class MangaInfoViewModelFactory(
-    private val pathWord: String,
-    private val repository: MangaHistoryRepository,
-    private val fileUtil: FileUtil,
-) :
-    ViewModelProvider.Factory {
+    fun selectFirst5(): List<LocalChapter>? {
+        return if (chapters.value is UIState.Success) {
+            (chapters.value as UIState.Success).content.take(5)
+        } else null
+    }
 
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MangaInfoViewModel::class.java)) {
+    fun selectLast5(): List<LocalChapter>? {
+        return if (chapters.value is UIState.Success) {
+            (chapters.value as UIState.Success).content.takeLast(5)
+        } else null
+    }
+
+    private fun onChapterLoad() = viewModelScope.launch {
+        try {
+            _chapter.emit(UIState.Loading)
+            val mangaChapter = infoRepository.fetchMangaChapters(pathWord)
+            _chapter.emit(UIState.Success(mangaChapter))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _chapter.emit(UIState.Error(e))
+        }
+    }
+
+    fun chapterLoadForce() = viewModelScope.launch {
+        try {
+            _chapter.emit(UIState.Loading)
+            _mangaInfo.emit(UIState.Success(infoRepository.fetchMangaInfoForce(pathWord)))
+            _chapter.emit(UIState.Success(infoRepository.fetchMangaChaptersForce(pathWord)))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _chapter.emit(UIState.Error(e))
+        }
+    }
+
+    fun comicUpdate(enable: Boolean) = viewModelScope.launch {
+        repository.getHistoryByMangaPathWord(pathWord)?.let {
+            val newData = it.copy(isSubscribe = enable)
+            repository.update(newData)
+            _mangaInfo.emit(UIState.Success(newData))
+        }
+    }
+
+    fun enableComicUpdate(enable: Boolean) {
+        setting.enableComicsUpdateFetch(enable)
+    }
+
+
+    @AssistedFactory
+    interface InfoViewModelFactory {
+        fun create(
+            pathWord: String,
+        ): MangaInfoViewModel
+    }
+
+    companion object {
+        fun provideAssistedViewModel(
+            assistedInject: InfoViewModelFactory,
+            pathWord: String,
+        ) = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
-            return MangaInfoViewModel(pathWord, repository, fileUtil) as T
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return assistedInject.create(pathWord) as T
+            }
         }
-        throw IllegalArgumentException("ERROR VIEW MODEL CLASS")
     }
 
 }
 
-data class MangaInfo(
-    val mangaHistory: MangaHistoryDataModel?,
-    val mangaChapterContent: JsonObject?,
-    val info: MangaInfoData,
-)
 

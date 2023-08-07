@@ -13,8 +13,10 @@ class WebtoonReaderViewHolder(
     itemPageWebtoonBinding: ItemPageWebtoonBinding,
     imageLoader: PagerLoader,
     owner: LifecycleOwner,
-) :
-    BaseReaderViewHolder<ItemPageWebtoonBinding>(itemPageWebtoonBinding, imageLoader) {
+) : BaseReaderViewHolder<ItemPageWebtoonBinding>(
+    binding = itemPageWebtoonBinding,
+    imageLoader = imageLoader
+) {
 
     private var url: String? = null
 
@@ -39,7 +41,9 @@ class WebtoonReaderViewHolder(
             errorTextLayout.isVisible = true
             errorTextTipDesc.text = e.message
             btnErrorRetry.setOnClickListener {
-                url?.let { it1 -> delegate.retry(it1) }
+                url?.let { it1 ->
+                    delegate.retry(it1)
+                }
             }
         }
         bindingInfo.loadIndicator.isVisible = false

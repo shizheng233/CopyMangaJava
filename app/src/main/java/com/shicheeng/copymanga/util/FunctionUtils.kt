@@ -1,20 +1,38 @@
-@file:Suppress("DEPRECATION")
-
 package com.shicheeng.copymanga.util
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.os.Parcelable
+import android.provider.Settings
 import android.util.TypedValue
 import android.view.View
+import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.annotation.ColorInt
+import androidx.annotation.MainThread
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.recyclerview.selection.SelectionTracker
-import androidx.recyclerview.widget.ConcatAdapter
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,30 +42,81 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
-import com.shicheeng.copymanga.adapter.MangaListAdapter
-import com.shicheeng.copymanga.adapter.MangaLoadStateAdapter
 import com.shicheeng.copymanga.data.ChipTextBean
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.*
 
+/**
+ * 将[JsonArray]转化为[String]对象。
+ */
 fun JsonArray.authorNameReformation(): String =
     if (size() == 1) get(0).asJsonObject["name"].asString else get(0).asJsonObject["name"].asString + " 等"
 
-fun GridLayoutManager.applySpanCountWithFooter(concatAdapter: ConcatAdapter) {
-    spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-        override fun getSpanSize(position: Int): Int {
-            return when (concatAdapter.getItemViewType(position)) {
-                MangaLoadStateAdapter.VIEW_TYPE_FOOTER -> 1
-                MangaListAdapter.VIEW_TYPE_MAIN -> 2
-                else -> 2
-            }
+
+fun String.checkJsonIsEmpty(): Boolean =
+    JsonParser.parseString(this).asJsonObject["results"].asJsonObject["list"].asJsonArray.isEmpty
+
+@MainThread
+inline fun <T> Flow<T>.collectRepeatLifecycle(
+    lifecycleOwner: LifecycleOwner,
+    crossinline collected: (T) -> Unit,
+) {
+    lifecycleOwner.lifecycle.coroutineScope.launch {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+            collectLatest { collected(it) }
         }
     }
 }
 
-fun String.checkJsonIsEmpty(): Boolean =
-    JsonParser.parseString(this).asJsonObject["results"].asJsonObject["list"].asJsonArray.isEmpty
+@MainThread
+inline fun <reified VM : ViewModel> Fragment.assistedViewModels(
+    noinline factoryProducer: () -> VM,
+): Lazy<VM> = viewModels {
+    object : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return requireNotNull(modelClass.cast(factoryProducer.invoke()))
+        }
+    }
+}
+
+@MainThread
+inline fun <reified VM : ViewModel> ComponentActivity.assistedViewModels(
+    noinline factoryProducer: () -> VM,
+): Lazy<VM> = viewModels {
+    object : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return requireNotNull(modelClass.cast(factoryProducer.invoke()))
+        }
+    }
+}
+
+fun PaddingValues.copy(
+    layoutDirection: LayoutDirection,
+    top: Dp = this.calculateTopPadding(),
+    bottom: Dp = this.calculateBottomPadding(),
+    start: Dp = this.calculateStartPadding(layoutDirection),
+    end: Dp = this.calculateEndPadding(layoutDirection),
+): PaddingValues {
+    return PaddingValues(start = start, top = top, end = end, bottom = bottom)
+}
+
+@Composable
+fun PaddingValues.copyComposable(
+    layoutDirection: LayoutDirection = LocalLayoutDirection.current,
+    top: Dp = this.calculateTopPadding(),
+    bottom: Dp = this.calculateBottomPadding(),
+    start: Dp = this.calculateStartPadding(layoutDirection),
+    end: Dp = this.calculateEndPadding(layoutDirection),
+): PaddingValues {
+    return PaddingValues(start = start, top = top, end = end, bottom = bottom)
+}
 
 /**
  *
@@ -81,6 +150,11 @@ inline fun <reified T : Drawable> T.copy(context: Context): T? {
     }
 }
 
+/**
+ * Refer from Kotatsu
+ *
+ * 新旧交替检测
+ */
 fun <T> LiveData<T>.observeWithPrevious(owner: LifecycleOwner, observer: BufferedObserver<T>) {
     var previous: T? = null
     this.observe(owner) {
@@ -89,8 +163,19 @@ fun <T> LiveData<T>.observeWithPrevious(owner: LifecycleOwner, observer: Buffere
     }
 }
 
-inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(key: String): T? {
-    return getParcelableExtra(key) as T?
+fun String.parserToJson(): JsonElement = JsonParser.parseString(this)
+
+/**
+ * 没有波纹动画的点击监听
+ */
+@OptIn(ExperimentalFoundationApi::class)
+fun Modifier.click(onClick: () -> Unit) = composed {
+    combinedClickable(
+        onClick = onClick,
+        onLongClick = null,
+        interactionSource = remember { MutableInteractionSource() },
+        indication = null
+    )
 }
 
 fun RecyclerView.findCurrentPagePosition(): Int {
@@ -138,35 +223,29 @@ fun ChipGroup.addChips(list: List<ChipTextBean>, onChipClick: ((Chip, String) ->
 
 fun String.parserAsJson(): JsonElement = JsonParser.parseString(this)
 
-fun SelectionTracker<Long>.addLongChangeObserver(onChange: () -> Unit) {
-    this.addObserver(object : SelectionTracker.SelectionObserver<Long>() {
-
-        override fun onSelectionChanged() {
-            super.onSelectionChanged()
-            onChange.invoke()
-        }
-
-    })
-}
-
 fun Long.formNumberToRead(): String {
 
     return when {
         this >= 1000000000 -> {
             String.format("%.2fB", this / 1000000000.0)
         }
+
         this >= 1000000 -> {
             String.format("%.2fM", this / 1000000.0)
         }
+
         this >= 100000 -> {
             String.format("%.2fL", this / 100000.0)
         }
+
         this >= 10000 -> {
             String.format("%.2fW", this / 10000.0)
         }
+
         this >= 1000 -> {
             String.format("%.2fK", this / 1000.0)
         }
+
         else -> this.toString()
     }
 
@@ -204,8 +283,16 @@ fun Long.toTimeReadable(): String {
     return sfd.format(date)
 }
 
-fun RecyclerView.gridLayout(spanCount: Int): GridLayoutManager =
-    GridLayoutManager(context, spanCount, RecyclerView.VERTICAL, false)
+fun Long.convertToTimeGroup(): String {
+    val sfd = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+    return sfd.format(Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()))
+}
+
+fun Long.convertToOnlyTime(): String {
+    val sfd = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+    return sfd.format(Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()))
+}
+
 
 /**
  * Copy from Kotatsu
@@ -219,3 +306,10 @@ fun <T> Collection<T>.asArrayList(): ArrayList<T> = if (this is ArrayList<*>) {
 fun interface BufferedObserver<T> {
     fun onChanged(t: T, prev: T?)
 }
+
+val Context.animatorDurationScale: Float
+    get() = Settings.Global.getFloat(
+        this.contentResolver,
+        Settings.Global.ANIMATOR_DURATION_SCALE,
+        1f
+    )

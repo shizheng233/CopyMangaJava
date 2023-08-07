@@ -23,8 +23,33 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <!--
+                    The scheme and host must match both of the below:
+                    1. The navDeepLink declaration
+                    2. The URI defined in the PendingIntent
+                 -->
+                <data
+                    android:host="download"
+                    android:scheme="shicheengcmdm" />
+            </intent-filter>
         </activity>
         <activity android:name=".MangaReaderActivity" />
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <!-- If you are using androidx.startup to initialize other components -->
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
 
         <service
             android:name=".server.DownloadService"

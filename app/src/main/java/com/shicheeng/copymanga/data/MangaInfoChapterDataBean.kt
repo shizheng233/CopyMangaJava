@@ -1,6 +1,7 @@
 package com.shicheeng.copymanga.data
 
 import android.os.Parcelable
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -13,6 +14,9 @@ data class MangaInfoChapterDataBean(
     val pathWord: String,
     val isSaved: Boolean = false,
 ) : Parcelable {
+
+    @IgnoredOnParcel
+    var isSelect: Boolean = false
 
     fun toDownloadChapter(): MangaDownloadChapterInfoModel {
         return MangaDownloadChapterInfoModel(chapterTitle, uuidText, pathWord)
@@ -30,8 +34,9 @@ data class LastMangaDownload(
      * 漫画名字
      */
     val mangaName: String,
-    val coverUrl:String,
-    val list: List<MangaDownloadChapterInfoModel>) :
+    val coverUrl: String,
+    val list: List<MangaDownloadChapterInfoModel>,
+) :
     Parcelable
 
 @Parcelize

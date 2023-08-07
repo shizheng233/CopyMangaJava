@@ -5,20 +5,32 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.collection.LongSparseArray
 import androidx.collection.set
-import com.shicheeng.copymanga.json.MangaInfoJson
 import com.shicheeng.copymanga.util.OkhttpHelper
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.invoke
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import okhttp3.Headers
 import okhttp3.Request
 import okio.Closeable
 import java.io.File
 import java.io.InputStream
-import java.util.*
+import java.util.LinkedList
 import java.util.concurrent.atomic.AtomicInteger
+import javax.inject.Inject
 
 
-class PagerLoader(private val cache: PagerCache) : Closeable {
+class PagerLoader @Inject constructor(
+    private val cache: PagerCache,
+    private val headers: Headers,
+) : Closeable {
 
     val loaderScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val tasks = LongSparseArray<Deferred<File>>()
@@ -93,7 +105,7 @@ class PagerLoader(private val cache: PagerCache) : Closeable {
         val uri = Uri.parse(url)
         if (uri.scheme == "https") {
             val request = Request.Builder()
-                .headers(MangaInfoJson.headers).url(url).get()
+                .headers(headers).url(url).get()
                 .build()
             OkhttpHelper.getInstance().newCall(request).execute().use { res ->
                 val ins = checkNotNull(res.body).byteStream()

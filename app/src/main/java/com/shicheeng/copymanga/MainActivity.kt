@@ -8,65 +8,80 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.text.buildSpannedString
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.shicheeng.copymanga.app.AppAttachCompatActivity
 import com.shicheeng.copymanga.data.VersionUnit
-import com.shicheeng.copymanga.databinding.ActivityMainHostBinding
-import com.shicheeng.copymanga.json.UpdateMetaDataJson
+import com.shicheeng.copymanga.resposity.MangaHistoryRepository
+import com.shicheeng.copymanga.resposity.MangaInfoRepository
+import com.shicheeng.copymanga.ui.screen.MainComposeNavigation
+import com.shicheeng.copymanga.ui.screen.setting.SettingPref
+import com.shicheeng.copymanga.ui.theme.CopyMangaTheme
 import com.shicheeng.copymanga.util.FileCacheUtils
+import com.shicheeng.copymanga.util.collectRepeatLifecycle
 import com.shicheeng.copymanga.viewmodel.MainViewModel
-import com.shicheeng.copymanga.viewmodel.MainViewModelFactory
-import kotlinx.coroutines.flow.collectLatest
+import com.shicheeng.copymanga.viewmodel.MangaInfoViewModel
+import com.shicheeng.copymanga.viewmodel.PersonalViewModel
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.components.ActivityComponent
+import soup.compose.material.motion.navigation.rememberMaterialMotionNavController
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppAttachCompatActivity() {
 
-    private lateinit var binding: ActivityMainHostBinding
-    private lateinit var sharedPreferences: SharedPreferences
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
+    @Inject
+    lateinit var settingPref: SettingPref
+
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainHostBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        val model: MainViewModel by viewModels {
-            MainViewModelFactory(UpdateMetaDataJson())
-        }
-        sharedPreferences = (application as MyApp).appPreference
-        val isDisableUpdateDetect = sharedPreferences.getBoolean("disable_update", false)
+        val model: MainViewModel by viewModels()
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        windowsPaddingUp(binding.root, binding.hostMainToolbarLayout)
-        setSupportActionBar(binding.hostMainToolbar)
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_container) as NavHostFragment
-        val navController = navHostFragment.navController
-        val appBarConfig = AppBarConfiguration(navController.graph)
-
-        binding.hostMainToolbar.setupWithNavController(navController, appBarConfig)
         requestNotificationsPermission()
-
-        if (!isDisableUpdateDetect) {
-            lifecycleScope.launchWhenCreated {
-                model.updateData.collectLatest {
-                    onUpdateAttach(it)
+        setContent {
+            val navController = rememberMaterialMotionNavController()
+            CopyMangaTheme {
+                Scaffold {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        CompositionLocalProvider(
+                            LocalMainBottomNavigationPadding provides it.calculateBottomPadding(),
+                            LocalSettingPreference provides settingPref
+                        ) {
+                            MainComposeNavigation(navController = navController)
+                        }
+                    }
                 }
             }
         }
-    }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_container) as NavHostFragment
-        val navController = navHostFragment.navController
-        val appBarConfig = AppBarConfiguration(navController.graph)
-        return navController.navigateUp(appBarConfig) || super.onSupportNavigateUp()
+        if (!settingPref.pauseUpdateDetector.value) {
+            model.updateData.collectRepeatLifecycle(this) {
+                onUpdateAttach(it)
+            }
+        }
+
     }
 
     private fun requestNotificationsPermission() {
@@ -89,17 +104,19 @@ class MainActivity : AppAttachCompatActivity() {
         if (versionUnit == null) {
             return
         }
+        val message = buildSpannedString {
+            append("<b>版本：</b>")
+            append(versionUnit.versionName)
+            appendLine()
+            appendLine(versionUnit.description)
+            appendLine("<b>大小：</b>" + FileCacheUtils.getFormatSize(versionUnit.apkSize.toDouble()))
+        }
         val dialog = MaterialAlertDialogBuilder(
             this,
             com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered
         ).apply {
             setTitle(R.string.new_version)
-            setMessage(
-                "${versionUnit.versionName}\n${versionUnit.description}\n${
-                    FileCacheUtils.getFormatSize(versionUnit.apkSize.toDouble())
-                }"
-            )
-
+            setMessage(message)
             setIcon(R.drawable.baseline_security_update_24)
         }
         dialog.setPositiveButton(R.string.update) { dialogInterface: DialogInterface, _: Int ->
@@ -119,4 +136,18 @@ class MainActivity : AppAttachCompatActivity() {
     }
 
 
+    @EntryPoint
+    @InstallIn(ActivityComponent::class)
+    interface ViewModelAssistedFactoryProvider {
+        fun personalViewModelProvider(): PersonalViewModel.Factory
+        fun mangaInfoRepository(): MangaInfoRepository
+        fun infoViewModelFactory(): MangaInfoViewModel.InfoViewModelFactory
+        fun historyRepositoryProvider(): MangaHistoryRepository
+    }
+
+}
+
+val LocalMainBottomNavigationPadding = staticCompositionLocalOf { 0.dp }
+val LocalSettingPreference = staticCompositionLocalOf<SettingPref> {
+    error("NO LOCAL SETTING PROVIDE")
 }

@@ -1,32 +1,22 @@
 package com.shicheeng.copymanga.database
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.shicheeng.copymanga.dao.MangeLocalHistoryDao
+import com.shicheeng.copymanga.dao.SearchHistoryDao
 import com.shicheeng.copymanga.data.MangaHistoryDataModel
+import com.shicheeng.copymanga.data.local.LocalChapter
+import com.shicheeng.copymanga.data.searchhistory.SearchHistory
 
-@Database(entities = [MangaHistoryDataModel::class], version = 1,exportSchema = false)
+@Database(
+    entities = [MangaHistoryDataModel::class, LocalChapter::class, SearchHistory::class],
+    version = 4,
+    exportSchema = false
+)
 abstract class MangaHistoryDataBase : RoomDatabase() {
 
     abstract fun historyDao(): MangeLocalHistoryDao
 
-    companion object {
-
-        @Volatile
-        private var INSTANCE: MangaHistoryDataBase? = null
-        fun getDataBase(context: Context): MangaHistoryDataBase {
-            return INSTANCE ?: synchronized(this) {
-                val ins = Room.databaseBuilder(
-                    context.applicationContext,
-                    MangaHistoryDataBase::class.java,
-                    "manga_history_database_2"
-                ).build()
-                INSTANCE = ins
-                ins
-            }
-        }
-    }
+    abstract fun keyWordDao(): SearchHistoryDao
 
 }

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: androidx.hilt:hilt-common:1.0.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.hilt/hilt-common/1.0.0/3c8727e21f194dd46aa78e44acbdf937ab045ebb/hilt-common-1.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.hilt/hilt-common/1.0.0/9f8dec7fc300f12bcdd9f8d113a8e4e116ee49c5/hilt-common-1.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

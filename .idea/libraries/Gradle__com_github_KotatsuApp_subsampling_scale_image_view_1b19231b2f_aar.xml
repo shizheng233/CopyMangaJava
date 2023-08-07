@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.KotatsuApp:subsampling-scale-image-view:1b19231b2f@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/0be02e578577b3fb2a57f1467a03fa08/transformed/subsampling-scale-image-view-1b19231b2f/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/0be02e578577b3fb2a57f1467a03fa08/transformed/subsampling-scale-image-view-1b19231b2f/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/0be02e578577b3fb2a57f1467a03fa08/transformed/subsampling-scale-image-view-1b19231b2f/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/576deef474b025b038da65272f084e7d/transformed/subsampling-scale-image-view-1b19231b2f/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/576deef474b025b038da65272f084e7d/transformed/subsampling-scale-image-view-1b19231b2f/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/576deef474b025b038da65272f084e7d/transformed/subsampling-scale-image-view-1b19231b2f/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

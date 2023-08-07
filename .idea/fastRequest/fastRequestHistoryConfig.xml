@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="fastRequestHistoryConfig">
+    <option name="historyList">
+      <list>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="bodyKeyValueListJson" value="{&quot;term&quot;:&quot;我&quot;, &quot;num&quot;:10}" />
+              <option name="methodDescription" value="New Request" />
+              <option name="methodType" value="POST" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;device&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;pc&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;platform&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;web&quot;}]" />
+              <option name="urlParamsKeyValueListText" value="device=pc&#10;&amp;platform=web" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug?device=%70%63&amp;platform=%77%65%62&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;    Content-Length: 24&#13;&#10;    Content-Type: application/json;charset=UTF-8&#13;&#10;Request Body: &#13;&#10;    {&quot;term&quot;:&quot;我&quot;, &quot;num&quot;:10}&#13;&#10;" />
+          <option name="response" value="{&quot;code&quot;:0,&quot;msg&quot;:&quot;&quot;,&quot;data&quot;:[&quot;我和我对家&quot;,&quot;我行让我来&quot;,&quot;我家侯爷不宠我&quot;,&quot;我叫我同桌打你&quot;,&quot;我还小&quot;,&quot;我是女帝我好南&quot;,&quot;总裁偏要宠我宠我&quot;,&quot;我和我的四个伴舞&quot;,&quot;理我一下&quot;,&quot;我缭不动&quot;]}" />
+          <option name="url" value="https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="bodyKeyValueListJson" value="{&quot;term&quot;:&quot;我&quot;, &quot;num&quot;:10}" />
+              <option name="methodDescription" value="New Request" />
+              <option name="methodType" value="POST" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;device&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;pc&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;platform&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;web&quot;}]" />
+              <option name="urlParamsKeyValueListText" value="device=pc&#10;&amp;platform=web" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug?device=%70%63&amp;platform=%77%65%62&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Referer: https://manga.bilibili.com/?from=bill_top_mnav&amp;spm_id_from=333.1007.0.0&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;    Content-Length: 24&#13;&#10;    Content-Type: application/json;charset=UTF-8&#13;&#10;Request Body: &#13;&#10;    {&quot;term&quot;:&quot;我&quot;, &quot;num&quot;:10}&#13;&#10;" />
+          <option name="response" value="{&quot;code&quot;:0,&quot;msg&quot;:&quot;&quot;,&quot;data&quot;:[&quot;我和我对家&quot;,&quot;我行让我来&quot;,&quot;我家侯爷不宠我&quot;,&quot;我叫我同桌打你&quot;,&quot;我还小&quot;,&quot;我是女帝我好南&quot;,&quot;总裁偏要宠我宠我&quot;,&quot;我和我的四个伴舞&quot;,&quot;理我一下&quot;,&quot;我缭不动&quot;]}" />
+          <option name="url" value="https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="bodyKeyValueListJson" value="{&quot;term&quot;:&quot;我&quot;, &quot;num&quot;:20}" />
+              <option name="methodDescription" value="New Request" />
+              <option name="methodType" value="POST" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;device&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;pc&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;platform&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;web&quot;}]" />
+              <option name="urlParamsKeyValueListText" value="device=pc&#10;&amp;platform=web" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug?device=%70%63&amp;platform=%77%65%62&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Referer: https://manga.bilibili.com/?from=bill_top_mnav&amp;spm_id_from=333.1007.0.0&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;    Content-Length: 24&#13;&#10;    Content-Type: application/json;charset=UTF-8&#13;&#10;Request Body: &#13;&#10;    {&quot;term&quot;:&quot;我&quot;, &quot;num&quot;:20}&#13;&#10;" />
+          <option name="response" value="{&quot;code&quot;:0,&quot;msg&quot;:&quot;&quot;,&quot;data&quot;:[&quot;我和我对家&quot;,&quot;我行让我来&quot;,&quot;我叫我同桌打你&quot;,&quot;我家侯爷不宠我&quot;,&quot;我还小&quot;,&quot;我是女帝我好南&quot;,&quot;总裁偏要宠我宠我&quot;,&quot;我和我的四个伴舞&quot;,&quot;我是剑仙&quot;,&quot;我是人才&quot;,&quot;我的西施&quot;,&quot;我有病啊&quot;,&quot;我缭不动&quot;,&quot;理我一下&quot;,&quot;我&quot;,&quot;我家驸马竟要和我炒CP&quot;,&quot;我和我的理想型嗝屁了！&quot;,&quot;我为苍生&quot;,&quot;臣服于我&quot;,&quot;你我之间&quot;]}" />
+          <option name="url" value="https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="bodyKeyValueListJson" value="{&quot;term&quot;:&quot;我的无&quot;,&quot;num&quot;:20}" />
+              <option name="methodDescription" value="New Request" />
+              <option name="methodType" value="POST" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;device&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;pc&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;platform&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;web&quot;}]" />
+              <option name="urlParamsKeyValueListText" value="device=pc&#10;&amp;platform=web" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug?device=%70%63&amp;platform=%77%65%62&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Referer: https://manga.bilibili.com/?from=bill_top_mnav&amp;spm_id_from=333.1007.0.0&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;    Content-Length: 29&#13;&#10;    Content-Type: application/json;charset=UTF-8&#13;&#10;Request Body: &#13;&#10;    {&quot;term&quot;:&quot;我的无&quot;,&quot;num&quot;:20}&#13;&#10;" />
+          <option name="response" value="{&quot;code&quot;:0,&quot;msg&quot;:&quot;&quot;,&quot;data&quot;:[&quot;我的无间女友&quot;]}" />
+          <option name="url" value="https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="400" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="methodDescription" value="New Request" />
+              <option name="methodType" value="POST" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;device&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;pc&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;platform&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;web&quot;}]" />
+              <option name="urlParamsKeyValueListText" value="device=pc&#10;&amp;platform=web" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug?device=%70%63&amp;platform=%77%65%62&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Referer: https://manga.bilibili.com/?from=bill_top_mnav&amp;spm_id_from=333.1007.0.0&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="{&quot;code&quot;:&quot;invalid_argument&quot;,&quot;msg&quot;:&quot;term, num not empty&quot;,&quot;meta&quot;:{&quot;argument&quot;:&quot;term, num&quot;}}" />
+          <option name="url" value="https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="400" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="methodDescription" value="New Request" />
+              <option name="methodType" value="POST" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;device&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;pc&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;platform&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;web&quot;}]" />
+              <option name="urlParamsKeyValueListText" value="device=pc&#10;&amp;platform=web" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug?device=%70%63&amp;platform=%77%65%62&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Referer: https://www.baidu.com/&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="{&quot;code&quot;:&quot;invalid_argument&quot;,&quot;msg&quot;:&quot;origin www.baidu.com&quot;,&quot;meta&quot;:{&quot;argument&quot;:&quot;origin&quot;}}" />
+          <option name="url" value="https://manga.bilibili.com/twirp/comic.v1.Comic/SearchSug" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="methodDescription" value="New Request" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;wd&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;东&quot;}]" />
+              <option name="urlParamsKeyValueListText" value="wd=东" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=%E4%B8%9C&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Referer: https://www.baidu.com/&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="window.baidu.sug({q:&quot;东&quot;,p:false,s:[&quot;东方财富网&quot;,&quot;东莞&quot;,&quot;东南大学&quot;,&quot;东北警察故事2&quot;,&quot;东的笔顺&quot;,&quot;东北三省是哪三省&quot;,&quot;东施效颦什么意思&quot;,&quot;东野圭吾&quot;,&quot;东宫&quot;,&quot;东京喰种&quot;]});" />
+          <option name="url" value="https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="methodDescription" value="New Request" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;wd&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;wu&quot;}]" />
+              <option name="urlParamsKeyValueListText" value="wd=wu" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=%77%75&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Referer: https://www.baidu.com/&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="window.baidu.sug({q:&quot;wu&quot;,p:false,s:[&quot;悟饭游戏厅&quot;,&quot;武汉天气&quot;,&quot;梧州学院&quot;,&quot;五岳是指哪五座山?&quot;,&quot;武汉大学&quot;,&quot;吴越&quot;,&quot;无畏契约&quot;,&quot;武神主宰&quot;,&quot;吴磊&quot;,&quot;无锡学院&quot;]});" />
+          <option name="url" value="https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="methodDescription" value="New Request" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;?wd&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;wu&quot;}]" />
+              <option name="urlParamsKeyValueListText" value="?wd=wu" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su??wd=%77%75&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Referer: https://www.baidu.com/&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="window.baidu.sug({q:&quot;&quot;,p:,s:[]});" />
+          <option name="url" value="https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="methodDescription" value="New Request" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;?wd&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;穷&quot;}]" />
+              <option name="urlParamsKeyValueListText" value="?wd=穷" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su??wd=%E7%A9%B7&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Referer: https://www.baidu.com/&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="window.baidu.sug({q:&quot;&quot;,p:,s:[]});" />
+          <option name="url" value="https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="methodDescription" value="New Request" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=%E6%88%91%E7%9A%84" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[]" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=%E6%88%91%E7%9A%84&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Referer: https://www.baidu.com/&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="window.baidu.sug({q:&quot;我的&quot;,p:false,s:[&quot;我的世界下载&quot;,&quot;我的人间烟火 电视剧&quot;,&quot;我的人间烟火电视剧免费观看&quot;,&quot;我的世界java版下载&quot;,&quot;我的世界1.20国际版下载&quot;,&quot;我的世界国际版下载&quot;,&quot;我的世界1.19基岩版下载&quot;,&quot;我的徒弟都是大反派&quot;,&quot;我的26岁女房客小说&quot;,&quot;我的世界网易版&quot;]});" />
+          <option name="url" value="https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=%E6%88%91%E7%9A%84" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="methodDescription" value="New Request" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://www.baidu.com/sugrec?pre=1&amp;p=3&amp;ie=utf-8&amp;json=1&amp;prod=pc&amp;from=pc_web&amp;sugsid=36551,39026,39024,38943,38860,38958,38956,39009,38967,38918,38972,38820,38636,26350,39041&amp;wd=san&amp;req=2&amp;csor=2&amp;pwd=new&amp;cb=jQuery1102007482779509809379_1688713427026&amp;_=1688713427034" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[]" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://www.baidu.com/sugrec?pre=1&amp;p=3&amp;ie=utf-8&amp;json=1&amp;prod=pc&amp;from=pc_web&amp;sugsid=36551,39026,39024,38943,38860,38958,38956,39009,38967,38918,38972,38820,38636,26350,39041&amp;wd=san&amp;req=2&amp;csor=2&amp;pwd=new&amp;cb=jQuery1102007482779509809379_1688713427026&amp;_=1688713427034&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Referer: https://www.baidu.com/&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="jQuery1102007482779509809379_1688713427026({&quot;q&quot;:&quot;san&quot;,&quot;p&quot;:false,&quot;g&quot;:[{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_1&quot;,&quot;q&quot;:&quot;三伏天&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_2&quot;,&quot;q&quot;:&quot;三d开奖历史开奖结果&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_3&quot;,&quot;q&quot;:&quot;三字经&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_4&quot;,&quot;q&quot;:&quot;三国志战略版&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_5&quot;,&quot;q&quot;:&quot;三衢道中&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_6&quot;,&quot;q&quot;:&quot;三峡&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_7&quot;,&quot;q&quot;:&quot;桑葚&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_8&quot;,&quot;q&quot;:&quot;三伏天是几月几号2023&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_9&quot;,&quot;q&quot;:&quot;sandwich&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_10&quot;,&quot;q&quot;:&quot;三分野&quot;}],&quot;slid&quot;:&quot;10068427565551&quot;,&quot;queryid&quot;:&quot;0x13209283d0c69ef&quot;})" />
+          <option name="url" value="https://www.baidu.com/sugrec?pre=1&amp;p=3&amp;ie=utf-8&amp;json=1&amp;prod=pc&amp;from=pc_web&amp;sugsid=36551,39026,39024,38943,38860,38958,38956,39009,38967,38918,38972,38820,38636,26350,39041&amp;wd=san&amp;req=2&amp;csor=2&amp;pwd=new&amp;cb=jQuery1102007482779509809379_1688713427026&amp;_=1688713427034" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="methodDescription" value="New Request" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://www.baidu.com/sugrec?pre=1&amp;p=3&amp;ie=utf-8&amp;json=1&amp;prod=pc&amp;from=pc_web&amp;sugsid=36551,39026,39024,38943,38860,38958,38956,39009,38967,38918,38972,38820,38636,26350,39041&amp;wd=er&amp;req=2&amp;csor=2&amp;pwd=new&amp;cb=jQuery1102007482779509809379_1688713427026&amp;_=1688713427034" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[]" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://www.baidu.com/sugrec?pre=1&amp;p=3&amp;ie=utf-8&amp;json=1&amp;prod=pc&amp;from=pc_web&amp;sugsid=36551,39026,39024,38943,38860,38958,38956,39009,38967,38918,38972,38820,38636,26350,39041&amp;wd=er&amp;req=2&amp;csor=2&amp;pwd=new&amp;cb=jQuery1102007482779509809379_1688713427026&amp;_=1688713427034&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Referer: https://www.baidu.com/&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="jQuery1102007482779509809379_1688713427026({&quot;q&quot;:&quot;er&quot;,&quot;p&quot;:false,&quot;g&quot;:[{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_1&quot;,&quot;q&quot;:&quot;erp&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_2&quot;,&quot;q&quot;:&quot;二阳有哪些症状&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_3&quot;,&quot;q&quot;:&quot;erp企业管理系统软件&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_4&quot;,&quot;q&quot;:&quot;erp是什么意思&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_5&quot;,&quot;q&quot;:&quot;erp系统&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_6&quot;,&quot;q&quot;:&quot;eraser&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_7&quot;,&quot;q&quot;:&quot;erp系统主要干什么的&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_8&quot;,&quot;q&quot;:&quot;二十四节气&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_9&quot;,&quot;q&quot;:&quot;二哈和他的白猫师尊&quot;},{&quot;type&quot;:&quot;sug&quot;,&quot;sa&quot;:&quot;s_10&quot;,&quot;q&quot;:&quot;耳石症&quot;}],&quot;slid&quot;:&quot;167481851433744&quot;,&quot;queryid&quot;:&quot;0x959852e842d310&quot;})" />
+          <option name="url" value="https://www.baidu.com/sugrec?pre=1&amp;p=3&amp;ie=utf-8&amp;json=1&amp;prod=pc&amp;from=pc_web&amp;sugsid=36551,39026,39024,38943,38860,38958,38956,39009,38967,38918,38972,38820,38636,26350,39041&amp;wd=er&amp;req=2&amp;csor=2&amp;pwd=new&amp;cb=jQuery1102007482779509809379_1688713427026&amp;_=1688713427034" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="methodDescription" value="New Request" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://www.baidu.com/sugrec?pre=1&amp;p=3&amp;ie=utf-8&amp;json=1&amp;prod=pc&amp;from=pc_web&amp;sugsid=36551,39026,39024,38943,38860,38958,38956,39009,38967,38918,38972,38820,38636,26350,39041&amp;wd=er&amp;req=2&amp;csor=2&amp;pwd=new&amp;cb=jQuery1102007482779509809379_1688713427026&amp;_=1688713427034" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;pre&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;1&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;p&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;3&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;ie&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;utf-8&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;json&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;1&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;prod&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;pc&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;from&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;pc_web&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;sugsid&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;1&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;wd&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;er&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;req&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;2&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;csor&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;2&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;pwd&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;new&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;cb&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;jQuery1102007482779509809379_1688713427026&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;_&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;1688713427034&quot;}]" />
+              <option name="urlParamsKeyValueListText" value="pre=1&#10;&amp;p=3&#10;&amp;ie=utf-8&#10;&amp;json=1&#10;&amp;prod=pc&#10;&amp;from=pc_web&#10;&amp;sugsid=1&#10;&amp;wd=er&#10;&amp;req=2&#10;&amp;csor=2&#10;&amp;pwd=new&#10;&amp;cb=jQuery1102007482779509809379_1688713427026&#10;&amp;_=1688713427034" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://www.baidu.com/sugrec?pre=1&amp;p=3&amp;ie=utf-8&amp;json=1&amp;prod=pc&amp;from=pc_web&amp;sugsid=36551,39026,39024,38943,38860,38958,38956,39009,38967,38918,38972,38820,38636,26350,39041&amp;wd=er&amp;req=2&amp;csor=2&amp;pwd=new&amp;cb=jQuery1102007482779509809379_1688713427026&amp;_=1688713427034?p=%33&amp;pre=%31&amp;prod=%70%63&amp;sugsid=%31&amp;json=%31&amp;from=%70%63%5F%77%65%62&amp;pwd=%6E%65%77&amp;ie=%75%74%66%2D%38&amp;csor=%32&amp;wd=%65%72&amp;_=%31%36%38%38%37%31%33%34%32%37%30%33%34&amp;cb=%6A%51%75%65%72%79%31%31%30%32%30%30%37%34%38%32%37%37%39%35%30%39%38%30%39%33%37%39%5F%31%36%38%38%37%31%33%34%32%37%30%32%36&amp;req=%32&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Referer: https://www.baidu.com/&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="%6A%51%75%65%72%79%31%31%30%32%30%30%37%34%38%32%37%37%39%35%30%39%38%30%39%33%37%39%5F%31%36%38%38%37%31%33%34%32%37%30%32%36({&quot;q&quot;:&quot;er&quot;})" />
+          <option name="url" value="https://www.baidu.com/sugrec?pre=1&amp;p=3&amp;ie=utf-8&amp;json=1&amp;prod=pc&amp;from=pc_web&amp;sugsid=36551,39026,39024,38943,38860,38958,38956,39009,38967,38918,38972,38820,38636,26350,39041&amp;wd=er&amp;req=2&amp;csor=2&amp;pwd=new&amp;cb=jQuery1102007482779509809379_1688713427026&amp;_=1688713427034" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="methodDescription" value="New Request" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://www.baidu.com/sugrec" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;pre&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;1&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;p&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;3&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;ie&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;utf-8&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;json&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;1&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;prod&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;pc&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;from&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;pc_web&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;sugsid&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;1&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;wd&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;er&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;req&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;2&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;csor&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;2&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;pwd&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;new&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;cb&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;jQuery1102007482779509809379_1688713427026&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;_&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;1688713427034&quot;}]" />
+              <option name="urlParamsKeyValueListText" value="pre=1&#10;&amp;p=3&#10;&amp;ie=utf-8&#10;&amp;json=1&#10;&amp;prod=pc&#10;&amp;from=pc_web&#10;&amp;sugsid=1&#10;&amp;wd=er&#10;&amp;req=2&#10;&amp;csor=2&#10;&amp;pwd=new&#10;&amp;cb=jQuery1102007482779509809379_1688713427026&#10;&amp;_=1688713427034" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://www.baidu.com/sugrec?p=%33&amp;pre=%31&amp;prod=%70%63&amp;sugsid=%31&amp;json=%31&amp;from=%70%63%5F%77%65%62&amp;pwd=%6E%65%77&amp;ie=%75%74%66%2D%38&amp;csor=%32&amp;wd=%65%72&amp;_=%31%36%38%38%37%31%33%34%32%37%30%33%34&amp;cb=%6A%51%75%65%72%79%31%31%30%32%30%30%37%34%38%32%37%37%39%35%30%39%38%30%39%33%37%39%5F%31%36%38%38%37%31%33%34%32%37%30%32%36&amp;req=%32&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Referer: https://www.baidu.com/&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="%6A%51%75%65%72%79%31%31%30%32%30%30%37%34%38%32%37%37%39%35%30%39%38%30%39%33%37%39%5F%31%36%38%38%37%31%33%34%32%37%30%32%36({&quot;q&quot;:&quot;er&quot;})" />
+          <option name="url" value="https://www.baidu.com/sugrec" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="methodDescription" value="New Request" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://www.baidu.com/sugrec" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;pre&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;1&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;p&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;3&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;ie&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;utf-8&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;json&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;1&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;prod&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;pc&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;from&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;pc_web&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;sugsid&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;1&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;wd&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;er&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;req&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;2&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;csor&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;2&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;pwd&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;new&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;cb&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;jQuery1102007482779509809379_1688713427026&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;_&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;1688713427034&quot;}]" />
+              <option name="urlParamsKeyValueListText" value="pre=1&#10;&amp;p=3&#10;&amp;ie=utf-8&#10;&amp;json=1&#10;&amp;prod=pc&#10;&amp;from=pc_web&#10;&amp;sugsid=1&#10;&amp;wd=er&#10;&amp;req=2&#10;&amp;csor=2&#10;&amp;pwd=new&#10;&amp;cb=jQuery1102007482779509809379_1688713427026&#10;&amp;_=1688713427034" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://www.baidu.com/sugrec?p=%33&amp;pre=%31&amp;prod=%70%63&amp;sugsid=%31&amp;json=%31&amp;from=%70%63%5F%77%65%62&amp;pwd=%6E%65%77&amp;ie=%75%74%66%2D%38&amp;csor=%32&amp;wd=%65%72&amp;_=%31%36%38%38%37%31%33%34%32%37%30%33%34&amp;cb=%6A%51%75%65%72%79%31%31%30%32%30%30%37%34%38%32%37%37%39%35%30%39%38%30%39%33%37%39%5F%31%36%38%38%37%31%33%34%32%37%30%32%36&amp;req=%32&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Referer: https://www.baidu.com/&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="%6A%51%75%65%72%79%31%31%30%32%30%30%37%34%38%32%37%37%39%35%30%39%38%30%39%33%37%39%5F%31%36%38%38%37%31%33%34%32%37%30%32%36({&quot;q&quot;:&quot;er&quot;})" />
+          <option name="url" value="https://www.baidu.com/sugrec" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="methodDescription" value="New Request" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://www.baidu.com/sugrec" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;pre&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;1&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;p&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;3&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;ie&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;utf-8&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;json&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;1&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;prod&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;pc&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;from&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;pc_web&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;sugsid&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;36551,39026,39024,38943,38860,38958,38956,39009,38967,38918,38972,38820,38636,26350,39041&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;wd&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;er&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;req&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;2&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;csor&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;2&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;pwd&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;new&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;cb&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;jQuery1102007482779509809379_1688713427026&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;_&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;1688713427034&quot;}]" />
+              <option name="urlParamsKeyValueListText" value="pre=1&amp;p=3&amp;ie=utf-8&amp;json=1&amp;prod=pc&amp;from=pc_web&amp;sugsid=36551,39026,39024,38943,38860,38958,38956,39009,38967,38918,38972,38820,38636,26350,39041&amp;wd=er&amp;req=2&amp;csor=2&amp;pwd=new&amp;cb=jQuery1102007482779509809379_1688713427026&amp;_=1688713427034" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://www.baidu.com/sugrec?p=%33&amp;pre=%31&amp;prod=%70%63&amp;sugsid=%33%36%35%35%31%2C%33%39%30%32%36%2C%33%39%30%32%34%2C%33%38%39%34%33%2C%33%38%38%36%30%2C%33%38%39%35%38%2C%33%38%39%35%36%2C%33%39%30%30%39%2C%33%38%39%36%37%2C%33%38%39%31%38%2C%33%38%39%37%32%2C%33%38%38%32%30%2C%33%38%36%33%36%2C%32%36%33%35%30%2C%33%39%30%34%31&amp;json=%31&amp;from=%70%63%5F%77%65%62&amp;pwd=%6E%65%77&amp;ie=%75%74%66%2D%38&amp;csor=%32&amp;wd=%65%72&amp;_=%31%36%38%38%37%31%33%34%32%37%30%33%34&amp;cb=%6A%51%75%65%72%79%31%31%30%32%30%30%37%34%38%32%37%37%39%35%30%39%38%30%39%33%37%39%5F%31%36%38%38%37%31%33%34%32%37%30%32%36&amp;req=%32&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Referer: https://www.baidu.com/&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="%6A%51%75%65%72%79%31%31%30%32%30%30%37%34%38%32%37%37%39%35%30%39%38%30%39%33%37%39%5F%31%36%38%38%37%31%33%34%32%37%30%32%36({&quot;q&quot;:&quot;er&quot;})" />
+          <option name="url" value="https://www.baidu.com/sugrec" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="methodDescription" value="New Request" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://www.baidu.com/sugrec" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;pre&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;1&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;p&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;3&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;ie&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;utf-8&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;json&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;1&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;prod&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;pc&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;from&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;pc_web&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;sugsid&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;36551,39026,39024,38943,38860,38958,38956,39009,38967,38918,38972,38820,38636,26350,39041&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;wd&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;er&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;req&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;2&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;csor&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;2&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;pwd&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;new&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;cb&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;jQuery1102007482779509809379_1688713427026&quot;},{&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;_&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;1688713427034&quot;}]" />
+              <option name="urlParamsKeyValueListText" value="pre=1&amp;p=3&amp;ie=utf-8&amp;json=1&amp;prod=pc&amp;from=pc_web&amp;sugsid=36551,39026,39024,38943,38860,38958,38956,39009,38967,38918,38972,38820,38636,26350,39041&amp;wd=er&amp;req=2&amp;csor=2&amp;pwd=new&amp;cb=jQuery1102007482779509809379_1688713427026&amp;_=1688713427034" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://www.baidu.com/sugrec?p=%33&amp;pre=%31&amp;prod=%70%63&amp;sugsid=%33%36%35%35%31%2C%33%39%30%32%36%2C%33%39%30%32%34%2C%33%38%39%34%33%2C%33%38%38%36%30%2C%33%38%39%35%38%2C%33%38%39%35%36%2C%33%39%30%30%39%2C%33%38%39%36%37%2C%33%38%39%31%38%2C%33%38%39%37%32%2C%33%38%38%32%30%2C%33%38%36%33%36%2C%32%36%33%35%30%2C%33%39%30%34%31&amp;json=%31&amp;from=%70%63%5F%77%65%62&amp;pwd=%6E%65%77&amp;ie=%75%74%66%2D%38&amp;csor=%32&amp;wd=%65%72&amp;_=%31%36%38%38%37%31%33%34%32%37%30%33%34&amp;cb=%6A%51%75%65%72%79%31%31%30%32%30%30%37%34%38%32%37%37%39%35%30%39%38%30%39%33%37%39%5F%31%36%38%38%37%31%33%34%32%37%30%32%36&amp;req=%32&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="%6A%51%75%65%72%79%31%31%30%32%30%30%37%34%38%32%37%37%39%35%30%39%38%30%39%33%37%39%5F%31%36%38%38%37%31%33%34%32%37%30%32%36({&quot;q&quot;:&quot;er&quot;})" />
+          <option name="url" value="https://www.baidu.com/sugrec" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="methodDescription" value="New Request" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://api.copymanga.net/api/v3/comic/wodebingruoxixuegui/chapter2/029fb178-8611-11eb-84af-00163e0ca5bd?platform=3" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[]" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://api.copymanga.net/api/v3/comic/wodebingruoxixuegui/chapter2/029fb178-8611-11eb-84af-00163e0ca5bd?platform=3&#13;&#10;Request Headers: &#13;&#10;    referer: https://www.copymanga.site/&#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;    webp: 0&#13;&#10;    region: 0&#13;&#10;    version: &#13;&#10;    platform: &#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="{&quot;code&quot;:200,&quot;message&quot;:&quot;请求成功&quot;,&quot;results&quot;:{&quot;show_app&quot;:false,&quot;is_lock&quot;:false,&quot;is_login&quot;:false,&quot;is_mobile_bind&quot;:false,&quot;is_vip&quot;:false,&quot;comic&quot;:{&quot;name&quot;:&quot;我的病弱吸血鬼&quot;,&quot;uuid&quot;:&quot;9dcef9b0-6e06-11eb-894c-00163e0ca5bd&quot;,&quot;path_word&quot;:&quot;wodebingruoxixuegui&quot;,&quot;restrict&quot;:{&quot;value&quot;:0,&quot;display&quot;:&quot;一般向(免費)&quot;}},&quot;chapter&quot;:{&quot;index&quot;:1,&quot;uuid&quot;:&quot;029fb178-8611-11eb-84af-00163e0ca5bd&quot;,&quot;count&quot;:26,&quot;ordered&quot;:20,&quot;size&quot;:48,&quot;name&quot;:&quot;第02话&quot;,&quot;comic_id&quot;:&quot;9dcef9b0-6e06-11eb-894c-00163e0ca5bd&quot;,&quot;comic_path_word&quot;:&quot;wodebingruoxixuegui&quot;,&quot;group_id&quot;:null,&quot;group_path_word&quot;:&quot;default&quot;,&quot;type&quot;:1,&quot;img_type&quot;:2,&quot;news&quot;:&quot;success1&quot;,&quot;datetime_created&quot;:&quot;2021-03-16&quot;,&quot;prev&quot;:&quot;84eed7c8-6e09-11eb-b1c9-00163e0ca5bd&quot;,&quot;next&quot;:&quot;3427d246-9932-11eb-89a9-00163e0ca5bd&quot;,&quot;contents&quot;:[{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401501526612/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401501563574/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401501590487/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401501619715/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401501646161/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401501670549/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401501696961/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401501724832/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401501752452/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401501779668/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401501809800/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401501839272/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401501864805/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401501892166/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401501922003/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401501946747/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401501973638/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502000809/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502028320/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502054069/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502082460/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502108195/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502134042/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502161656/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502540097/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502511679/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502352042/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502621456/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502214834/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502457534/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502378207/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502406594/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502819351/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502594905/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502323122/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502270595/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502566071/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502679112/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502485343/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502244521/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502768605/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502648830/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502431993/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502709148/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502737094/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502186427/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502799269/c800x.jpg&quot;},{&quot;url&quot;:&quot;https://hi77-overseas.mangafuna.xyz/wodebingruoxixuegui/c2a8e/16401502295995/c800x.jpg&quot;}],&quot;words&quot;:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,37,36,30,40,25,34,31,32,47,39,29,27,38,42,35,26,45,41,33,43,44,24,46,28],&quot;is_long&quot;:false}}}" />
+          <option name="url" value="https://api.copymanga.net/api/v3/comic/wodebingruoxixuegui/chapter2/029fb178-8611-11eb-84af-00163e0ca5bd?platform=3" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="App" />
+          <option name="enableProject" value="App" />
+          <option name="method" />
+          <option name="methodType" value="GET" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="methodDescription" value="New Request" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="url" value="https://api.copymanga.net/api/v3/search/comic?format=json&amp;limit=21&amp;offset=0&amp;platform=3&amp;q=new" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[]" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: https://api.copymanga.net/api/v3/search/comic?format=json&amp;limit=21&amp;offset=0&amp;platform=3&amp;q=new&#13;&#10;Request Headers: &#13;&#10;    referer: https://www.copymanga.site/&#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 Hutool&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;    Accept-Language: zh-CN,zh;q=0.8&#13;&#10;    webp: 0&#13;&#10;    region: 0&#13;&#10;    version: &#13;&#10;    platform: &#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="{&quot;code&quot;:200,&quot;message&quot;:&quot;请求成功&quot;,&quot;results&quot;:{&quot;list&quot;:[{&quot;name&quot;:&quot;New LovePlus&quot;,&quot;alias&quot;:&quot;New LovePlus,New LovePlus&quot;,&quot;path_word&quot;:&quot;newloveplus&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/newloveplus/cover/1651091182.jpg.328x422.jpg&quot;,&quot;img_type&quot;:2,&quot;author&quot;:[{&quot;name&quot;:&quot;濑尾公治&quot;,&quot;alias&quot;:&quot;濑尾公治&quot;,&quot;path_word&quot;:&quot;lwgz&quot;}],&quot;popular&quot;:1742},{&quot;name&quot;:&quot;New Game!&quot;,&quot;alias&quot;:&quot;NewGame!,New Game!,New Game!&quot;,&quot;path_word&quot;:&quot;newgame&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/newgame/cover/1651387307.jpg.328x422.jpg&quot;,&quot;img_type&quot;:2,&quot;author&quot;:[{&quot;name&quot;:&quot;得能正太郎&quot;,&quot;alias&quot;:&quot;得能正太郎&quot;,&quot;path_word&quot;:&quot;denengzhengtailang&quot;}],&quot;popular&quot;:229182},{&quot;name&quot;:&quot;The New Gate&quot;,&quot;alias&quot;:&quot;thenewgate,The New Gate,The New Gate&quot;,&quot;path_word&quot;:&quot;thenewgate&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/thenewgate/cover/1651011915.jpg.328x422.jpg&quot;,&quot;img_type&quot;:2,&quot;author&quot;:[{&quot;name&quot;:&quot;风波しのぎ&quot;,&quot;alias&quot;:&quot;风波しのぎ&quot;,&quot;path_word&quot;:&quot;fengbo&quot;},{&quot;name&quot;:&quot;三轮ヨツユキ&quot;,&quot;alias&quot;:&quot;三轮ヨツユキ&quot;,&quot;path_word&quot;:&quot;sanl&quot;}],&quot;popular&quot;:341852},{&quot;name&quot;:&quot;Welcome To New Dawan&quot;,&quot;alias&quot;:&quot;Welcome New Dawan,Welcome To New Dawan,Welcome To New Dawan&quot;,&quot;path_word&quot;:&quot;welcomenewdawan&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/welcomenewdawan/cover/1651138649.jpg.328x422.jpg&quot;,&quot;img_type&quot;:2,&quot;author&quot;:[{&quot;name&quot;:&quot;ZUMMENG&quot;,&quot;alias&quot;:null,&quot;path_word&quot;:&quot;zummeng&quot;}],&quot;popular&quot;:2476},{&quot;name&quot;:&quot;Happy New Year&quot;,&quot;alias&quot;:&quot;Happy New Year,Happy New Year&quot;,&quot;path_word&quot;:&quot;happynewyear&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/happynewyear/cover/1651106603.jpg.328x422.jpg&quot;,&quot;img_type&quot;:2,&quot;author&quot;:[{&quot;name&quot;:&quot;むつき润&quot;,&quot;alias&quot;:&quot;むつき润&quot;,&quot;path_word&quot;:&quot;mucikirun&quot;}],&quot;popular&quot;:574},{&quot;name&quot;:&quot;THE KING OF FIGHTERS～A NEW BEGINNING～&quot;,&quot;alias&quot;:&quot;THE KING OF FIGHTERS A NEW BEGINNING,KOF拳皇,THE KING OF FIGHTERS～A NEW BEGINNING～,THE KING OF FIGHTERS～A NEW BEGINNING～&quot;,&quot;path_word&quot;:&quot;thekingoffightersanewbeginning&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/thekingoffightersanewbeginning/cover/1651049003.jpg.328x422.jpg&quot;,&quot;img_type&quot;:2,&quot;author&quot;:[{&quot;name&quot;:&quot;あずま京太郎&quot;,&quot;alias&quot;:&quot;あずま京太郎&quot;,&quot;path_word&quot;:&quot;azumajingtailang&quot;}],&quot;popular&quot;:60809},{&quot;name&quot;:&quot;Brand-new day&quot;,&quot;alias&quot;:&quot;Brand-new day,Brand-new day&quot;,&quot;path_word&quot;:&quot;brandnewday&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/brandnewday/cover/1651106343.jpg.328x422.jpg&quot;,&quot;img_type&quot;:2,&quot;author&quot;:[{&quot;name&quot;:&quot;武者プルーン&quot;,&quot;alias&quot;:&quot;武者プルーン&quot;,&quot;path_word&quot;:&quot;wuzhe&quot;}],&quot;popular&quot;:446},{&quot;name&quot;:&quot;天籟人偶 New Order&quot;,&quot;alias&quot;:&quot;天籁人偶 New Order&quot;,&quot;path_word&quot;:&quot;tianlairenouneworder&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/tianlairenouneworder/cover/1657388243.jpg.328x422.jpg&quot;,&quot;img_type&quot;:1,&quot;author&quot;:[{&quot;name&quot;:&quot;浅见百合子&quot;,&quot;alias&quot;:&quot;浅见百合子&quot;,&quot;path_word&quot;:&quot;qianjian&quot;}],&quot;popular&quot;:2734},{&quot;name&quot;:&quot;THE IDOLM@STER MILLION LIVE! Brand New Song&quot;,&quot;alias&quot;:&quot;偶像大师Brand New Song,THE IDOLM@STER MILLION LIVE! Brand New Song,THE IDOLM@STER MILLION LIVE! Brand New Song&quot;,&quot;path_word&quot;:&quot;theidolmstermillionlivebrandnewsong&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/theidolmstermillionlivebrandnewsong/cover/1652867951.jpg.328x422.jpg&quot;,&quot;img_type&quot;:2,&quot;author&quot;:[{&quot;name&quot;:&quot;IMA&quot;,&quot;alias&quot;:&quot;IMA&quot;,&quot;path_word&quot;:&quot;ima&quot;}],&quot;popular&quot;:8227},{&quot;name&quot;:&quot;HAPPY NEW LOVE&quot;,&quot;alias&quot;:null,&quot;path_word&quot;:&quot;happynewlove&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/happynewlove/cover/1673852135.jpg.328x422.jpg&quot;,&quot;img_type&quot;:1,&quot;author&quot;:[{&quot;name&quot;:&quot;春兔あや&quot;,&quot;alias&quot;:null,&quot;path_word&quot;:&quot;chuntushasha&quot;}],&quot;popular&quot;:4662},{&quot;name&quot;:&quot;ALL-NEW Marvel Now原點v1&quot;,&quot;alias&quot;:&quot;All-New Marvel NOW! Point One Vol.1,ALL-NEW Marvel Now原點v1,ALL-NEW Marvel Now原点v1&quot;,&quot;path_word&quot;:&quot;pointonemarvelnow&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/pointonemarvelnow/cover/1650989197.jpg.328x422.jpg&quot;,&quot;img_type&quot;:2,&quot;author&quot;:[{&quot;name&quot;:&quot;Marvel Comics&quot;,&quot;alias&quot;:&quot;Marvel Comics&quot;,&quot;path_word&quot;:&quot;marvel&quot;}],&quot;popular&quot;:1861},{&quot;name&quot;:&quot;不自重前勇者強大又輕鬆的NEW GAME&quot;,&quot;alias&quot;:&quot;不自重前勇者强大又轻松的NEW GAME，我曾經是個勇者,我曾经是个勇者&quot;,&quot;path_word&quot;:&quot;buzizhongqianyongzheqiangdayouqingsongdenewgame&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/buzizhongqianyongzheqiangdayouqingsongdenewgame/cover/1666322838.jpg.328x422.jpg&quot;,&quot;img_type&quot;:1,&quot;author&quot;:[{&quot;name&quot;:&quot;ていやん&quot;,&quot;alias&quot;:null,&quot;path_word&quot;:&quot;teiyan&quot;}],&quot;popular&quot;:2541098},{&quot;name&quot;:&quot;(C100) [M .M (針川ミア)] A NEW LOOK (ラブライブ!虹ヶ咲学園スクールアイドル同好会)&quot;,&quot;alias&quot;:&quot;(C100)A NEW LOOK,lovelive同人&quot;,&quot;path_word&quot;:&quot;anwelook&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/anwelook/cover/1674820011.jpg.328x422.jpg&quot;,&quot;img_type&quot;:1,&quot;author&quot;:[{&quot;name&quot;:&quot;針川ミア&quot;,&quot;alias&quot;:&quot;Harikawa Mia,针川ミア,M .M (針川ミア)&quot;,&quot;path_word&quot;:&quot;HarikawaMia&quot;}],&quot;popular&quot;:2617},{&quot;name&quot;:&quot;新52火風暴&quot;,&quot;alias&quot;:&quot;new52 Firestorm,新52火風暴,新52火风暴&quot;,&quot;path_word&quot;:&quot;x52huofengbao&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/x52huofengbao/cover/1650974471.jpg.328x422.jpg&quot;,&quot;img_type&quot;:2,&quot;author&quot;:[{&quot;name&quot;:&quot;DC Comics&quot;,&quot;alias&quot;:&quot;DC Comics&quot;,&quot;path_word&quot;:&quot;dccomics&quot;}],&quot;popular&quot;:3807},{&quot;name&quot;:&quot;全新X因子v1&quot;,&quot;alias&quot;:&quot;全新X因子ALL-NEW Marvel NOW!,全新X因子v1,全新X因子v1&quot;,&quot;path_word&quot;:&quot;quanxinxyinziallnewmarvelnow&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/quanxinxyinziallnewmarvelnow/cover/1651014096.jpg.328x422.jpg&quot;,&quot;img_type&quot;:2,&quot;author&quot;:[{&quot;name&quot;:&quot;Marvel Comics&quot;,&quot;alias&quot;:&quot;Marvel Comics&quot;,&quot;path_word&quot;:&quot;marvel&quot;}],&quot;popular&quot;:3584},{&quot;name&quot;:&quot;Sex新常態&quot;,&quot;alias&quot;:&quot;New Normal Sex,Sex新常態,Sex新常态&quot;,&quot;path_word&quot;:&quot;sexxinchangtai&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/sexxinchangtai/cover/1651186474.jpg.328x422.jpg&quot;,&quot;img_type&quot;:2,&quot;author&quot;:[{&quot;name&quot;:&quot;まんだ林檎&quot;,&quot;alias&quot;:null,&quot;path_word&quot;:&quot;mandalq&quot;}],&quot;popular&quot;:31517},{&quot;name&quot;:&quot;不擅長和人說話…！&quot;,&quot;alias&quot;:&quot;不擅长和人说话…！,NEW GAME同人&quot;,&quot;path_word&quot;:&quot;bushanchangherenshuohua&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/bushanchangherenshuohua/cover/1684584804.jpg.328x422.jpg&quot;,&quot;img_type&quot;:1,&quot;author&quot;:[{&quot;name&quot;:&quot;いれぅ&quot;,&quot;alias&quot;:null,&quot;path_word&quot;:&quot;irexu&quot;}],&quot;popular&quot;:551},{&quot;name&quot;:&quot;全新侵襲組v1&quot;,&quot;alias&quot;:&quot;All-New Invaders Vol.1,全新侵袭组ALL-NEW Marvel Now,全新侵襲組v1,全新侵袭组v1&quot;,&quot;path_word&quot;:&quot;quanxinqinxizu&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/quanxinqinxizu/cover/1650987300.jpg.328x422.jpg&quot;,&quot;img_type&quot;:2,&quot;author&quot;:[{&quot;name&quot;:&quot;Marvel Comics&quot;,&quot;alias&quot;:&quot;Marvel Comics&quot;,&quot;path_word&quot;:&quot;marvel&quot;}],&quot;popular&quot;:3211},{&quot;name&quot;:&quot;新52閃電俠&quot;,&quot;alias&quot;:&quot;NEW 52 The Flash,新52閃電俠,新52闪电侠&quot;,&quot;path_word&quot;:&quot;shandianxianew52&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/shandianxianew52/cover/1651085103.jpg.328x422.jpg&quot;,&quot;img_type&quot;:2,&quot;author&quot;:[{&quot;name&quot;:&quot;DC Comics&quot;,&quot;alias&quot;:&quot;DC Comics&quot;,&quot;path_word&quot;:&quot;dccomics&quot;}],&quot;popular&quot;:7386},{&quot;name&quot;:&quot;夜魔俠v4&quot;,&quot;alias&quot;:&quot;夜魔侠ALL-NEW Marvel NOW,夜魔俠v4,夜魔侠v4&quot;,&quot;path_word&quot;:&quot;yemoxiamn&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/yemoxiamn/cover/1650986504.jpg.328x422.jpg&quot;,&quot;img_type&quot;:2,&quot;author&quot;:[{&quot;name&quot;:&quot;Marvel Comics&quot;,&quot;alias&quot;:&quot;Marvel Comics&quot;,&quot;path_word&quot;:&quot;marvel&quot;}],&quot;popular&quot;:4092},{&quot;name&quot;:&quot;世代相承-最佳&quot;,&quot;alias&quot;:&quot;Generations - Wolverine &amp; All-New Wolverine (2017-,世代相承-最佳,世代相承-最佳&quot;,&quot;path_word&quot;:&quot;shidaixiangchengzuijia&quot;,&quot;cover&quot;:&quot;https://hi77-overseas.mangafuna.xyz/shidaixiangchengzuijia/cover/1651041967.jpg.328x422.jpg&quot;,&quot;img_type&quot;:2,&quot;author&quot;:[{&quot;name&quot;:&quot;Marvel Comics&quot;,&quot;alias&quot;:&quot;Marvel Comics&quot;,&quot;path_word&quot;:&quot;marvel&quot;}],&quot;popular&quot;:434}],&quot;total&quot;:65,&quot;limit&quot;:21,&quot;offset&quot;:0}}" />
+          <option name="url" value="https://api.copymanga.net/api/v3/search/comic?format=json&amp;limit=21&amp;offset=0&amp;platform=3&amp;q=new" />
+        </ResponseHistory>
+      </list>
+    </option>
+  </component>
+</project>

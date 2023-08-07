@@ -1,6 +1,7 @@
 package com.shicheeng.copymanga.data
 
 data class ReaderState(
+    val mangaName:String?,
     val chapterName: String?,
     val subTime: String?,
     val uuid: String?,

@@ -1,7 +1,7 @@
 package com.shicheeng.copymanga.util
 
+import androidx.compose.runtime.Immutable
 import com.shicheeng.copymanga.error.ContinuationCallCallback
-import com.shicheeng.copymanga.json.MangaInfoJson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -28,7 +28,7 @@ class OkhttpHelper {
 
 suspend inline fun withGet(url: String, crossinline block: (InputStream) -> Unit) =
     withContext(Dispatchers.Default) {
-        val request = Request.Builder().url(url).headers(MangaInfoJson.headers).get().build()
+        val request = Request.Builder().url(url).get().build()
         val call = OkhttpHelper.getInstance().newCall(request)
         val response = call.await()
         val inputStream: InputStream = checkNotNull(response.body).byteStream()
@@ -43,3 +43,16 @@ suspend fun Call.await(): Response = suspendCancellableCoroutine {
     enqueue(callback)
     it.invokeOnCancellation(callback)
 }
+
+sealed class UIState<out T> {
+    @Immutable
+    data class Success<T>(val content: T) : UIState<T>()
+
+    @Immutable
+    data class Error<E : Exception>(val errorMessage: E) : UIState<Nothing>()
+
+    @Immutable
+    object Loading : UIState<Nothing>()
+}
+
+data class ResultData<T>(val maxOffset: Int, val t: T)

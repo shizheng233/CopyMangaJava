@@ -2,15 +2,19 @@ package com.shicheeng.copymanga.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.shicheeng.copymanga.pagingsource.RankPagingSource
+import com.shicheeng.copymanga.resposity.MangaRankRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class RankViewModel : ViewModel() {
+@HiltViewModel
+class RankViewModel @Inject constructor(
+    rankRepository: MangaRankRepository,
+) : ViewModel() {
 
-    fun loadRank(rankType: String) = Pager(PagingConfig(pageSize = 21)) {
-        RankPagingSource(rankType)
-    }.flow.cachedIn(viewModelScope)
+    val dayRank = rankRepository.fetchMangaRank("day").cachedIn(viewModelScope)
+    val weekRank = rankRepository.fetchMangaRank("week").cachedIn(viewModelScope)
+    val monthRank = rankRepository.fetchMangaRank("month").cachedIn(viewModelScope)
+    val totalRank = rankRepository.fetchMangaRank("total").cachedIn(viewModelScope)
 
 }

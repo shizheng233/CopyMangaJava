@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="fastRequestCurrentProjectLocalConfig">
+    <option name="domain" value="api.co" />
+    <option name="enableEnv" value="App" />
+    <option name="enableProject" value="App" />
+    <option name="initFlag" value="1" />
+  </component>
+</project>

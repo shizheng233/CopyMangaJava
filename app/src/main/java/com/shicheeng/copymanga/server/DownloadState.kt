@@ -1,29 +1,30 @@
 package com.shicheeng.copymanga.server
 
-import com.shicheeng.copymanga.data.LastMangaDownload
-import com.shicheeng.copymanga.data.MangaDownloadChapterInfoModel
+import com.shicheeng.copymanga.data.local.LocalChapter
+import com.shicheeng.copymanga.data.local.LocalSavableMangaModel
 
 sealed interface DownloadStateChapter {
     val chapterID: Int
-    val chapter: LastMangaDownload
+    val chapter: LocalSavableMangaModel
 
     class WAITING(
         override val chapterID: Int,
-        override val chapter: LastMangaDownload,
+        override val chapter: LocalSavableMangaModel,
     ) : DownloadStateChapter
 
     class PREPARE(
         override val chapterID: Int,
-        override val chapter: LastMangaDownload,
+        override val chapter: LocalSavableMangaModel,
     ) : DownloadStateChapter
 
     class DOWNLOADING(
         override val chapterID: Int,
-        override val chapter: LastMangaDownload,
-        val totalChapters: Int,
-        val currentChapter: Int,
+        override val chapter: LocalSavableMangaModel,
+        totalChapters: Int,
+        currentChapter: Int,
         val totalPages: Int,
         val currentPage: Int,
+        val currentLocalChapter: LocalChapter,
     ) : DownloadStateChapter {
         val max: Int = totalChapters * totalPages
         val progress: Int = totalPages * currentChapter + currentPage + 1
@@ -32,25 +33,22 @@ sealed interface DownloadStateChapter {
 
     class ERROR(
         override val chapterID: Int,
-        override val chapter: LastMangaDownload,
+        override val chapter: LocalSavableMangaModel,
         val error: Throwable,
-    ) : DownloadStateChapter
-
-    class ChapterChange(
-        override val chapterID: Int,
-        override val chapter: LastMangaDownload,
-        val chapterInDownload: MangaDownloadChapterInfoModel,
     ) : DownloadStateChapter
 
     class DONE(
         override val chapterID: Int,
-        override val chapter: LastMangaDownload,
+        override val chapter: LocalSavableMangaModel,
     ) : DownloadStateChapter
 
-    class PostBeforeDone(override val chapterID: Int, override val chapter: LastMangaDownload) :
+    class PostBeforeDone(
+        override val chapterID: Int,
+        override val chapter: LocalSavableMangaModel,
+    ) :
         DownloadStateChapter
 
-    class CANCEL(override val chapterID: Int, override val chapter: LastMangaDownload) :
+    class CANCEL(override val chapterID: Int, override val chapter: LocalSavableMangaModel) :
         DownloadStateChapter
 
 }

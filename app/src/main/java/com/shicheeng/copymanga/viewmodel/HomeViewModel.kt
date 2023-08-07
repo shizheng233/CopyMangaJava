@@ -1,54 +1,44 @@
 package com.shicheeng.copymanga.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.JsonArray
-import com.shicheeng.copymanga.data.BannerList
-import com.shicheeng.copymanga.json.MainBannerJson
-import kotlinx.coroutines.Dispatchers
+import com.shicheeng.copymanga.data.MainPageDataModel
+import com.shicheeng.copymanga.resposity.MangaMainPageRepository
+import com.shicheeng.copymanga.util.UIState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class HomeViewModel : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val mangaMainPageRepository: MangaMainPageRepository,
+) : ViewModel() {
 
-    sealed class UiState {
-        data class Success(val data: HomeData) : UiState()
-        object Loading : UiState()
-        data class Error(val error: Exception) : UiState()
-    }
 
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UIState<MainPageDataModel>>(UIState.Loading)
     val uiState = _uiState.asStateFlow()
 
+    init {
+        loadData()
+    }
+
     fun loadData() = viewModelScope.launch {
-        _uiState.emit(UiState.Loading)
+        _uiState.emit(UIState.Loading)
         try {
-            withContext(Dispatchers.Default) {
-                val mainJson = MainBannerJson.mainList
-                val listBanner = MainBannerJson.getBannerMain(mainJson)
-                val recMange = MainBannerJson.getRecMain(mainJson)
-                val rankMange = MainBannerJson.getDayRankMain(mainJson)
-                val hotMange = MainBannerJson.getHotMain(mainJson)
-                val newMange = MainBannerJson.getNewMain(mainJson)
-                val finishMange = MainBannerJson.getFinishMain(mainJson)
-                val homeData =
-                    HomeData(listBanner, recMange, rankMange, hotMange, newMange, finishMange)
-                _uiState.emit(UiState.Success(homeData))
-            }
+            val mainData = mangaMainPageRepository.fetchMainData()
+            Log.d("TAG", "loadData: $mainData")
+            _uiState.emit(UIState.Success(mainData))
         } catch (e: Exception) {
-            _uiState.emit(UiState.Error(e))
+            e.printStackTrace()
+            _uiState.emit(UIState.Error(e))
         }
     }
 
+
+
+
 }
 
-data class HomeData(
-    val listBanner: ArrayList<BannerList>,
-    val listRecommend: JsonArray,
-    val listRank: HashMap<Int, JsonArray>,
-    val listHot: JsonArray,
-    val listNewest: JsonArray,
-    val listFinished: JsonArray,
-)

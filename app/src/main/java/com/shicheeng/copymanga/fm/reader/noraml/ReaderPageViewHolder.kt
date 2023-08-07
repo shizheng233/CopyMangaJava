@@ -2,7 +2,6 @@ package com.shicheeng.copymanga.fm.reader.noraml
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import android.view.MotionEvent
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.davemorrissey.labs.subscaleview.ImageSource
@@ -36,11 +35,14 @@ class ReaderPageViewHolder(
     }
 
     override fun onError(e: Throwable) {
+        e.printStackTrace()
         with(binding.errorLayout) {
             errorTextLayout.isVisible = true
             errorTextTipDesc.text = e.message
             btnErrorRetry.setOnClickListener {
-                url?.let { it1 -> delegate.retry(it1) }
+                url?.let { it1 ->
+                    delegate.retry(it1)
+                }
             }
         }
         bindingInfo.loadIndicator.isVisible = false

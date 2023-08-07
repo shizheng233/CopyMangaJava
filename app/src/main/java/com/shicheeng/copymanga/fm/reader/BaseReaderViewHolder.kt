@@ -1,7 +1,6 @@
 package com.shicheeng.copymanga.fm.reader
 
 import android.content.Context
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.viewbinding.ViewBinding
 import com.shicheeng.copymanga.databinding.LayoutImageLoadBinding
@@ -12,8 +11,7 @@ import com.shicheeng.copymanga.fm.domain.PagerLoader
 abstract class BaseReaderViewHolder<VB : ViewBinding>(
     protected val binding: VB,
     imageLoader: PagerLoader,
-) :
-    ViewHolder(binding.root), PageHolderDelegate.Callback {
+) : ViewHolder(binding.root), PageHolderDelegate.Callback {
 
     val context: Context get() = itemView.context
     protected val bindingInfo = LayoutImageLoadBinding.bind(binding.root)
@@ -22,6 +20,7 @@ abstract class BaseReaderViewHolder<VB : ViewBinding>(
 
     fun bind(url: String) {
         delegate.onBind(url)
+        onBind(url)
     }
 
     open fun onRecycler() {
@@ -29,5 +28,6 @@ abstract class BaseReaderViewHolder<VB : ViewBinding>(
     }
 
     abstract fun onBind(url: String)
+
 
 }

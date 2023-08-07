@@ -3,6 +3,28 @@
   <component name="navEditor-manualLayoutAlgorithm2">
     <option name="myPositions">
       <map>
+        <entry key="aboutlibs_navigation.xml">
+          <value>
+            <LayoutPositions>
+              <option name="myPositions">
+                <map>
+                  <entry key="about_libraries_dest">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </LayoutPositions>
+          </value>
+        </entry>
         <entry key="main_nav.xml">
           <value>
             <LayoutPositions>
@@ -13,8 +35,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="474" />
-                            <option name="y" value="2927" />
+                            <option name="x" value="489" />
+                            <option name="y" value="3537" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -25,8 +47,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-214" />
-                            <option name="y" value="-73" />
+                            <option name="x" value="1110" />
+                            <option name="y" value="-1073" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -46,18 +68,9 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="47" />
-                            <option name="y" value="3466" />
+                            <option name="x" value="755" />
+                            <option name="y" value="1857" />
                           </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_downloadInfoFragment_to_mainFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -67,9 +80,18 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="252" />
-                            <option name="y" value="-496" />
+                            <option name="x" value="1143" />
+                            <option name="y" value="-668" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_downloadMangaInfoDialogFragment_to_mangaReaderActivity2">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -184,17 +206,12 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-515" />
-                            <option name="y" value="1416" />
+                            <option name="x" value="-787" />
+                            <option name="y" value="1444" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_mainFragment_to_downloadInfoFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                             <entry key="action_mainFragment_to_exploreFragment">
                               <value>
                                 <LayoutPositions />
@@ -293,8 +310,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-629" />
-                            <option name="y" value="538" />
+                            <option name="x" value="283" />
+                            <option name="y" value="-711" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -310,6 +327,11 @@
                               </value>
                             </entry>
                             <entry key="action_personalFragment_to_historyFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_personalFragment_to_infoFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -387,18 +409,68 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="253" />
-                            <option name="y" value="2861" />
+                            <option name="x" value="-28" />
+                            <option name="y" value="2965" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_settingFragment_to_about_libraries">
+                            <entry key="action_settingFragment_to_downloadInfoFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="action_settingFragment_to_downloadInfoFragment">
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </LayoutPositions>
+          </value>
+        </entry>
+        <entry key="setting_nav.xml">
+          <value>
+            <LayoutPositions>
+              <option name="myPositions">
+                <map>
+                  <entry key="aboutlibs_navigation">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="306" />
+                            <option name="y" value="-7" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="downloadInfoFragment2">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="349" />
+                            <option name="y" value="112" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="settingFragment2">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="40" />
+                            <option name="y" value="40" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_settingFragment2_to_about_libraries">
                               <value>
                                 <LayoutPositions />
                               </value>

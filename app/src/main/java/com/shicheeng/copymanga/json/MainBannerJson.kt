@@ -1,33 +1,41 @@
 package com.shicheeng.copymanga.json
 
+import android.content.SharedPreferences
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import com.shicheeng.copymanga.data.BannerList
-import com.shicheeng.copymanga.json.MangaInfoJson.headers
-import com.shicheeng.copymanga.util.ApiName
-import com.shicheeng.copymanga.util.KeyWordSwap
-import com.shicheeng.copymanga.util.OkhttpHelper
+import com.shicheeng.copymanga.util.parserToJson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object MainBannerJson {
+@Singleton
+class MainBannerJson @Inject constructor(
+    private val sharedPreferences: SharedPreferences,
+) {
 
+    private val apiHeader
+        get() = sharedPreferences.getString("key_api_header_select", "copymanga.net")
+            ?: "copymanga.net"
+    private val mainPageUrl =
+        "https://api.$apiHeader/api/v3/h5/homeIndex?platform=3&amp;format=json"
 
-    val mainList: JsonObject
-        get() {
-            val client = OkhttpHelper.getInstance()
-            val request: Request = Request.Builder().url(ApiName.mangaMainPage)
-                .removeHeader(KeyWordSwap.USER_AGENT_WORD)
-                .addHeader(KeyWordSwap.USER_AGENT_WORD, KeyWordSwap.FAKE_USER_AGENT)
-                .headers(headers)
-                .build()
-            client.newCall(request).execute().use { response ->
-                assert(response.body != null)
-                val jsonData = response.body!!.string()
-                return JsonParser.parseString(jsonData).asJsonObject.getAsJsonObject("results")
-            }
+    @Inject
+    lateinit var okHttpClient: OkHttpClient
+
+    suspend fun fetchMainListData(): JsonObject = withContext(Dispatchers.Default) {
+        val request: Request = Request.Builder()
+            .url(mainPageUrl)
+            .build()
+        okHttpClient.newCall(request).execute().use { response ->
+            val jsonData = requireNotNull(response.body).string()
+            jsonData.parserToJson().asJsonObject.getAsJsonObject("results")
         }
+    }
+
 
     fun getBannerMain(jsonObject: JsonObject): ArrayList<BannerList> {
         val array1 = jsonObject["banners"].asJsonArray

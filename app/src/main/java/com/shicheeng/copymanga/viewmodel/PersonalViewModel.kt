@@ -2,17 +2,22 @@ package com.shicheeng.copymanga.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.data.PersonalDataModel
 import com.shicheeng.copymanga.resposity.MangaHistoryRepository
 import com.shicheeng.copymanga.util.FileUtil
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class PersonalViewModel(
-    private val fileUtil: FileUtil,
+
+class PersonalViewModel @AssistedInject constructor(
+    @Assisted private val fileUtil: FileUtil,
     historyRepository: MangaHistoryRepository,
 ) : ViewModel() {
 
@@ -24,24 +29,35 @@ class PersonalViewModel(
             PersonalDataModel(R.string.history, history),
             PersonalDataModel(R.string.download_manga, download)
         )
-    }.asLiveData(viewModelScope.coroutineContext)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = emptyList()
+    )
+
 
     fun updateDownloadList() = viewModelScope.launch {
         downloadMangaList = fileUtil.findDownloadManga()
     }
 
-}
-
-class PersonalViewModelFactory(
-    private val fileUtil: FileUtil,
-    private val historyRepository: MangaHistoryRepository,
-) : ViewModelProvider.Factory {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(PersonalViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return PersonalViewModel(fileUtil, historyRepository) as T
-        }
-        throw IllegalArgumentException("ERROR VIEW MODEL CLASS")
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            fileUtil: FileUtil,
+        ): PersonalViewModel
     }
+
+    companion object {
+        fun provideFactory(
+            assistedFactory: Factory,
+            fileUtil: FileUtil,
+        ) = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return assistedFactory.create(fileUtil) as T
+            }
+        }
+    }
+
 }
+

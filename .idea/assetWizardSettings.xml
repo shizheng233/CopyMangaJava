@@ -217,6 +217,18 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
+                                      <entry key="image">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="color" value="000000" />
+                                                <entry key="imagePath" value="C:\Users\ShihCheeng\Desktop\开发\xuelunyan.png" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
                                       <entry key="text">
                                         <value>
                                           <PersistentState>
@@ -239,6 +251,12 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
+                                    </map>
+                                  </option>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="assetType" value="IMAGE" />
+                                      <entry key="imageAsset" value="C:\Users\ShihCheeng\Desktop\开发\xuelunyan.png" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -323,7 +341,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputIconType" value="ACTIONBAR" />
+                            <entry key="outputIconType" value="NOTIFICATION" />
                           </map>
                         </option>
                       </PersistentState>
@@ -349,7 +367,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/security_update/baseline_security_update_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/content_cut/baseline_content_cut_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -359,8 +377,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="baseline_security_update_24" />
-                            <entry key="sourceFile" value="C:\Users\ShihCheeng\AndroidStudioProjects\CopyMangaJava" />
+                            <entry key="outputName" value="baseline_content_cut_24" />
+                            <entry key="sourceFile" value="C:\Users\ShihCheeng\Downloads\open-source-fill-svgrepo-com.svg" />
                           </map>
                         </option>
                       </PersistentState>

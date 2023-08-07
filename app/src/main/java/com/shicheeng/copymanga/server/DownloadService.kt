@@ -14,33 +14,54 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.shicheeng.copymanga.R
-import com.shicheeng.copymanga.data.LastMangaDownload
-import com.shicheeng.copymanga.util.*
-import com.shicheeng.copymanga.util.KeyWordSwap.*
+import com.shicheeng.copymanga.data.local.LocalSavableMangaModel
+import com.shicheeng.copymanga.resposity.MangaHistoryRepository
+import com.shicheeng.copymanga.resposity.MangaInfoRepository
+import com.shicheeng.copymanga.util.DownloadJob
+import com.shicheeng.copymanga.util.FileUtil
+import com.shicheeng.copymanga.util.KeyWordSwap.EXTRA_CANCEL_ID
+import com.shicheeng.copymanga.util.KeyWordSwap.RECEIVER_CANCEL
+import com.shicheeng.copymanga.util.throttle
+import com.shicheeng.copymanga.util.whileActive
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import okhttp3.internal.filterList
+import javax.inject.Inject
 
 private const val DOWNLOAD_CHANNEL_ID = "DOWNLOAD_CHANNEL"
 
-class DownloadService :
-    LifecycleService() {
+@AndroidEntryPoint
+class DownloadService : LifecycleService() {
+
+
+    @Inject
+    lateinit var repository: MangaInfoRepository
+
+    @Inject
+    lateinit var historyRepository: MangaHistoryRepository
 
     private lateinit var notification: DownloadNotification
     private lateinit var fileUtil: FileUtil
     private val jobs = LinkedHashMap<Int, DownloadJob<DownloadStateChapter>>()
     private val jobCounter = MutableStateFlow(0)
     private lateinit var notificationManager: NotificationManager
-
     private val controlReceiver = ControlReceiver()
 
     override fun onCreate() {
-
+        super.onCreate()
         notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         bindNotification()
-        fileUtil = FileUtil(this, lifecycleScope)
+        fileUtil = FileUtil(
+            historyRepository = historyRepository,
+            repository = repository,
+            context = this,
+            coroutineScope = lifecycleScope
+        )
         notification = DownloadNotification(
             this,
             DOWNLOAD_CHANNEL_ID,
@@ -51,16 +72,25 @@ class DownloadService :
         }
         notification.show()
         registerReceiver(controlReceiver, intentFilter)
-        super.onCreate()
     }
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        val mangaDownload = intent?.getParcelableExtraCompat<LastMangaDownload>(CHAPTER_TYPE)
+        val mangaPathWord = intent?.getStringExtra(PATH_WORD_INTENT)
+        val mangaChapterUUId = intent?.getStringArrayExtra(UUID_INTENT)
+        val mangaDownload by lazy {
+            runBlocking {
+                historyRepository.getMangaByPathWord(requireNotNull(mangaPathWord))
+            }
+        }
+        val filterList = mangaDownload?.list?.filterList {
+            mangaChapterUUId?.contains(uuid) == true
+        } ?: emptyList()
+        val newDownload = mangaDownload?.copy(list = filterList)
 
-        return if (mangaDownload != null) {
-            val job = downloadManga(mangaDownload, startId)
+        return if (newDownload != null) {
+            val job = downloadManga(newDownload, startId)
             jobs[startId] = job
             jobCounter.value = jobs.size
             START_REDELIVER_INTENT
@@ -76,7 +106,7 @@ class DownloadService :
     }
 
     private fun downloadManga(
-        lastMangaDownload: LastMangaDownload,
+        lastMangaDownload: LocalSavableMangaModel,
         startId: Int,
     ): DownloadJob<DownloadStateChapter> {
         val job = fileUtil.downloadChapter(lastMangaDownload, startId)
@@ -170,6 +200,16 @@ class DownloadService :
 
         fun getCancelIntent(id: Int) = Intent(RECEIVER_CANCEL)
             .putExtra(EXTRA_CANCEL_ID, id)
+
+        private const val UUID_INTENT = "UUID_INTENT"
+        private const val PATH_WORD_INTENT = "PATH_WORD_INTENT"
+        fun startDownloadService(context: Context, pathWord: String, uuids: Array<String>) {
+            val intent = Intent(context, DownloadService::class.java)
+            intent.putExtra(PATH_WORD_INTENT, pathWord)
+            intent.putExtra(UUID_INTENT, uuids)
+            context.startService(intent)
+        }
+
     }
 
 }

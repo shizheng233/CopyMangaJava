@@ -2,24 +2,33 @@ package com.shicheeng.copymanga.json
 
 import com.shicheeng.copymanga.BuildConfig
 import com.shicheeng.copymanga.data.VersionUnit
-import com.shicheeng.copymanga.data.isNormal
 import com.shicheeng.copymanga.data.versionId
-import com.shicheeng.copymanga.util.*
+import com.shicheeng.copymanga.util.OkhttpHelper
+import com.shicheeng.copymanga.util.asArrayList
+import com.shicheeng.copymanga.util.await
+import com.shicheeng.copymanga.util.parserAsJson
+import com.shicheeng.copymanga.util.timeStampConvert
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 import okhttp3.Request
 import okhttp3.Response
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class UpdateMetaDataJson {
+@Singleton
+class UpdateMetaDataJson @Inject constructor() {
+
+    private val updateMetadata =
+        "https://api.github.com/repos/shizheng233/CopyMangaJava/releases?page=1&per_page=10"
 
     private val availableUpdate = MutableStateFlow<VersionUnit?>(null)
 
     fun availableUpdateVersion() = availableUpdate.asStateFlow()
 
     private suspend fun getUpdateInfoVersion(): List<VersionUnit> {
-        val request = Request.Builder().url(ApiName.updateMetadata).build()
+        val request = Request.Builder().url(updateMetadata).build()
         val call = OkhttpHelper.getInstance().newCall(request)
         val res = call.await()
         return buildList {
@@ -35,9 +44,6 @@ class UpdateMetaDataJson {
             val thisVersion = versionId(BuildConfig.VERSION_NAME)
             val allVersion = getUpdateInfoVersion().asArrayList()
             allVersion.sortBy { it.versionId }
-            if (thisVersion.isNormal) {
-                allVersion.retainAll { it.versionId.isNormal }
-            }
             allVersion.maxByOrNull { it.versionId }?.takeIf {
                 it.versionId > thisVersion
             }

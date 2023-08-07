@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppTheme" parent="Theme.Material3.Dark.NoActionBar">
         <item name="colorPrimary">@color/md_theme_dark_primary</item>
@@ -36,17 +36,10 @@
         <item name="switchPreferenceCompatStyle">@style/Widget.CopyManga.Switch.Perf</item>
         <item name="alertDialogTheme">@style/AppTheme.MyOldAlertDialog</item>
         <item name="chipStyle">@style/Widget.CopyManga.Chip</item>
+        <item name="android:navigationBarDividerColor" tools:targetApi="o_mr1">@null</item>
+        <item name="android:enforceNavigationBarContrast" tools:targetApi="Q">false</item>
+        <item name="android:enforceStatusBarContrast" tools:targetApi="Q">false</item>
     </style>
-
-    <style name="AppTheme.About" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">?colorSurface</item>
-        <item name="colorPrimaryDark">?colorSecondary</item>
-        <item name="colorAccent">?colorPrimary</item>
-        <item name="android:statusBarColor">?attr/colorSurface</item>
-        <item name="android:windowLightStatusBar">false</item>
-
-    </style>
-
 
 
 </resources>

@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.shicheeng.copymanga.data.MangaReaderPage
 import com.shicheeng.copymanga.data.MangaState
@@ -12,6 +14,7 @@ import com.shicheeng.copymanga.databinding.FragmentReaderNormalBinding
 import com.shicheeng.copymanga.fm.reader.BaseReader
 import com.shicheeng.copymanga.fm.reader.BaseReaderAdapter
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 open class ReaderPageFragment : BaseReader<FragmentReaderNormalBinding>() {
 
@@ -66,21 +69,23 @@ open class ReaderPageFragment : BaseReader<FragmentReaderNormalBinding>() {
     }
 
     override fun onLoadUrlChangeSuccess(list: List<MangaReaderPage>, state: MangaState?) {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            val items = async {
-                pageAdapter?.subItems(list)
-            }
-            if (state != null) {
-                val position = list.indexOfFirst {
-                    it.uuid == state.uuid && it.index == state.page
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                val items = async {
+                    pageAdapter?.subItems(list)
                 }
-                items.await() ?: return@launchWhenCreated
-                if (position != -1) {
-                    binding.mangaReaderViewpager2.setCurrentItem(position, false)
-                    viewModel.onPagePositionChange(position)
+                if (state != null) {
+                    val position = list.indexOfFirst {
+                        it.uuid == state.uuid && it.index == state.page
+                    }
+                    items.await() ?: return@repeatOnLifecycle
+                    if (position != -1) {
+                        binding.mangaReaderViewpager2.setCurrentItem(position, false)
+                        viewModel.onPagePositionChange(position)
+                    }
+                } else {
+                    items.await()
                 }
-            } else {
-                items.await()
             }
         }
     }

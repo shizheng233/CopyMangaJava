@@ -7,7 +7,10 @@ import androidx.core.net.toUri
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.shicheeng.copymanga.data.*
-import com.shicheeng.copymanga.json.MangaInfoJson
+import com.shicheeng.copymanga.data.local.LocalChapter
+import com.shicheeng.copymanga.data.local.LocalSavableMangaModel
+import com.shicheeng.copymanga.resposity.MangaHistoryRepository
+import com.shicheeng.copymanga.resposity.MangaInfoRepository
 import com.shicheeng.copymanga.server.DownloadStateChapter
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -18,7 +21,14 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 
+/**
+ * 下载文件的逻辑，逻辑简单易懂。
+ *
+ * 大部分来自Kotatsu
+ */
 class FileUtil(
+    private val historyRepository: MangaHistoryRepository,
+    private val repository: MangaInfoRepository,
     private val context: Context,
     private val coroutineScope: CoroutineScope,
 ) {
@@ -28,7 +38,7 @@ class FileUtil(
         File("${context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/${KeyWordSwap.SAVED_LOCAL_CHAPTER_NAME}")
 
     fun downloadChapter(
-        contentModel: LastMangaDownload,
+        contentModel: LocalSavableMangaModel,
         startId: Int,
     ): DownloadJob<DownloadStateChapter> {
         val state = MutableStateFlow<DownloadStateChapter>(
@@ -51,50 +61,48 @@ class FileUtil(
 
 
     private suspend fun downloadFileImpl(
-        contentModel: LastMangaDownload,
+        contentModel: LocalSavableMangaModel,
         stateFlow: MutableStateFlow<DownloadStateChapter>,
         startId: Int,
     ) {
         stateFlow.value = DownloadStateChapter.PREPARE(startId, contentModel)
         semaphore.withPermit {
-            stateFlow.value = DownloadStateChapter.PREPARE(startId, contentModel)
             try {
                 val chapters = contentModel.list
                 for ((index, chapter) in chapters.withIndex()) {
-                    val urlsAndWord =
-                        MangaInfoJson.parserMangaDownloadChapters(
-                            chapter.pathWord,
-                            chapter.uuidText
-                        )
-                    stateFlow.value = DownloadStateChapter.ChapterChange(
-                        contentModel.hashCode(),
-                        contentModel,
-                        chapter
+                    val urlsAndWord = repository.fetchContent(
+                        chapter.comicPathWord,
+                        chapter.uuid
                     )
-                    for ((wordPosition, url) in urlsAndWord.urlList.withIndex()) {
-                        val indexName = urlsAndWord.wordsList[wordPosition].toString()
+                    for ((wordPosition, url) in urlsAndWord.withIndex()) {
+                        val indexName = urlsAndWord[wordPosition].index.toString()
                         downloadFile(
-                            url,
-                            contentModel.mangaName,
-                            chapters[index].chapterTitle,
+                            url.url,
+                            contentModel.mangaHistoryDataModel.name,
+                            chapters[index].name,
                             indexName
                         )
                         stateFlow.value = DownloadStateChapter.DOWNLOADING(
-                            contentModel.hashCode(),
-                            contentModel,
-                            chapters.size,
-                            index,
-                            urlsAndWord.urlList.size,
-                            wordPosition
+                            chapterID = contentModel.hashCode(),
+                            chapter = contentModel,
+                            totalChapters = chapters.size,
+                            currentChapter = index,
+                            totalPages = urlsAndWord.size,
+                            currentPage = wordPosition,
+                            currentLocalChapter = chapter
                         )
                     }
+                    historyRepository.updateLocalChapter(chapter.copy(isDownloaded = true))
                 }
                 stateFlow.value =
                     DownloadStateChapter.PostBeforeDone(startId, contentModel)
                 chapters.forEach { mangaChapter ->
-                    updateOrCreate(mangaChapter, file, contentModel.mangaName)
+                    updateOrCreate(mangaChapter, file, contentModel.mangaHistoryDataModel.name)
                 }
-                downloadCover(contentModel.coverUrl, contentModel.mangaName)
+                downloadCover(
+                    contentModel.mangaHistoryDataModel.url,
+                    contentModel.mangaHistoryDataModel.name
+                )
                 stateFlow.value = DownloadStateChapter.DONE(startId, contentModel)
             } catch (e: CancellationException) {
                 stateFlow.value = DownloadStateChapter.CANCEL(startId, contentModel)
@@ -142,7 +150,7 @@ class FileUtil(
         }
 
     private suspend fun updateOrCreate(
-        chapter: MangaDownloadChapterInfoModel,
+        chapter: LocalChapter,
         file: File,
         title: String,
     ) = withContext(Dispatchers.IO) {
@@ -154,14 +162,14 @@ class FileUtil(
     }
 
     private suspend fun updateMangaSavedInformation(
-        chapter: MangaDownloadChapterInfoModel,
+        chapter: LocalChapter,
         file: File,
         title: String,
     ) = withContext(Dispatchers.IO) {
         val jsonFile = file.readText().parserAsJson().asJsonArray
 
         val ts = jsonFile.toList().find { x ->
-            x.asJsonObject["path_word"].asString == chapter.pathWord
+            x.asJsonObject["path_word"].asString == chapter.comicPathWord
         }
         if (ts == null) {
             val ss = createJson(chapter, title)
@@ -173,8 +181,8 @@ class FileUtil(
             val array = ss["manga_downloaded"].asJsonArray
             val arrayObject = JsonObject()
             arrayObject.apply {
-                addProperty("chapter_name", chapter.chapterTitle)
-                addProperty("uuid", chapter.uuidText)
+                addProperty("chapter_name", chapter.name)
+                addProperty("uuid", chapter.uuid)
             }
             array.add(arrayObject)
             jsonFile.add(ss)
@@ -191,7 +199,7 @@ class FileUtil(
 
 
     private suspend fun createFileOfDownload(
-        chapter: MangaDownloadChapterInfoModel,
+        chapter: LocalChapter,
         file: File,
         title: String,
     ) = withContext(Dispatchers.IO) {
@@ -216,15 +224,15 @@ class FileUtil(
             }
         }
 
-    private fun createJson(chapter: MangaDownloadChapterInfoModel, title: String): JsonObject {
+    private fun createJson(chapter: LocalChapter, title: String): JsonObject {
         val main = JsonObject()
-        main.addProperty("path_word", chapter.pathWord)
+        main.addProperty("path_word", chapter.comicPathWord)
         main.addProperty("name", title)
         val array = JsonArray()
         val arrayObject = JsonObject()
         arrayObject.apply {
-            addProperty("chapter_name", chapter.chapterTitle)
-            addProperty("uuid", chapter.uuidText)
+            addProperty("chapter_name", chapter.name)
+            addProperty("uuid", chapter.uuid)
         }
         array.add(arrayObject)
         main.add("manga_downloaded", array)
@@ -296,9 +304,9 @@ class FileUtil(
                 val uuid = chapter["uuid"].asString
                 val time = "LOCAL"
                 val bean = MangaInfoChapterDataBean(
-                    name,
-                    time,
-                    uuid,
+                    chapterTitle = name,
+                    chapterTime = time,
+                    uuidText = uuid,
                     readerProgress = null,
                     pathWord = data.pathWord ?: return emptyList(),
                     isSaved = true

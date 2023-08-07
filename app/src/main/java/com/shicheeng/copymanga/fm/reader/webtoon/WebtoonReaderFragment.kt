@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.shicheeng.copymanga.data.MangaReaderPage
 import com.shicheeng.copymanga.data.MangaState
@@ -16,6 +18,7 @@ import com.shicheeng.copymanga.util.findCurrentPagePosition
 import com.shicheeng.copymanga.util.firstVisibleItemPosition
 import com.shicheeng.copymanga.util.setFirstVisibleItemPositionSmooth
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 
@@ -69,23 +72,25 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
     }
 
     override fun onLoadUrlChangeSuccess(list: List<MangaReaderPage>, state: MangaState?) {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            val items = async {
-                webtoonReaderAdapter?.subItems(list)
-            }
-            if (state != null) {
-                val position = list.indexOfFirst {
-                    it.uuid == state.uuid && it.index == state.page
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                val items = async {
+                    webtoonReaderAdapter?.subItems(list)
                 }
-                items.await() ?: return@launchWhenCreated
-                if (position != -1) {
-                    with(binding.mangaReaderWebtoonRecyclerview) {
-                        firstVisibleItemPosition = position
+                if (state != null) {
+                    val position = list.indexOfFirst {
+                        it.uuid == state.uuid && it.index == state.page
                     }
-                    viewModel.onPagePositionChange(position)
+                    items.await() ?: return@repeatOnLifecycle
+                    if (position != -1) {
+                        with(binding.mangaReaderWebtoonRecyclerview) {
+                            firstVisibleItemPosition = position
+                        }
+                        viewModel.onPagePositionChange(position)
+                    }
+                } else {
+                    items.await()
                 }
-            } else {
-                items.await()
             }
         }
     }

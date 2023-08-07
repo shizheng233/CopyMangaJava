@@ -1,30 +1,33 @@
 package com.shicheeng.copymanga.fm.domain
 
-import com.shicheeng.copymanga.data.MangaInfoChapterDataBean
 import com.shicheeng.copymanga.data.MangaReaderPage
-import com.shicheeng.copymanga.json.MangaReadJson
+import com.shicheeng.copymanga.data.local.LocalChapter
+import com.shicheeng.copymanga.resposity.MangaInfoRepository
 import com.shicheeng.copymanga.util.FileUtil
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class ChapterLoader(private val fileUtil: FileUtil) {
+class ChapterLoader(
+    private val fileUtil: FileUtil,
+    private val repository: MangaInfoRepository,
+) {
 
-    val chapters = LinkedHashMap<String, MangaInfoChapterDataBean>()
+    val chapters = LinkedHashMap<String, LocalChapter>()
     private val chapterPage = ChapterPages()
     private val mutex = Mutex()
 
     suspend fun loadPrevNextChapter(
-        list: Array<MangaInfoChapterDataBean>?,
+        list: List<LocalChapter>?,
         uuid: String?,
         isNext: Boolean,
     ) {
         val chapters = list ?: return
-        val predicate: (MangaInfoChapterDataBean) -> Boolean = { it.uuidText == uuid }
+        val predicate: (LocalChapter) -> Boolean = { it.uuid == uuid }
         val index =
             if (isNext) chapters.indexOfFirst(predicate) else chapters.indexOfLast(predicate)
         if (index == -1) return
         val newChapter = chapters.getOrNull(if (isNext) index + 1 else index - 1) ?: return
-        val newPages = loadChapter(newChapter.pathWord, newChapter.uuidText)
+        val newPages = loadChapter(newChapter.comicPathWord, newChapter.uuid)
         mutex.withLock {
             if (chapterPage.chapterSize > 1) {
                 if (chapterPage.size > 130) {
@@ -36,9 +39,9 @@ class ChapterLoader(private val fileUtil: FileUtil) {
                 }
             }
             if (isNext) {
-                chapterPage.addLast(newChapter.uuidText, newPages)
+                chapterPage.addLast(newChapter.uuid, newPages)
             } else {
-                chapterPage.addFirst(newChapter.uuidText, newPages)
+                chapterPage.addFirst(newChapter.uuid, newPages)
             }
         }
     }
@@ -63,7 +66,10 @@ class ChapterLoader(private val fileUtil: FileUtil) {
 
     private suspend fun loadChapter(pathWord: String, uui: String): List<MangaReaderPage> {
         val chapter = checkNotNull(chapters[uui]) { "NO CHAPTER FOUND" }
-        return MangaReadJson.getMangaPic(pathWord, chapter.uuidText, fileUtil)
+        val isDownload = fileUtil.isChapterDownloadedWithStringList(pathWord, chapter.uuid)
+        val listLocal =
+            if (isDownload) fileUtil.ifChapterDownloaded(pathWord, chapter.uuid) else null
+        return repository.fetchContentMayLocal(listLocal, pathWord, chapter.uuid)
     }
 
 }

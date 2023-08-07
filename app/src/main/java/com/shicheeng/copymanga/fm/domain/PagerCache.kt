@@ -2,14 +2,24 @@ package com.shicheeng.copymanga.fm.domain
 
 import android.content.Context
 import com.tomclaw.cache.DiskLruCache
-import kotlinx.coroutines.*
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
+import javax.annotation.Signed
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /*todo 该缓存机构我直接是使用的 Kotatsu 里面的缓存机构。其实也可以用户来设置最大的占用空间*/
-class PagerCache(private val context: Context) {
-
+@Singleton
+class PagerCache @Inject constructor(
+    @ApplicationContext context: Context,
+) {
 
     private val cache = (context.externalCacheDirs + context.cacheDir).firstNotNullOfOrNull {
         it.makeDirIfNoExist()

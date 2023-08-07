@@ -1,119 +1,155 @@
 package com.shicheeng.copymanga
 
-import android.content.SharedPreferences
+import android.annotation.TargetApi
+import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.RippleDrawable
+import android.os.Build
 import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.transition.TransitionSet
-import android.view.*
-import androidx.activity.viewModels
+import android.view.Gravity
+import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.Insets
-import androidx.core.view.*
-import androidx.lifecycle.coroutineScope
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.isGone
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.navArgs
 import androidx.viewpager2.widget.ViewPager2.LAYOUT_DIRECTION_LTR
 import androidx.viewpager2.widget.ViewPager2.LAYOUT_DIRECTION_RTL
 import com.google.android.material.shape.MaterialShapeDrawable
-import com.google.android.material.snackbar.Snackbar
 import com.shicheeng.copymanga.app.AppAttachCompatActivity
-import com.shicheeng.copymanga.data.MangaHistoryDataModel
-import com.shicheeng.copymanga.data.MangaInfoChapterDataBean
 import com.shicheeng.copymanga.data.MangaReaderPage
+import com.shicheeng.copymanga.data.ReaderContent
 import com.shicheeng.copymanga.data.ReaderState
 import com.shicheeng.copymanga.databinding.ActivityMangaReaderBinding
 import com.shicheeng.copymanga.dialog.ConfigPagerSheet
-import com.shicheeng.copymanga.fm.domain.PagerCache
-import com.shicheeng.copymanga.fm.domain.PagerLoader
+import com.shicheeng.copymanga.fm.delegate.IdlingDelegate
 import com.shicheeng.copymanga.fm.reader.ReaderManager
 import com.shicheeng.copymanga.fm.reader.ReaderMode
 import com.shicheeng.copymanga.fm.reader.noraml.PageSliderFormatter
-import com.shicheeng.copymanga.util.*
+import com.shicheeng.copymanga.resposity.MangaHistoryRepository
+import com.shicheeng.copymanga.resposity.MangaInfoRepository
+import com.shicheeng.copymanga.ui.screen.setting.SettingPref
+import com.shicheeng.copymanga.util.FileUtil
+import com.shicheeng.copymanga.util.GestureHelper
+import com.shicheeng.copymanga.util.PageSelectPosition
+import com.shicheeng.copymanga.util.ReaderSliderAttach
+import com.shicheeng.copymanga.util.assistedViewModels
+import com.shicheeng.copymanga.util.copy
+import com.shicheeng.copymanga.util.getThemeColor
+import com.shicheeng.copymanga.util.hasGlobalPoint
+import com.shicheeng.copymanga.util.observeWithPrevious
 import com.shicheeng.copymanga.view.control.ReaderControl
 import com.shicheeng.copymanga.viewmodel.ReaderViewModel
-import com.shicheeng.copymanga.viewmodel.ReaderViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MangaReaderActivity : AppAttachCompatActivity(),
     ConfigPagerSheet.CallBack,
     PageSelectPosition,
-    GestureHelper.GestureListener, ReaderControl.ControlDelegateListener {
+    GestureHelper.GestureListener,
+    ReaderControl.ControlDelegateListener,
+    IdlingDelegate.IdleCallback {
 
-    private val mangaReaderNavArgs: MangaReaderActivityArgs by navArgs()
+
     private lateinit var binding: ActivityMangaReaderBinding
-    private val viewModel by viewModels<ReaderViewModel> {
-        ReaderViewModelFactory(
-            (application as MyApp).repo,
-            (application as MyApp).appPreference,
-            PagerLoader(PagerCache(this)),
-            FileUtil(this, lifecycleScope),
-            mangaReaderNavArgs.mangaChapterItems,
-            mangaReaderNavArgs.mangaChapterItem
+
+    @Inject
+    lateinit var viewModelFactory: ReaderViewModel.Factory
+
+    @Inject
+    lateinit var infoRepository: MangaInfoRepository
+
+    @Inject
+    lateinit var historyRepository: MangaHistoryRepository
+
+    private val viewModel by assistedViewModels {
+        viewModelFactory.create(
+            fileUtil = FileUtil(
+                historyRepository = historyRepository,
+                repository = infoRepository,
+                context = this,
+                coroutineScope = lifecycleScope
+            )/*这可能会造成某些错误，因为它的生命周期没有跟随ViewModel的生命周期。*/,
+            currentChapterUUID = intent.getStringExtra(UUID_INTENT),
+            currentPathWord = intent.getStringExtra(PATH_WORD_INTENT)
         )
     }
     private val windowInsetsController by lazy {
-        WindowCompat.getInsetsController(window, window.decorView)
+        WindowInsetsControllerCompat(window, binding.root)
     }
-    private val delayDismissUi = Runnable { hideSystemBar(true) }
-    private lateinit var pathWord: String
-    private lateinit var uuid: String
-    private lateinit var sharedPref: SharedPreferences
+
+
+    @Inject
+    lateinit var settingPref: SettingPref
+
+
     private lateinit var readerManager: ReaderManager
-    private lateinit var readerHistoryDataModel: MangaHistoryDataModel
     private lateinit var gestureHelper: GestureHelper
     private lateinit var control: ReaderControl
     private var isLast: Boolean = false
     private var gestureInsets: Insets = Insets.NONE
+    private val idlingDelegate = IdlingDelegate(this)
 
     override val readerMode: ReaderMode?
         get() = readerManager.currentReaderMode
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMangaReaderBinding.inflate(layoutInflater)
         setContentView(binding.root)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        windowsInsets(binding.root) { view, insets, systemGesture ->
+        setCutoutShort(settingPref.cutoutDisplay)
+        windowsInsets(binding.root) { view, systemGesture ->
             gestureInsets = systemGesture
-            binding.mangaReaderToolbar
-                .updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                    topMargin = insets.top
-                }
-            binding.mangaReaderBottomToolbar.updatePadding(bottom = insets.bottom)
+            binding.mangaReaderToolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = top
+            }
+            binding.mangaReaderBottomToolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = bottom
+            }
             view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                leftMargin = insets.left
-                rightMargin = insets.right
+                leftMargin = left
+                rightMargin = right
             }
         }
 
-        pathWord = mangaReaderNavArgs.pathWord
-        uuid = mangaReaderNavArgs.mangaChapterItem.uuidText
-        binding.mangaReaderToolbar.title = mangaReaderNavArgs.mangaTitle
-        sharedPref = AppSetting.getInstance(this)
         readerManager = ReaderManager(supportFragmentManager, R.id.manga_reader_container)
         gestureHelper = GestureHelper(this, this)
-        control = ReaderControl(this, (application as MyApp).appPreference)
+        control = ReaderControl(this, settingPref = settingPref)
 
-        viewModel.readerModel.observe(this, this::initializeReaderMode)
+        viewModel.readerModel.observe(this) {
+            initializeReaderMode(it)
+            initializeReaderModeText(it)
+        }
         viewModel.information.observeWithPrevious(this, this::onUIChange)
-        viewModel.historyData.observe(this, this::onHistoryModelAttach)
         viewModel.errorHandler.observe(this, this::onError)
         viewModel.loadingCounter.observe(this, this::onLoading)
+        viewModel.mangaContent.observe(this, this::withPageContent)
 
         initializeBottomMenu()
         binding.mangaReaderSlider.setLabelFormatter(PageSliderFormatter())
         ReaderSliderAttach(this, viewModel).attach(binding.mangaReaderSlider)
         binding.mangaReaderNext.setOnClickListener { loadChapter(true) }
         binding.mangaReaderPrevious.setOnClickListener { loadChapter(false) }
-        initializeReaderModeText(readerManager.currentReaderMode ?: ReaderMode.NORMAL)
+        idlingDelegate.bindToLifecycle(this)
     }
 
     private fun initializeReaderModeText(readerMode: ReaderMode) {
@@ -129,20 +165,19 @@ class MangaReaderActivity : AppAttachCompatActivity(),
         if (readerManager.currentReaderMode != readerMode) {
             readerManager.replace(readerMode)
         }
-        if (binding.mangaReaderToolbar.isVisible) {
-            lifecycle.coroutineScope.launch {
-                delay(TimeUnit.SECONDS.toMillis(1))
-                delayDismissUi.run()
-            }
-        }
     }
 
+    private fun withPageContent(readerContent: ReaderContent) {
+        if (readerContent.list.isNotEmpty()) {
+            hideSystemBar(true)
+        }
+    }
 
     private fun initializeBottomMenu() {
         setSupportActionBar(binding.mangaReaderToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.mangaReaderToolbar.setNavigationOnClickListener { finish() }
-        //The bottom menu.refer to Tachiyomi
+        //The bottom menu refer from Tachiyomi
         val materialShape = (binding.mangaReaderToolbar.background as MaterialShapeDrawable).apply {
             elevation =
                 resources.getDimension(com.google.android.material.R.dimen.m3_sys_elevation_level2)
@@ -168,8 +203,8 @@ class MangaReaderActivity : AppAttachCompatActivity(),
 
         binding.mangaReaderSetting.setOnClickListener {
             ConfigPagerSheet.show(
-                supportFragmentManager,
-                readerManager.currentReaderMode ?: return@setOnClickListener
+                fragmentManager = supportFragmentManager,
+                reader = readerManager.currentReaderMode ?: return@setOnClickListener
             )
         }
 
@@ -178,37 +213,27 @@ class MangaReaderActivity : AppAttachCompatActivity(),
             materialShape.alpha
         )
         window.statusBarColor = toolbarColor
+        window.navigationBarColor = toolbarColor
     }
 
     private fun onUIChange(state: ReaderState?, old: ReaderState?) {
-
         if (state == null) {
             return
         }
+        binding.mangaReaderToolbar.title =
+            state.mangaName ?: getString(R.string.in_loading_next_chapter)
         binding.readerMangaSubtitle.text = state.subTime ?: getString(R.string.local)
         binding.mangaReaderToolbar.subtitle =
             state.chapterName ?: getString(android.R.string.unknownName)
 
-        readerHistoryDataModel = MangaHistoryDataModel(
-            name = mangaReaderNavArgs.mangaTitle,
-            time = System.currentTimeMillis(),
-            url = mangaReaderNavArgs.coverUrl,
-            pathWord = pathWord,
-            nameChapter = state.chapterName ?: getString(android.R.string.unknownName),
-            positionChapter = state.chapterPosition,
-            positionPage = state.currentPage,
-            readerModeId = readerManager.currentReaderMode?.id ?: ReaderMode.NORMAL.id
-        )
         isLast = state.currentPage == state.totalPage - 1
-        viewModel.insertOrUpdateHistory(readerHistoryDataModel)
 
         if (old?.chapterName != null && state.chapterName != old.chapterName) {
             if (!state.chapterName.isNullOrEmpty()) {
-                Snackbar.make(
-                    binding.mangaReaderContainer,
+                binding.mangaReaderCircularProgressIndicator.tip(
                     state.chapterName,
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                    TimeUnit.SECONDS.toMillis(1)
+                )
             }
         }
 
@@ -223,13 +248,7 @@ class MangaReaderActivity : AppAttachCompatActivity(),
             binding.mangaReaderSlider.valueTo = (state.totalPage.toFloat() - 1)
             binding.mangaReaderSlider.value = state.currentPage.toFloat()
         }
-    }
-
-    private fun onHistoryModelAttach(historyDataModel: MangaHistoryDataModel?) {
-        ReaderMode.idOf(historyDataModel?.readerModeId ?: ReaderMode.NORMAL.id)?.let {
-            viewModel.switchMode(it)
-            initializeReaderModeText(it)
-        }
+        viewModel.saveLocalChapterState(state.currentPage)
     }
 
     override fun onPositionCallBack(page: MangaReaderPage) {
@@ -280,12 +299,21 @@ class MangaReaderActivity : AppAttachCompatActivity(),
 
     private fun loadChapter(isNext: Boolean) {
         val uuid = viewModel.getCurrentReaderState().uuid
-        val predicate: ((MangaInfoChapterDataBean) -> Boolean) = { it.uuidText == uuid }
-        val list = mangaReaderNavArgs.mangaChapterItems
+        val predicate: ((MangaReaderPage) -> Boolean) = { it.uuid == uuid }
+        val list = viewModel.mangaContent.value?.list ?: return
         val uuidIndex = if (isNext) list.indexOfFirst(predicate) else list.indexOfLast(predicate)
         if (uuidIndex == -1) return
-        val newChapterUUId = list.getOrNull(if (isNext) uuidIndex + 1 else uuidIndex - 1)?.uuidText
+        val newChapterUUId = list.getOrNull(if (isNext) uuidIndex + 1 else uuidIndex - 1)?.uuid
         viewModel.switchChapter(newChapterUUId)
+    }
+
+    override fun onIdle() {
+        viewModel.saveCurrentState(readerManager.currentReader?.currentState())
+    }
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        idlingDelegate.onUserInteraction()
     }
 
     override fun onModeChange(mode: ReaderMode) {
@@ -293,21 +321,31 @@ class MangaReaderActivity : AppAttachCompatActivity(),
         viewModel.switchMode(mode)
         initializeReaderModeText(mode)
         viewModel.saveCurrentState(readerManager.currentReader?.currentState())
-        val wannaSave = readerHistoryDataModel.copy(readerModeId = mode.id)
-        viewModel.insertOrUpdateHistory(wannaSave)
     }
 
     private fun onError(e: Throwable) {
         e.printStackTrace()
-        binding.mangaReaderCircularProgressIndicator.isVisible = true
-        binding.mangaReaderCircularProgressIndicator.text = getString(R.string.touch_to_retry)
-        binding.mangaReaderCircularProgressIndicator.setOnClickListener {
-            viewModel.retry()
+        with(binding.layoutErrorInclude) {
+            errorTextTip.setTextColor(getThemeColor(com.google.android.material.R.attr.colorSurface))
+            errorTextTipDesc.apply {
+                setTextColor(getThemeColor(com.google.android.material.R.attr.colorSurface))
+                text = e.message
+            }
+            btnErrorRetry.setOnClickListener {
+                viewModel.retry()
+                this.root.isVisible = false
+            }
         }
     }
 
     private fun onLoading(boolean: Boolean) {
-        binding.mangaReaderCircularProgressIndicator.isVisible = boolean
+        val hasPages = !viewModel.mangaContent.value?.list.isNullOrEmpty()
+        binding.loadIndicator.isVisible = boolean && !hasPages
+        if (boolean && hasPages) {
+            binding.mangaReaderCircularProgressIndicator.show(R.string.in_loading_next_chapter)
+        } else {
+            binding.mangaReaderCircularProgressIndicator.hide()
+        }
     }
 
     private fun rebuildReaderNavigation(mode: ReaderMode) {
@@ -324,10 +362,12 @@ class MangaReaderActivity : AppAttachCompatActivity(),
                 readerManager.currentReader?.moveDelta(-1)
                 true
             }
+
             KeyEvent.KEYCODE_VOLUME_DOWN -> {
                 readerManager.currentReader?.moveDelta(1)
                 true
             }
+
             else -> super.onKeyDown(keyCode, event)
         }
     }
@@ -349,8 +389,42 @@ class MangaReaderActivity : AppAttachCompatActivity(),
             windowInsetsController.systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         } else {
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        }
+
+    }
+
+    @TargetApi(Build.VERSION_CODES.P)
+    private fun setCutoutShort(enabled: Boolean) {
+        window.attributes.layoutInDisplayCutoutMode = when (enabled) {
+            true -> WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            false -> WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER
+        }
+
+        // Trigger relayout
+        hideSystemBar(!binding.mangaReaderToolbar.isVisible)
+    }
+
+    companion object {
+
+        private const val PATH_WORD_INTENT = "PATH_WORD_INTENT"
+        private const val UUID_INTENT = "UUID_INTENT"
+
+        /**
+         * 跳转到[MangaReaderActivity]
+         * @param pathWord Path word
+         * @param uuid 章节uuid
+         */
+        fun newInstance(
+            context: Context,
+            pathWord: String,
+            uuid: String,
+        ): Intent {
+            val intent = Intent(context, MangaReaderActivity::class.java)
+            intent.putExtra(PATH_WORD_INTENT, pathWord)
+            intent.putExtra(UUID_INTENT, uuid)
+            return intent
         }
 
     }

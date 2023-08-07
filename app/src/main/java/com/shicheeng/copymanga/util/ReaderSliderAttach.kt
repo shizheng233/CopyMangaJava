@@ -19,7 +19,6 @@ class ReaderSliderAttach(
         slider.addOnChangeListener(this)
     }
 
-
     private infix fun moveTo(position: Int) {
         val pages = viewModel.currentChapterPage
         val page = pages[position]

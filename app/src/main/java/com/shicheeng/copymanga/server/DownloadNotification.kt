@@ -4,13 +4,18 @@ import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.util.SparseArray
 import androidx.core.app.NotificationCompat
+import androidx.core.app.TaskStackBuilder
+import androidx.core.net.toUri
 import androidx.core.util.forEach
 import androidx.core.util.isNotEmpty
 import androidx.navigation.NavDeepLinkBuilder
+import com.shicheeng.copymanga.MainActivity
 import com.shicheeng.copymanga.R
+import com.shicheeng.copymanga.ui.screen.Router
 
 class DownloadNotification(
     private val context: Context,
@@ -23,14 +28,28 @@ class DownloadNotification(
     private val downloadGroupIDINT = 0x121A
     private val states = SparseArray<DownloadStateChapter>()
     private val groupNotification = NotificationCompat.Builder(context, channelId)
-    private val listPending = NavDeepLinkBuilder(context)
-        .setGraph(R.navigation.main_nav)
-        .setDestination(R.id.downloadInfoFragment)
-        .createPendingIntent()
-    private val downloadPending = NavDeepLinkBuilder(context)
-        .setGraph(R.navigation.main_nav)
-        .setDestination(R.id.downloadFragment)
-        .createPendingIntent()
+    private val listPending = TaskStackBuilder.create(context).run {
+        addNextIntentWithParentStack(
+            Intent(
+                Intent.ACTION_VIEW,
+                Router.DOWNLOAD.deepLink.toUri(),
+                context,
+                MainActivity::class.java
+            )
+        )
+        getPendingIntent(0, PendingIntent.FLAG_MUTABLE)
+    }
+    private val downloadPending = TaskStackBuilder.create(context).run {
+        addNextIntentWithParentStack(
+            Intent(
+                Intent.ACTION_VIEW,
+                Router.DOWNLOAD.deepLink.toUri(),
+                context,
+                MainActivity::class.java
+            )
+        )
+        getPendingIntent(0, PendingIntent.FLAG_MUTABLE)
+    }
 
 
     init {
@@ -55,42 +74,43 @@ class DownloadNotification(
                     isInProgress = true
                     context.getString(R.string.waiting)
                 }
+
                 is DownloadStateChapter.PREPARE -> {
                     isAllDone = false
                     isInProgress = true
                     context.getString(R.string.manga_download_get_ready)
                 }
+
                 is DownloadStateChapter.DOWNLOADING -> {
                     isAllDone = false
                     isInProgress = true
                     progress += state.percent
                     "${(state.percent * 100).toInt()}%"
                 }
-                is DownloadStateChapter.ChapterChange -> {
-                    isAllDone = false
-                    isInProgress = true
-                    state.chapter.mangaName
-                }
+
                 is DownloadStateChapter.DONE -> {
                     progress++
                     context.getString(R.string.all_done)
                 }
+
                 is DownloadStateChapter.ERROR -> {
                     isAllDone = false
                     context.getString(R.string.error_in_download)
                 }
+
                 is DownloadStateChapter.PostBeforeDone -> {
                     progress++
                     isInProgress = true
                     isAllDone = false
                     context.getString(R.string.post_before_done)
                 }
+
                 is DownloadStateChapter.CANCEL -> {
                     progress++
                     context.getString(R.string.cancel)
                 }
             }
-            style.addLine("${state.chapter.mangaName} $summary")
+            style.addLine("${state.chapter.mangaHistoryDataModel.name} $summary")
         }
 
         progress = if (isInProgress) {
@@ -167,7 +187,7 @@ class DownloadNotification(
         }
 
         fun notify(state: DownloadStateChapter) {
-            notification.setContentTitle(state.chapter.mangaName)
+            notification.setContentTitle(state.chapter.mangaHistoryDataModel.name)
             notification.clearActions()
             notification.setContentIntent(listPending)
             when (state) {
@@ -175,23 +195,23 @@ class DownloadNotification(
                     notification.setOngoing(true)
                     notification.setContentText(context.getString(R.string.waiting))
                 }
+
                 is DownloadStateChapter.PREPARE -> {
                     notification.setOngoing(true)
                     notification.setProgress(1, 0, true)
                     notification.setSubText(context.getString(R.string.manga_download_get_ready))
                     notification.addAction(cancel)
                 }
+
                 is DownloadStateChapter.DOWNLOADING -> {
                     notification.setOngoing(true)
                     notification.setContentText("${(state.percent * 100).toInt()}%")
                     notification.setProgress(state.max, state.progress, false)
                     notification.addAction(cancel)
+                    notification.setSubText(state.currentLocalChapter.name)
                 }
-                is DownloadStateChapter.ChapterChange -> {
-                    notification.setOngoing(true)
-                    notification.setSubText(state.chapterInDownload.chapterTitle)
-                    notification.addAction(cancel)
-                }
+
+
                 is DownloadStateChapter.DONE -> {
                     notification.setAutoCancel(true)
                     notification.setOngoing(false)
@@ -202,6 +222,7 @@ class DownloadNotification(
                     notification.setShowWhen(true)
                     notification.setWhen(System.currentTimeMillis())
                 }
+
                 is DownloadStateChapter.ERROR -> {
                     Log.e("TAG_ERROR", "notify: ${state.error}")
                     notification.setOngoing(false)
@@ -212,6 +233,7 @@ class DownloadNotification(
                     notification.setShowWhen(true)
                     notification.setWhen(System.currentTimeMillis())
                 }
+
                 is DownloadStateChapter.PostBeforeDone -> {
                     notification.setOngoing(true)
                     notification.setProgress(1, 0, true)
@@ -219,6 +241,7 @@ class DownloadNotification(
                     notification.setContentText(context.getString(R.string.post_before_done))
                     notification.clearActions()
                 }
+
                 is DownloadStateChapter.CANCEL -> {
                     notification.setContentText(context.getString(R.string.cancel))
                     notification.setShowWhen(true)

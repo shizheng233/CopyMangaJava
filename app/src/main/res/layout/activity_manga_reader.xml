@@ -11,16 +11,19 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/manga_reader_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:descendantFocusability="blocksDescendants" />
 
-    <TextView
+    <com.shicheeng.copymanga.view.TransitionTextview
         android:id="@+id/manga_reader_circular_progress_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/transition_text_background"
+        android:drawablePadding="16dp"
         android:text="@string/in_loading_next_chapter"
-        android:textColor="@android:color/white" />
+        android:textColor="?colorOnPrimary" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/manga_reader_page_indicator"
@@ -43,7 +46,8 @@
         style="@style/Widget.Material3.Toolbar.Surface"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="?actionBarSize" />
+        android:minHeight="?actionBarSize"
+        tools:visibility="gone" />
 
 
     <LinearLayout
@@ -161,8 +165,8 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginEnd="16dp"
-                android:contentDescription="@string/above_chapter"
-                android:tooltipText="@string/above_chapter"
+                android:contentDescription="@string/setting"
+                android:tooltipText="@string/setting"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -180,5 +184,15 @@
 
     </LinearLayout>
 
+    <include
+        android:id="@+id/layout_error_include"
+        layout="@layout/layout_error" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/load_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

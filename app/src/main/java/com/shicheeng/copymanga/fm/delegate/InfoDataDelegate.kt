@@ -4,7 +4,6 @@ import com.google.gson.JsonObject
 import com.shicheeng.copymanga.data.MangaHistoryDataModel
 import com.shicheeng.copymanga.data.MangaInfoChapterDataBean
 import com.shicheeng.copymanga.util.FileUtil
-import com.shicheeng.copymanga.viewmodel.MangaHistoryViewModel
 
 class InfoDataDelegate(
     private val pathWord: String,

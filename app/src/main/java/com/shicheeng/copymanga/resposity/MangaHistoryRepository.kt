@@ -1,19 +1,52 @@
 package com.shicheeng.copymanga.resposity
 
 import com.shicheeng.copymanga.dao.MangeLocalHistoryDao
+import com.shicheeng.copymanga.dao.SearchHistoryDao
 import com.shicheeng.copymanga.data.MangaHistoryDataModel
+import com.shicheeng.copymanga.data.local.LocalChapter
+import com.shicheeng.copymanga.data.local.LocalSavableMangaModel
+import com.shicheeng.copymanga.data.searchhistory.SearchHistory
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class MangaHistoryRepository(private val mangeLocalHistoryDao: MangeLocalHistoryDao) {
+
+class MangaHistoryRepository @Inject constructor(
+    private val mangeLocalHistoryDao: MangeLocalHistoryDao,
+    private val searchedWordDao: SearchHistoryDao,
+) {
 
     val allHistoryDao: Flow<List<MangaHistoryDataModel>> = mangeLocalHistoryDao.getAllHistory()
 
-    suspend fun insert(mangaLocalHistory: MangaHistoryDataModel) {
-        mangeLocalHistoryDao.addLocal(mangaLocalHistory)
+    suspend fun totalHistoryManga() =
+        mangeLocalHistoryDao.fetchTotalManga()
+
+    suspend fun getMangaByPathWord(pathWord: String): LocalSavableMangaModel? {
+        return mangeLocalHistoryDao.getMangaByPathWord(pathWord)
     }
+
+    suspend fun fetchMangaChapterByPathWord(pathWord: String): List<LocalChapter>? {
+        return mangeLocalHistoryDao.fetchMangaChaptersByPathWord(pathWord)
+    }
+
+    fun fetchMangaChapterByPathWordFlow(pathWord: String): Flow<List<LocalChapter>?> {
+        return mangeLocalHistoryDao.fetchMangaChaptersByPathWordFlow(pathWord)
+    }
+
+    fun fetchMangaByPathWordInFlow(pathWord: String) =
+        mangeLocalHistoryDao.fetchHistoryByPathWordInFlow(pathWord)
+
 
     suspend fun update(mangaLocalHistory: MangaHistoryDataModel) {
         mangeLocalHistoryDao.updateLocal(mangaLocalHistory)
+    }
+
+
+    suspend fun updateLocalChapter(localChapter: LocalChapter) {
+        mangeLocalHistoryDao.addLocalChapter(localChapter)
+    }
+
+    suspend fun updateLocalChapter(localChapter: List<LocalChapter>) {
+        mangeLocalHistoryDao.addLocalChapter(*localChapter.toTypedArray())
     }
 
     suspend fun getHistoryByMangaPathWord(pathWord: String): MangaHistoryDataModel? =
@@ -21,6 +54,15 @@ class MangaHistoryRepository(private val mangeLocalHistoryDao: MangeLocalHistory
 
     suspend fun delHistory() {
         mangeLocalHistoryDao.deleteAllHistory()
+    }
+
+    fun historySearchedWord() = searchedWordDao.loadWordHistory()
+
+    suspend fun delKeyWordHistory(searchHistory: SearchHistory) =
+        searchedWordDao.detectSearchedWordHistory(searchHistory)
+
+    suspend fun upsertSearchWord(searchHistory: SearchHistory) {
+        searchedWordDao.upsertWord(searchHistory)
     }
 
 }

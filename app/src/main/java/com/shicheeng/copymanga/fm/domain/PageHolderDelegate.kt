@@ -3,12 +3,20 @@ package com.shicheeng.copymanga.fm.domain
 import android.net.Uri
 import androidx.core.net.toUri
 import com.davemorrissey.labs.subscaleview.DefaultOnImageEventListener
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import java.io.File
 import java.io.IOException
 
-class PageHolderDelegate(private val loader: PagerLoader, private val callback: Callback) :
-    DefaultOnImageEventListener {
+class PageHolderDelegate(
+    private val loader: PagerLoader,
+    private val callback: Callback,
+) : DefaultOnImageEventListener {
 
     private var job: Job? = null
     private val scope = loader.loaderScope + Dispatchers.Main.immediate
@@ -54,7 +62,7 @@ class PageHolderDelegate(private val loader: PagerLoader, private val callback: 
             tryConvert(file, e)
         } else {
             state = State.ERROR
-            callback.onError(e)
+            callback.onError(e = e)
         }
         callback.onError(e)
     }
@@ -90,7 +98,7 @@ class PageHolderDelegate(private val loader: PagerLoader, private val callback: 
             } catch (e2: Throwable) {
                 e.addSuppressed(e2)
                 state = State.ERROR
-                callback.onError(e)
+                callback.onError(e = e)
             }
         }
     }
