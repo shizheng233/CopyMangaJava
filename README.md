@@ -25,6 +25,11 @@
 <img src="./sreenshots/003.png" width=32%/>
 <img src="./sreenshots/004.png" width=32%/>
 <img src="./sreenshots/005.png" width=32%/>
+<img src="./sreenshots/006.png" width=32%/>
+<img src="./sreenshots/007.png" width=32%/>
+<img src="./sreenshots/008.png" width=32%/>
+<img src="./sreenshots/009.png" width=32%/>
+<img src="./sreenshots/010.png" width=32%/>
 </div>
 
 ## 关于Api
@@ -32,8 +37,8 @@ api 来源于官方app API
 
 ## 后续功能
 * ~~下载~~（现在可离线查看下载的漫画）
-* ~~记录位置~~（将历史记录保存在本地）
-* 登录
+* ~~记录位置~~（将历史记录保存在本地，_登录后可已上传到网页。_）
+* ~~登录~~(可以登录了，但是**多用户**没有测试过。)
 * ~~搜索~~(已完成)
 
 ## License
