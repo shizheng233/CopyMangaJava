@@ -23,22 +23,23 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.buildSpannedString
 import androidx.core.view.WindowCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.shicheeng.copymanga.app.AppAttachCompatActivity
 import com.shicheeng.copymanga.data.VersionUnit
-import com.shicheeng.copymanga.resposity.MangaHistoryRepository
-import com.shicheeng.copymanga.resposity.MangaInfoRepository
 import com.shicheeng.copymanga.ui.screen.MainComposeNavigation
 import com.shicheeng.copymanga.ui.screen.setting.SettingPref
+import com.shicheeng.copymanga.ui.screen.topics.TopicViewModel
 import com.shicheeng.copymanga.ui.theme.CopyMangaTheme
 import com.shicheeng.copymanga.util.FileCacheUtils
 import com.shicheeng.copymanga.util.collectRepeatLifecycle
+import com.shicheeng.copymanga.util.observe
 import com.shicheeng.copymanga.viewmodel.MainViewModel
 import com.shicheeng.copymanga.viewmodel.MangaInfoViewModel
-import com.shicheeng.copymanga.viewmodel.PersonalViewModel
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.components.ActivityComponent
+import retrofit2.HttpException
 import soup.compose.material.motion.navigation.rememberMaterialMotionNavController
 import javax.inject.Inject
 
@@ -50,6 +51,7 @@ class MainActivity : AppAttachCompatActivity() {
 
     @Inject
     lateinit var settingPref: SettingPref
+
 
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +69,7 @@ class MainActivity : AppAttachCompatActivity() {
                     ) {
                         CompositionLocalProvider(
                             LocalMainBottomNavigationPadding provides it.calculateBottomPadding(),
-                            LocalSettingPreference provides settingPref
+                            LocalSettingPreference provides settingPref,
                         ) {
                             MainComposeNavigation(navController = navController)
                         }
@@ -79,6 +81,24 @@ class MainActivity : AppAttachCompatActivity() {
         if (!settingPref.pauseUpdateDetector.value) {
             model.updateData.collectRepeatLifecycle(this) {
                 onUpdateAttach(it)
+            }
+        }
+
+        model.loginInfoStatus.observe(this) {
+            if (it != null) {
+                if ((it is HttpException) && (it.code() == 401)) {
+                    Snackbar.make(
+                        window.decorView,
+                        getString(R.string.login_expired),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                } else {
+                    Snackbar.make(
+                        window.decorView,
+                        getString(R.string.login_failure),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
             }
         }
 
@@ -100,6 +120,12 @@ class MainActivity : AppAttachCompatActivity() {
         }
     }
 
+    /**
+     * 更新弹窗。由于一般的更新内容为简体中文，故不做i18n处理。
+     * @param versionUnit 版本更新单位，为空则表示没有更新。
+     *
+     * @author ShihCheeng and refer to Kotatsu.
+     */
     private fun onUpdateAttach(versionUnit: VersionUnit?) {
         if (versionUnit == null) {
             return
@@ -139,10 +165,8 @@ class MainActivity : AppAttachCompatActivity() {
     @EntryPoint
     @InstallIn(ActivityComponent::class)
     interface ViewModelAssistedFactoryProvider {
-        fun personalViewModelProvider(): PersonalViewModel.Factory
-        fun mangaInfoRepository(): MangaInfoRepository
         fun infoViewModelFactory(): MangaInfoViewModel.InfoViewModelFactory
-        fun historyRepositoryProvider(): MangaHistoryRepository
+        fun topicDetailViewModelFactory(): TopicViewModel.Factory
     }
 
 }

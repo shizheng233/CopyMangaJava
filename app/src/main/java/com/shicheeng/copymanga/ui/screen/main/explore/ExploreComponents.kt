@@ -20,11 +20,12 @@ import com.shicheeng.copymanga.ui.screen.compoents.CommonCover
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExploreItem(
+    modifier: Modifier = Modifier,
     item: Item,
     onItemClick: (Item) -> Unit,
 ) {
     Card(
-        modifier = Modifier.width(IntrinsicSize.Min),
+        modifier = modifier.width(IntrinsicSize.Min),
         onClick = {
             onItemClick.invoke(item)
         }

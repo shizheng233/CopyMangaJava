@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.shicheeng.copymanga.LocalMainBottomNavigationPadding
 import com.shicheeng.copymanga.R
+import com.shicheeng.copymanga.data.MainTopicDataModel
 import com.shicheeng.copymanga.ui.screen.compoents.ErrorScreen
 import com.shicheeng.copymanga.ui.screen.compoents.LoadingScreen
 import com.shicheeng.copymanga.ui.screen.compoents.PlainButton
@@ -46,6 +47,8 @@ fun HomeScreen(
     onHotHeaderLineClick: () -> Unit,
     onNewestHeaderLineClick: () -> Unit,
     onFinishHeaderLineClick: () -> Unit,
+    onTopicCardClick: (MainTopicDataModel) -> Unit,
+    onTopicsClickLineClick: () -> Unit,
 ) {
 
     val uiState by homeViewModel.uiState.collectAsState()
@@ -201,6 +204,16 @@ fun HomeScreen(
                 ) {
                     onUUid.invoke(it.pathWordManga)
                 }
+            }
+            item(
+                key = HomeListKey.TOPICS_RECOMMEND,
+                contentType = HomeListKey.TOPICS_RECOMMEND
+            ) {
+                HomePageTopicRow(
+                    list = successUIState.content.topicList,
+                    onTopicBarClick = onTopicsClickLineClick,
+                    onItemClick = onTopicCardClick
+                )
             }
         }
     }

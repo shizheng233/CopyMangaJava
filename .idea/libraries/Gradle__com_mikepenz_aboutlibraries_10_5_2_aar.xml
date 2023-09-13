@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.mikepenz:aboutlibraries:10.5.2@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/ad1148d34292efe478aee4dcc02df3ec/transformed/aboutlibraries-10.5.2/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/ad1148d34292efe478aee4dcc02df3ec/transformed/aboutlibraries-10.5.2/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/ad1148d34292efe478aee4dcc02df3ec/transformed/aboutlibraries-10.5.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/83e6d5bbac6ee058661d3b008e82be8f/transformed/aboutlibraries-10.5.2/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/83e6d5bbac6ee058661d3b008e82be8f/transformed/aboutlibraries-10.5.2/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/83e6d5bbac6ee058661d3b008e82be8f/transformed/aboutlibraries-10.5.2/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mikepenz/aboutlibraries/10.5.2/9ec195474faaedc91dfe3b1f9a64f511677fb18a/aboutlibraries-10.5.2-javadoc.jar!/" />

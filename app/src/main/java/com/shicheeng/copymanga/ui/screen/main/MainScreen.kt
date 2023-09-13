@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -22,13 +21,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.shicheeng.copymanga.ui.screen.Router
 import com.shicheeng.copymanga.ui.screen.compoents.SaveStatePager
 import com.shicheeng.copymanga.ui.screen.main.explore.ExploreScreen
-import com.shicheeng.copymanga.ui.screen.main.history.HistoryScreen
 import com.shicheeng.copymanga.ui.screen.main.home.HomeScreen
 import com.shicheeng.copymanga.ui.screen.main.leaderboard.LeaderBoardScreen
-import com.shicheeng.copymanga.ui.screen.main.subscribe.SubScribeScreen
+import com.shicheeng.copymanga.ui.screen.main.personal.PersonalScreen
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
@@ -39,13 +37,20 @@ fun MainScreen(
     onSettingButtonClick: () -> Unit,
     onRecommendHeaderLineClick: () -> Unit,
     onNewestHeaderLineClick: () -> Unit,
+    onSubscribedClick: () -> Unit,
+    onHistoryClick: () -> Unit,
+    onLibraryClick: () -> Unit,
+    onPersonalHeaderClick: (isLogin: Boolean) -> Unit,
+    onTopicClick: (pathWord: String, type: Int) -> Unit,
+    onTopicHeaderLineClick: () -> Unit,
+    onFinishHeaderLineClick: () -> Unit,
+    onHotClick: () -> Unit,
 ) {
     val screens = listOf(
         Router.HOME,
         Router.LEADERBOARD,
         Router.EXPLORE,
-        Router.SUBSCRIBE,
-        Router.HISTORY
+        Router.PERSONAL
     )
     val pagerState = rememberPagerState(
         pageCount = screens::size,
@@ -64,8 +69,17 @@ fun MainScreen(
                     NavigationBarItem(
                         selected = pagerState.currentPage == screens.indexOf(screen),
                         onClick = {
-                            corScope.launch {
-                                pagerState.animateScrollToPage(screens.indexOf(screen))
+                            if (
+                                (pagerState.currentPage == screens.indexOf(screen)) &&
+                                (screen.name == Router.PERSONAL.name)
+                            ) {
+                                onSettingButtonClick()
+                            } else {
+                                corScope.launch {
+                                    pagerState.animateScrollToPage(
+                                        page = screens.indexOf(screen),
+                                    )
+                                }
                             }
                         },
                         label = {
@@ -107,18 +121,12 @@ fun MainScreen(
                                 pagerState.animateScrollToPage(1)
                             }
                         },
-                        onHotHeaderLineClick = {
-                            mainScreenViewModel.addOrder("-popular")
-                            corScope.launch {
-                                pagerState.animateScrollToPage(2)
-                            }
-                        },
+                        onHotHeaderLineClick = onHotClick,
                         onNewestHeaderLineClick = onNewestHeaderLineClick,
-                        onFinishHeaderLineClick = {
-                            mainScreenViewModel.addTop("finish")
-                            corScope.launch {
-                                pagerState.animateScrollToPage(2)
-                            }
+                        onFinishHeaderLineClick =onFinishHeaderLineClick,
+                        onTopicsClickLineClick = onTopicHeaderLineClick,
+                        onTopicCardClick = {
+                            onTopicClick(it.pathWord, it.type)
                         }
                     )
                 }
@@ -131,23 +139,24 @@ fun MainScreen(
 
                 2 -> {
                     ExploreScreen(
-                        top = topWord,
+                        top = null,
                         theme = null,
-                        order = orderWord,
+                        order = null,
                     ) {
                         onUUid(it.pathWord)
                     }
                 }
 
                 3 -> {
-                    SubScribeScreen(onPathWord = onUUid)
-                }
-
-                4 -> {
-                    HistoryScreen(
-                        onPathWord = onUUid,
-                        onDownloadedBtnClick = onDownloadedBtnClick
-                    )
+                    PersonalScreen(
+                        onHistoryClick = onHistoryClick,
+                        onLibraryClick = onLibraryClick,
+                        onDownloadClick = onDownloadedBtnClick,
+                        onSubscribedClick = onSubscribedClick,
+                        onPersonalHeaderClick = onPersonalHeaderClick
+                    ) {
+                        onSettingButtonClick()
+                    }
                 }
             }
         }

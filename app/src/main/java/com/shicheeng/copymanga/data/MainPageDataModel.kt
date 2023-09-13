@@ -9,4 +9,5 @@ data class MainPageDataModel(
     val listHot: List<ListBeanManga>,
     val listNewest: List<ListBeanManga>,
     val listFinished: List<ListBeanManga>,
+    val topicList:List<MainTopicDataModel>
 )

@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.os.Binder
 import android.os.IBinder
 import androidx.annotation.MainThread
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleService
@@ -46,7 +47,10 @@ class DownloadService : LifecycleService() {
     lateinit var historyRepository: MangaHistoryRepository
 
     private lateinit var notification: DownloadNotification
-    private lateinit var fileUtil: FileUtil
+
+    @Inject
+    lateinit var fileUtil: FileUtil
+
     private val jobs = LinkedHashMap<Int, DownloadJob<DownloadStateChapter>>()
     private val jobCounter = MutableStateFlow(0)
     private lateinit var notificationManager: NotificationManager
@@ -56,12 +60,6 @@ class DownloadService : LifecycleService() {
         super.onCreate()
         notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         bindNotification()
-        fileUtil = FileUtil(
-            historyRepository = historyRepository,
-            repository = repository,
-            context = this,
-            coroutineScope = lifecycleScope
-        )
         notification = DownloadNotification(
             this,
             DOWNLOAD_CHANNEL_ID,
@@ -71,7 +69,12 @@ class DownloadService : LifecycleService() {
             addAction(RECEIVER_CANCEL)
         }
         notification.show()
-        registerReceiver(controlReceiver, intentFilter)
+        ContextCompat.registerReceiver(
+            this,
+            controlReceiver,
+            intentFilter,
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
     }
 
 
@@ -172,6 +175,8 @@ class DownloadService : LifecycleService() {
                 }
             }
         }
+
+
     }
 
     inner class DownloadBinder(service: DownloadService) : Binder(), DefaultLifecycleObserver {

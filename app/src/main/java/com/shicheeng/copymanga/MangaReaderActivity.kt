@@ -15,6 +15,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.activity.viewModels
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.Insets
 import androidx.core.view.WindowCompat
@@ -24,6 +25,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2.LAYOUT_DIRECTION_LTR
 import androidx.viewpager2.widget.ViewPager2.LAYOUT_DIRECTION_RTL
@@ -35,21 +37,19 @@ import com.shicheeng.copymanga.data.ReaderState
 import com.shicheeng.copymanga.databinding.ActivityMangaReaderBinding
 import com.shicheeng.copymanga.dialog.ConfigPagerSheet
 import com.shicheeng.copymanga.fm.delegate.IdlingDelegate
+import com.shicheeng.copymanga.fm.reader.MangaLoader
 import com.shicheeng.copymanga.fm.reader.ReaderManager
 import com.shicheeng.copymanga.fm.reader.ReaderMode
 import com.shicheeng.copymanga.fm.reader.noraml.PageSliderFormatter
-import com.shicheeng.copymanga.resposity.MangaHistoryRepository
-import com.shicheeng.copymanga.resposity.MangaInfoRepository
 import com.shicheeng.copymanga.ui.screen.setting.SettingPref
-import com.shicheeng.copymanga.util.FileUtil
 import com.shicheeng.copymanga.util.GestureHelper
 import com.shicheeng.copymanga.util.PageSelectPosition
 import com.shicheeng.copymanga.util.ReaderSliderAttach
-import com.shicheeng.copymanga.util.assistedViewModels
 import com.shicheeng.copymanga.util.copy
 import com.shicheeng.copymanga.util.getThemeColor
 import com.shicheeng.copymanga.util.hasGlobalPoint
-import com.shicheeng.copymanga.util.observeWithPrevious
+import com.shicheeng.copymanga.util.observe
+import com.shicheeng.copymanga.util.transformPair
 import com.shicheeng.copymanga.view.control.ReaderControl
 import com.shicheeng.copymanga.viewmodel.ReaderViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -70,27 +70,7 @@ class MangaReaderActivity : AppAttachCompatActivity(),
 
     private lateinit var binding: ActivityMangaReaderBinding
 
-    @Inject
-    lateinit var viewModelFactory: ReaderViewModel.Factory
-
-    @Inject
-    lateinit var infoRepository: MangaInfoRepository
-
-    @Inject
-    lateinit var historyRepository: MangaHistoryRepository
-
-    private val viewModel by assistedViewModels {
-        viewModelFactory.create(
-            fileUtil = FileUtil(
-                historyRepository = historyRepository,
-                repository = infoRepository,
-                context = this,
-                coroutineScope = lifecycleScope
-            )/*这可能会造成某些错误，因为它的生命周期没有跟随ViewModel的生命周期。*/,
-            currentChapterUUID = intent.getStringExtra(UUID_INTENT),
-            currentPathWord = intent.getStringExtra(PATH_WORD_INTENT)
-        )
-    }
+    private val viewModel by viewModels<ReaderViewModel>()
     private val windowInsetsController by lazy {
         WindowInsetsControllerCompat(window, binding.root)
     }
@@ -135,11 +115,10 @@ class MangaReaderActivity : AppAttachCompatActivity(),
         gestureHelper = GestureHelper(this, this)
         control = ReaderControl(this, settingPref = settingPref)
 
-        viewModel.readerModel.observe(this) {
+        viewModel.readerModel.observe(this, Lifecycle.State.STARTED) {
             initializeReaderMode(it)
-            initializeReaderModeText(it)
         }
-        viewModel.information.observeWithPrevious(this, this::onUIChange)
+        viewModel.information.transformPair().observe(this, this::onUIChange)
         viewModel.errorHandler.observe(this, this::onError)
         viewModel.loadingCounter.observe(this, this::onLoading)
         viewModel.mangaContent.observe(this, this::withPageContent)
@@ -152,16 +131,14 @@ class MangaReaderActivity : AppAttachCompatActivity(),
         idlingDelegate.bindToLifecycle(this)
     }
 
-    private fun initializeReaderModeText(readerMode: ReaderMode) {
+
+    private fun initializeReaderMode(readerMode: ReaderMode?) {
+        if (readerMode == null) return
         binding.readerMangaModeTip.text = when (readerMode) {
             ReaderMode.NORMAL -> getString(R.string.japanese_r_to_l)
             ReaderMode.STANDARD -> getString(R.string.manga_mode_l_t_r)
             ReaderMode.WEBTOON -> getString(R.string.korea_chinese_top_to_bottom)
         }
-    }
-
-    private fun initializeReaderMode(readerMode: ReaderMode) {
-        rebuildReaderNavigation(readerMode)
         if (readerManager.currentReaderMode != readerMode) {
             readerManager.replace(readerMode)
         }
@@ -173,16 +150,18 @@ class MangaReaderActivity : AppAttachCompatActivity(),
         }
     }
 
+    // FIXME: 有时候没有提示
     private fun initializeBottomMenu() {
         setSupportActionBar(binding.mangaReaderToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.mangaReaderToolbar.setNavigationOnClickListener { finish() }
         //The bottom menu refer from Tachiyomi
-        val materialShape = (binding.mangaReaderToolbar.background as MaterialShapeDrawable).apply {
-            elevation =
-                resources.getDimension(com.google.android.material.R.dimen.m3_sys_elevation_level2)
-            alpha = 242
-        }
+        val materialShape = (binding.mangaReaderToolbar.background as MaterialShapeDrawable)
+            .apply {
+                elevation =
+                    resources.getDimension(com.google.android.material.R.dimen.m3_sys_elevation_level2)
+                alpha = 242
+            }
         binding.mangaReaderBottomToolbar.background = materialShape.copy(this@MangaReaderActivity)
         binding.mangaReaderSeeker.background = materialShape.copy(this@MangaReaderActivity)?.apply {
             setCornerSize(999f)
@@ -216,14 +195,16 @@ class MangaReaderActivity : AppAttachCompatActivity(),
         window.navigationBarColor = toolbarColor
     }
 
-    private fun onUIChange(state: ReaderState?, old: ReaderState?) {
+    private fun onUIChange(pair: Pair<ReaderState?, ReaderState?>) {
+        val (old: ReaderState?, state: ReaderState?) = pair
+        title = state?.mangaName ?: old?.mangaName ?: getString(android.R.string.unknownName)
         if (state == null) {
+            supportActionBar?.subtitle = null
+            binding.mangaReaderSeeker.isVisible = false
             return
         }
-        binding.mangaReaderToolbar.title =
-            state.mangaName ?: getString(R.string.in_loading_next_chapter)
         binding.readerMangaSubtitle.text = state.subTime ?: getString(R.string.local)
-        binding.mangaReaderToolbar.subtitle =
+        supportActionBar?.subtitle =
             state.chapterName ?: getString(android.R.string.unknownName)
 
         isLast = state.currentPage == state.totalPage - 1
@@ -241,7 +222,8 @@ class MangaReaderActivity : AppAttachCompatActivity(),
             getString(R.string.chapter_page_indicator, (state.currentPage + 1), state.totalPage)
         binding.mangaReaderChapterTotalNumber.text = state.totalPage.toString()
         binding.mangaReaderChapterNowNumber.text = (state.currentPage.plus(1)).toString()
-        if (state.totalPage == 1) {
+
+        if (!state.isSliderAvailable()) {
             binding.mangaReaderSeeker.isInvisible = true
         } else {
             binding.mangaReaderSeeker.isInvisible = false
@@ -253,12 +235,11 @@ class MangaReaderActivity : AppAttachCompatActivity(),
 
     override fun onPositionCallBack(page: MangaReaderPage) {
         lifecycleScope.launch(Dispatchers.Default) {
-            val pages = viewModel.mangaContent.value?.list
-                ?: return@launch
+            val pages = viewModel.mangaContent.value.list
             val index = pages.indexOfFirst { it.urlHashCode == page.urlHashCode }
             if (index != -1) {
                 withContext(Dispatchers.Main) {
-                    readerManager.currentReader?.moveToPosition(position = index, true)
+                    readerManager.currentReader?.moveToPosition(position = index, index <= 2)
                 }
             }
         }
@@ -300,7 +281,7 @@ class MangaReaderActivity : AppAttachCompatActivity(),
     private fun loadChapter(isNext: Boolean) {
         val uuid = viewModel.getCurrentReaderState().uuid
         val predicate: ((MangaReaderPage) -> Boolean) = { it.uuid == uuid }
-        val list = viewModel.mangaContent.value?.list ?: return
+        val list = viewModel.mangaContent.value.list
         val uuidIndex = if (isNext) list.indexOfFirst(predicate) else list.indexOfLast(predicate)
         if (uuidIndex == -1) return
         val newChapterUUId = list.getOrNull(if (isNext) uuidIndex + 1 else uuidIndex - 1)?.uuid
@@ -319,17 +300,16 @@ class MangaReaderActivity : AppAttachCompatActivity(),
     override fun onModeChange(mode: ReaderMode) {
         rebuildReaderNavigation(mode)
         viewModel.switchMode(mode)
-        initializeReaderModeText(mode)
         viewModel.saveCurrentState(readerManager.currentReader?.currentState())
     }
 
-    private fun onError(e: Throwable) {
-        e.printStackTrace()
+    private fun onError(e: Throwable?) {
+        e?.printStackTrace()
         with(binding.layoutErrorInclude) {
             errorTextTip.setTextColor(getThemeColor(com.google.android.material.R.attr.colorSurface))
             errorTextTipDesc.apply {
                 setTextColor(getThemeColor(com.google.android.material.R.attr.colorSurface))
-                text = e.message
+                text = e?.message
             }
             btnErrorRetry.setOnClickListener {
                 viewModel.retry()
@@ -339,7 +319,7 @@ class MangaReaderActivity : AppAttachCompatActivity(),
     }
 
     private fun onLoading(boolean: Boolean) {
-        val hasPages = !viewModel.mangaContent.value?.list.isNullOrEmpty()
+        val hasPages = viewModel.mangaContent.value.list.isNotEmpty()
         binding.loadIndicator.isVisible = boolean && !hasPages
         if (boolean && hasPages) {
             binding.mangaReaderCircularProgressIndicator.show(R.string.in_loading_next_chapter)
@@ -408,9 +388,6 @@ class MangaReaderActivity : AppAttachCompatActivity(),
 
     companion object {
 
-        private const val PATH_WORD_INTENT = "PATH_WORD_INTENT"
-        private const val UUID_INTENT = "UUID_INTENT"
-
         /**
          * 跳转到[MangaReaderActivity]
          * @param pathWord Path word
@@ -422,8 +399,8 @@ class MangaReaderActivity : AppAttachCompatActivity(),
             uuid: String,
         ): Intent {
             val intent = Intent(context, MangaReaderActivity::class.java)
-            intent.putExtra(PATH_WORD_INTENT, pathWord)
-            intent.putExtra(UUID_INTENT, uuid)
+            intent.putExtra(MangaLoader.MANGA_PATH_WORD, pathWord)
+            intent.putExtra(MangaLoader.MANGA_UUID, uuid)
             return intent
         }
 

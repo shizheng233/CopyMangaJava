@@ -31,6 +31,7 @@ class ExplorePagingSource(
                 LoadResult.Page(data.results.list, null, null)
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             LoadResult.Error(e)
         }
     }

@@ -12,6 +12,7 @@ import com.shicheeng.copymanga.fm.reader.ReaderMode
 import com.shicheeng.copymanga.ui.screen.setting.SettingPref
 import com.shicheeng.copymanga.util.formNumberToRead
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -35,7 +36,8 @@ class MangaInfoRepository @Inject constructor(
                         isDownloaded = detectUtil.detectChapterDownloadedByUUID(
                             pathWord,
                             remoteChapter.uuid
-                        )
+                        ),
+                        isReadFinish = false
                     )
                 }
             }.also {
@@ -57,7 +59,10 @@ class MangaInfoRepository @Inject constructor(
                     isDownloaded = detectUtil.detectChapterDownloadedByUUID(
                         pathWord,
                         remoteChapter.uuid
-                    )
+                    ),
+                    isReadFinish = mangaLocalChapters?.find { x ->
+                        x.uuid == remoteChapter.uuid
+                    }?.isReadFinish ?: false
                 )
             }
         }.also {
@@ -65,6 +70,15 @@ class MangaInfoRepository @Inject constructor(
         }
     }
 
+    suspend fun collect(comicId: String, isCollect: Boolean): Boolean {
+        return try {
+            copyMangaApi.comicCollect(comicId, isCollect = if (isCollect) 1 else 0)
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
 
     suspend fun fetchMangaInfo(pathWord: String): MangaHistoryDataModel {
         return mangaHistoryRepository.getHistoryByMangaPathWord(pathWord)
@@ -107,6 +121,11 @@ class MangaInfoRepository @Inject constructor(
         }
     }
 
+    fun fetchComicWebHistory(pathWord: String) = flow {
+        val dataModel = copyMangaApi.comicWebHistory(pathWord)
+        emit(dataModel)
+    }
+
     suspend fun fetchContentMayLocal(
         localList: List<MangaReaderPage>? = null,
         pathWord: String,
@@ -124,20 +143,26 @@ class MangaInfoRepository @Inject constructor(
             }
             newList
         } else {
-            val url = copyMangaApi.fetchMangaContentPicture(pathWord, uuid).results.chapter
-            buildList {
-                url.contents.forEachIndexed { index, c ->
-                    add(
-                        MangaReaderPage(
-                            url = c.url,
-                            index = url.words[index],
-                            uuid = url.uuid
+            try {
+                val url = copyMangaApi.fetchMangaContentPicture(pathWord, uuid).results.chapter
+                buildList {
+                    url.contents.forEachIndexed { index, c ->
+                        add(
+                            MangaReaderPage(
+                                url = c.url,
+                                index = url.words[index],
+                                uuid = url.uuid
+                            )
                         )
-                    )
+                    }
+                }.sortedBy {
+                    it.index
                 }
-            }.sortedBy {
-                it.index
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emptyList()
             }
+
         }
     }
 
@@ -157,14 +182,15 @@ fun MangaInfoDataModel.toMangaLocalInfo(
         positionPage = 0,
         readerModeId = readerMode.id,
         mangaDetail = results.comic.brief,
-        mangaLastUpdate = results.comic.datetimeUpdated,
+        mangaLastUpdate = results.comic.datetimeUpdated ?: "未知",
         mangaPopularNumber = results.popular.toLong().formNumberToRead(),
         mangaRegion = results.comic.region.display,
         mangaStatus = results.comic.status.display,
         mangaStatusId = results.comic.status.value,
         themeList = results.comic.theme.map { MangaSortBean(it.name, it.pathWord) },
-        authorList = results.comic.authorReformation(),
+        authorList = results.comic.author,
         alias = results.comic.alias,
-        isSubscribe = isSubscribe
+        isSubscribe = isSubscribe,
+        comicUUID = results.comic.uuid
     )
 }

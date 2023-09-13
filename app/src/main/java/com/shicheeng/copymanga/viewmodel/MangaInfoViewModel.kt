@@ -8,11 +8,14 @@ import com.shicheeng.copymanga.data.local.LocalChapter
 import com.shicheeng.copymanga.resposity.MangaHistoryRepository
 import com.shicheeng.copymanga.resposity.MangaInfoRepository
 import com.shicheeng.copymanga.ui.screen.setting.SettingPref
+import com.shicheeng.copymanga.util.RetryTrigger
 import com.shicheeng.copymanga.util.UIState
+import com.shicheeng.copymanga.util.retryableFlow
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +25,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class MangaInfoViewModel @AssistedInject constructor(
     @Assisted private val pathWord: String,
     private val repository: MangaHistoryRepository,
@@ -32,6 +34,7 @@ class MangaInfoViewModel @AssistedInject constructor(
 
     private val _historyFlowChapter = repository.fetchMangaChapterByPathWordFlow(pathWord)
 
+    //Chapter and Information
     private val _chapter = MutableStateFlow<UIState<List<LocalChapter>>>(UIState.Loading)
     val chapters = _chapter.asStateFlow()
     private val _mangaInfo = MutableStateFlow<UIState<MangaHistoryDataModel>>(UIState.Loading)
@@ -46,10 +49,11 @@ class MangaInfoViewModel @AssistedInject constructor(
     ) { uiStateChapter: UIState<List<LocalChapter>>, uiStateInfo: UIState<MangaHistoryDataModel> ->
         when {
             uiStateChapter is UIState.Success && uiStateInfo is UIState.Success -> {
-                if (uiStateChapter.content.isNotEmpty()){
+                if (uiStateChapter.content.isNotEmpty()) {
                     uiStateChapter.content[uiStateInfo.content.positionChapter]
-                }else null
+                } else null
             }
+
             else -> {
                 null
             }
@@ -58,6 +62,17 @@ class MangaInfoViewModel @AssistedInject constructor(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = null
+    )
+
+    private val collectRetryTrigger = RetryTrigger()
+
+    @OptIn(FlowPreview::class)
+    val lastWebLookedChapter = retryableFlow(retryTrigger = collectRetryTrigger) {
+        infoRepository.fetchComicWebHistory(pathWord)
+    }.stateIn(
+        started = SharingStarted.Eagerly,
+        initialValue = null,
+        scope = viewModelScope
     )
 
 
@@ -143,6 +158,24 @@ class MangaInfoViewModel @AssistedInject constructor(
         }
     }
 
+    fun comicMarkRead(isRead: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        _selectedChapter.collectLatest { localChapters ->
+            localChapters.map {
+                it.copy(
+                    isReadFinish = isRead,
+                    readIndex = if (isRead) it.readIndex else 0
+                )
+            }.let {
+                repository.updateLocalChapter(it)
+            }
+        }
+    }
+
+    fun comicAddWebLib(mangaUUID: String, add: Boolean) = viewModelScope.launch {
+        infoRepository.collect(mangaUUID, add)
+        collectRetryTrigger.retry()
+    }
+
     fun enableComicUpdate(enable: Boolean) {
         setting.enableComicsUpdateFetch(enable)
     }
@@ -168,5 +201,6 @@ class MangaInfoViewModel @AssistedInject constructor(
     }
 
 }
+
 
 

@@ -10,7 +10,7 @@ import com.shicheeng.copymanga.data.searchhistory.SearchHistory
 
 @Database(
     entities = [MangaHistoryDataModel::class, LocalChapter::class, SearchHistory::class],
-    version = 4,
+    version = 6,
     exportSchema = false
 )
 abstract class MangaHistoryDataBase : RoomDatabase() {

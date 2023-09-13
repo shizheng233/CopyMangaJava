@@ -23,6 +23,7 @@ fun SaveStatePager(
     pagerState: PagerState,
     contentPadding: PaddingValues,
     savableStateHolder: SaveableStateHolder,
+    keys: (() -> List<Any>)? = null,
     pageContent: @Composable (PagerScope.(Int) -> Unit),
 ) {
     HorizontalPager(
@@ -32,7 +33,7 @@ fun SaveStatePager(
         userScrollEnabled = false
     ) {
         savableStateHolder.SaveableStateProvider(
-            key = it,
+            key = if (keys != null) keys()[it] else it,
             content = {
                 pageContent(it)
             }

@@ -12,7 +12,6 @@ import androidx.core.app.TaskStackBuilder
 import androidx.core.net.toUri
 import androidx.core.util.forEach
 import androidx.core.util.isNotEmpty
-import androidx.navigation.NavDeepLinkBuilder
 import com.shicheeng.copymanga.MainActivity
 import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.ui.screen.Router

@@ -2,6 +2,7 @@ package com.shicheeng.copymanga.modula
 
 import android.content.SharedPreferences
 import com.shicheeng.copymanga.domin.CopyMangaApi
+import com.shicheeng.copymanga.resposity.LoginRepository
 import com.shicheeng.copymanga.ui.screen.setting.SettingPref
 import com.shicheeng.copymanga.util.KeyWordSwap
 import dagger.Module
@@ -19,35 +20,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object CopyMangaApiModula {
 
-    @Provides
-    @Singleton
-    fun headersProvide(
-        settingPref: SettingPref,
-    ): Headers = Headers.Builder()
-        .add(
-            "region",
-            if (settingPref.useForeignApi) "1" else "0"
-        )
-        .add("webp", "0")
-        .add("platform", "1")
-        .add("version", "2023.04.14")
-        .add("referer", "https://www.copymanga.site/")
-        .add(KeyWordSwap.USER_AGENT_WORD, KeyWordSwap.FAKE_USER_AGENT)
-        .build()
 
-    @Provides
-    @Singleton
-    fun provideOkhttp(
-        headers: Headers,
-    ): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor { chain ->
-                val oldRequest = chain.request()
-                val newRequest = oldRequest.newBuilder().headers(headers)
-                chain.proceed(newRequest.build())
-            }
-            .build()
-    }
 
     @Provides
     @Singleton

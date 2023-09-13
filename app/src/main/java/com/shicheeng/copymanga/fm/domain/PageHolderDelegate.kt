@@ -48,6 +48,7 @@ class PageHolderDelegate(
     override fun onReady() {
         super.onReady()
         state = State.SHOWING
+        callback.onImageShowing()
     }
 
     override fun onImageLoaded() {
@@ -114,6 +115,8 @@ class PageHolderDelegate(
         fun onError(e: Throwable)
 
         fun onImageReady(uri: Uri)
+
+        fun onImageShowing()
 
         fun onImageShown()
     }

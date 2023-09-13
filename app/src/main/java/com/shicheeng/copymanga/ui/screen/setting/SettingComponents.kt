@@ -2,7 +2,6 @@ package com.shicheeng.copymanga.ui.screen.setting
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -266,6 +265,38 @@ fun TipPreference(
                     text = supportText,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(start = 8.dp),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    )
+}
+
+/**
+ * 使用compose写的警告首选项，处理类似于[SwitchPreference]或者[Preference]这种有着需要被注意的问题。
+ *
+ * **注意**：不能用来写类似简介的文字，这个应该**只用来**警告用户。
+ *
+ * @param supportText 必传参数，显示的文字。
+ */
+@Composable
+fun WarningPreference(
+    supportText: String,
+) {
+    ListItem(
+        headlineContent = {
+            Row(
+                Modifier.padding(start = 16.dp + 48.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_warning_amber_24),
+                    contentDescription = null
+                )
+                Text(
+                    text = supportText,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(start = 8.dp),
                 )
             }
         }
@@ -316,11 +347,10 @@ fun EditTextPreference(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 fun LazyListScope.groupText(
     @StringRes text: Int,
 ) {
-    stickyHeader(
+    item(
         key = text
     ) {
         Text(

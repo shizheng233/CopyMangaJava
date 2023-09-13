@@ -4,21 +4,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.snackbar.Snackbar
+import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.data.MangaReaderPage
 import com.shicheeng.copymanga.data.MangaState
 import com.shicheeng.copymanga.databinding.FragmentReaderNormalBinding
+import com.shicheeng.copymanga.fm.domain.PagerLoader
 import com.shicheeng.copymanga.fm.reader.BaseReader
 import com.shicheeng.copymanga.fm.reader.BaseReaderAdapter
+import com.shicheeng.copymanga.util.onPageChangeCallback
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.yield
+import javax.inject.Inject
 
+@AndroidEntryPoint
 open class ReaderPageFragment : BaseReader<FragmentReaderNormalBinding>() {
 
-    private var pageAdapter: ReaderPageAdapter? = null
+    @Inject
+    lateinit var pagerLoader: PagerLoader
 
     override fun onCreateViewInflater(
         inflater: LayoutInflater,
@@ -27,29 +32,19 @@ open class ReaderPageFragment : BaseReader<FragmentReaderNormalBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.mangaReaderViewpager2.layoutDirection = changeDirection()
-        pageAdapter = ReaderPageAdapter(viewLifecycleOwner, viewModel.pagerLoaderIn)
+        binding.mangaReaderViewpager2.layoutDirection = View.LAYOUT_DIRECTION_RTL
 
         with(binding.mangaReaderViewpager2) {
-            adapter = pageAdapter
+            adapter = readerAdapter
             offscreenPageLimit = 1
-            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    viewModel.onPagePositionChange(position)
-                }
-
-            })
+            onPageChangeCallback {
+                viewModel.onPagePositionChange(it)
+            }
         }
     }
 
-    open fun changeDirection(): Int {
-        return View.LAYOUT_DIRECTION_RTL
-    }
-
     override fun onDestroyView() {
-        pageAdapter = null
+        requireBinding().mangaReaderViewpager2.adapter = null
         super.onDestroyView()
     }
 
@@ -68,26 +63,37 @@ open class ReaderPageFragment : BaseReader<FragmentReaderNormalBinding>() {
             binding.mangaReaderViewpager2.currentItem + delta
     }
 
-    override fun onLoadUrlChangeSuccess(list: List<MangaReaderPage>, state: MangaState?) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                val items = async {
-                    pageAdapter?.subItems(list)
-                }
-                if (state != null) {
-                    val position = list.indexOfFirst {
-                        it.uuid == state.uuid && it.index == state.page
-                    }
-                    items.await() ?: return@repeatOnLifecycle
-                    if (position != -1) {
-                        binding.mangaReaderViewpager2.setCurrentItem(position, false)
-                        viewModel.onPagePositionChange(position)
-                    }
-                } else {
-                    items.await()
-                }
-            }
+    override suspend fun onLoadUrlChangeSuccess(
+        list: List<MangaReaderPage>,
+        state: MangaState?,
+    ) = coroutineScope {
+        val items = async {
+            requireAdapter().subItems(list)
+            yield()
         }
+        if (state != null) {
+            val position = list.indexOfFirst {
+                it.uuid == state.uuid && it.index == state.page
+            }
+            items.await()
+            if (position != -1) {
+                binding.mangaReaderViewpager2.setCurrentItem(position, false)
+                viewModel.onPagePositionChange(position)
+            } else {
+                Snackbar.make(requireView(), getString(R.string.no_content), Snackbar.LENGTH_LONG)
+                    .show()
+            }
+        } else {
+            items.await()
+        }
+    }
+
+
+    override fun createAdapter(): BaseReaderAdapter<*> {
+        return ReaderPageAdapter(
+            owner = viewLifecycleOwner,
+            imageLoader = pagerLoader
+        )
     }
 
 }

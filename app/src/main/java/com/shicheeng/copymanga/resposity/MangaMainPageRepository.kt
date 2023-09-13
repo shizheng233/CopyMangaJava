@@ -5,6 +5,7 @@ import com.google.gson.JsonObject
 import com.shicheeng.copymanga.data.DataBannerBean
 import com.shicheeng.copymanga.data.ListBeanManga
 import com.shicheeng.copymanga.data.MainPageDataModel
+import com.shicheeng.copymanga.data.MainTopicDataModel
 import com.shicheeng.copymanga.data.MangaRankMiniModel
 import com.shicheeng.copymanga.json.MainBannerJson
 import com.shicheeng.copymanga.util.authorNameReformation
@@ -42,7 +43,8 @@ class MangaMainPageRepository @Inject constructor(
                 val nameManga = jsonObject1["name"].asString
                 val urlCoverManga = jsonObject1["cover"].asString
                 val pathWordManga = jsonObject1["path_word"].asString
-                val mangaAuthor = jsonObject1["author"].asJsonArray.authorNameReformation()
+                val mangaAuthor = jsonObject1["author"].asJsonArray.takeIf { it.size() != 0 }
+                    ?.authorNameReformation() ?: "未知"
                 val beanManga = ListBeanManga(
                     nameManga = nameManga,
                     authorManga = mangaAuthor,
@@ -65,6 +67,31 @@ class MangaMainPageRepository @Inject constructor(
                 val beanManga =
                     ListBeanManga(nameManga, mangaAuthorList, urlCoverManga, pathWordManga)
                 add(beanManga)
+            }
+        }
+    }
+
+    private fun transformMainRecTopic(inputJsonArray: JsonArray): List<MainTopicDataModel> {
+        return inputJsonArray.map { element ->
+            element.asJsonObject.let {
+                val title = it["title"].asString
+                val journal = it["journal"].asString
+                val coverUrl = it["cover"].asString
+                val period = it["period"].asString
+                val type = it["type"].asInt
+                val brief = it["brief"].asString
+                val pathWord = it["path_word"].asString
+                val time = it["datetime_created"].asString
+                MainTopicDataModel(
+                    name = title,
+                    journal = journal,
+                    coverUrl = coverUrl,
+                    period = period,
+                    type = type,
+                    brief = brief,
+                    pathWord = pathWord,
+                    datetimeCreated = time
+                )
             }
         }
     }
@@ -100,6 +127,7 @@ class MangaMainPageRepository @Inject constructor(
         val listRankWeek = parserJsonLeaderBoardData(mapRankJsonArray[1])
         val listRankDay = parserJsonLeaderBoardData(mapRankJsonArray[0])
         val listRankMonth = parserJsonLeaderBoardData(mapRankJsonArray[2])
+        val topic = transformMainRecTopic(mainBannerJson.getRecTopic(mainData))
         MainPageDataModel(
             listBanner = listBanner,
             listRecommend = listRecommend,
@@ -108,7 +136,8 @@ class MangaMainPageRepository @Inject constructor(
             listRankMonth = listRankMonth,
             listHot = listHot,
             listNewest = listNewest,
-            listFinished = listFinished
+            listFinished = listFinished,
+            topicList = topic
         )
     }
 

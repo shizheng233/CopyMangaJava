@@ -4,10 +4,13 @@ import com.shicheeng.copymanga.data.MangaReaderPage
 import com.shicheeng.copymanga.data.local.LocalChapter
 import com.shicheeng.copymanga.resposity.MangaInfoRepository
 import com.shicheeng.copymanga.util.FileUtil
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import javax.inject.Inject
 
-class ChapterLoader(
+@ViewModelScoped
+class ChapterLoader @Inject constructor(
     private val fileUtil: FileUtil,
     private val repository: MangaInfoRepository,
 ) {
@@ -15,6 +18,13 @@ class ChapterLoader(
     val chapters = LinkedHashMap<String, LocalChapter>()
     private val chapterPage = ChapterPages()
     private val mutex = Mutex()
+
+    suspend fun init(list: List<LocalChapter>?) = mutex.withLock {
+        chapters.clear()
+        list?.forEach {
+            chapters[it.uuid] = it
+        }
+    }
 
     suspend fun loadPrevNextChapter(
         list: List<LocalChapter>?,
@@ -63,6 +73,12 @@ class ChapterLoader(
     }
 
     fun snapshot() = chapterPage.toList()
+
+    fun last() = chapterPage.last()
+
+    fun first() = chapterPage.first()
+
+    val size get() = chapters.size
 
     private suspend fun loadChapter(pathWord: String, uui: String): List<MangaReaderPage> {
         val chapter = checkNotNull(chapters[uui]) { "NO CHAPTER FOUND" }

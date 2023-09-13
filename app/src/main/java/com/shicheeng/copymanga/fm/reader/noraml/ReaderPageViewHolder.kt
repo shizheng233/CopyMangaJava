@@ -52,6 +52,13 @@ class ReaderPageViewHolder(
         binding.bivPager.setImage(ImageSource.Uri(uri))
     }
 
+    override fun onImageShowing() {
+        binding.bivPager.maxScale = 2f * maxOf(
+            binding.bivPager.width / binding.bivPager.sWidth.toFloat(),
+            binding.bivPager.height / binding.bivPager.sHeight.toFloat(),
+        )
+    }
+
     override fun onImageShown() {
         bindingInfo.loadIndicator.isVisible = false
         binding.errorLayout.errorTextLayout.isVisible = false

@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.davemorrissey.labs.subscaleview.ImageSource
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.davemorrissey.labs.subscaleview.decoder.SkiaPooledImageRegionDecoder
 import com.shicheeng.copymanga.databinding.ItemPageWebtoonBinding
 import com.shicheeng.copymanga.fm.domain.PagerLoader
@@ -19,6 +20,7 @@ class WebtoonReaderViewHolder(
 ) {
 
     private var url: String? = null
+    private var scrollToRestore = 0
 
     init {
         binding.bivPagerWebtoon.bindToLifecycle(owner)
@@ -51,6 +53,22 @@ class WebtoonReaderViewHolder(
 
     override fun onImageReady(uri: Uri) {
         binding.bivPagerWebtoon.setImage(ImageSource.Uri(uri))
+    }
+
+    override fun onImageShowing() {
+        with(binding.bivPagerWebtoon) {
+            minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CUSTOM
+            minScale = width / sWidth.toFloat()
+            maxScale = minScale
+            scrollTo(
+                when {
+                    scrollToRestore != 0 -> scrollToRestore
+                    itemView.top < 0 -> getScrollRange()
+                    else -> 0
+                },
+            )
+            scrollToRestore = 0
+        }
     }
 
     override fun onImageShown() {

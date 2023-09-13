@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.viewbinding.ViewBinding
 import com.shicheeng.copymanga.data.MangaReaderPage
 import com.shicheeng.copymanga.data.MangaState
+import com.shicheeng.copymanga.util.observe
 import com.shicheeng.copymanga.viewmodel.ReaderViewModel
 
 abstract class BaseReader<VB : ViewBinding> : Fragment() {
@@ -16,6 +17,7 @@ abstract class BaseReader<VB : ViewBinding> : Fragment() {
     private var _binding: VB? = null
     protected val viewModel by activityViewModels<ReaderViewModel>()
     protected val binding: VB get() = checkNotNull(_binding)
+    protected var readerAdapter: BaseReaderAdapter<*>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,6 +30,7 @@ abstract class BaseReader<VB : ViewBinding> : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        readerAdapter = createAdapter()
         viewModel.mangaContent.observe(viewLifecycleOwner) {
             onLoadUrlChangeSuccess(it.list, it.state)
         }
@@ -36,6 +39,7 @@ abstract class BaseReader<VB : ViewBinding> : Fragment() {
 
     override fun onDestroyView() {
         _binding = null
+        readerAdapter = null
         super.onDestroyView()
     }
 
@@ -43,12 +47,22 @@ abstract class BaseReader<VB : ViewBinding> : Fragment() {
 
     protected abstract fun onCreateViewInflater(inflater: LayoutInflater, container: ViewGroup?): VB
 
-    protected abstract fun onLoadUrlChangeSuccess(
+    protected abstract suspend fun onLoadUrlChangeSuccess(
         list: List<MangaReaderPage>,
         state: MangaState?,
     )
 
-    abstract fun currentState():MangaState?
+    protected fun requireBinding() = requireNotNull(_binding) {
+        "NO BIND VIEW HERE"
+    }
+
+    protected fun requireAdapter() = checkNotNull(readerAdapter) {
+        "NO ADAPTER HERE"
+    }
+
+    protected abstract fun createAdapter(): BaseReaderAdapter<*>
+
+    abstract fun currentState(): MangaState?
 
     abstract fun moveToPosition(position: Int, smooth: Boolean)
 

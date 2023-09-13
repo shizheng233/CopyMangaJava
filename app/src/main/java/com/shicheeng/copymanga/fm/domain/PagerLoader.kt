@@ -6,38 +6,47 @@ import android.net.Uri
 import androidx.collection.LongSparseArray
 import androidx.collection.set
 import com.shicheeng.copymanga.util.OkhttpHelper
+import com.shicheeng.copymanga.util.RetainedLifecycleCoroutineScope
+import dagger.hilt.android.ActivityRetainedLifecycle
+import dagger.hilt.android.lifecycle.RetainedLifecycle
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.invoke
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.Headers
 import okhttp3.Request
-import okio.Closeable
 import java.io.File
 import java.io.InputStream
 import java.util.LinkedList
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
+import kotlin.coroutines.AbstractCoroutineContextElement
+import kotlin.coroutines.CoroutineContext
 
-
+@ActivityRetainedScoped
 class PagerLoader @Inject constructor(
+    lifecycle: ActivityRetainedLifecycle,
     private val cache: PagerCache,
     private val headers: Headers,
-) : Closeable {
+) : RetainedLifecycle.OnClearedListener {
 
-    val loaderScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    val loaderScope =
+        RetainedLifecycleCoroutineScope(lifecycle) + InternalErrorHandler() + Dispatchers.Default
     private val tasks = LongSparseArray<Deferred<File>>()
     private val prefetchQueue = LinkedList<String>()
     private val counter = AtomicInteger(0)
     private val convertLock = Mutex()
 
+    init {
+        lifecycle.addOnClearedListener(this)
+    }
 
     private fun onIdle() {
         synchronized(prefetchQueue) {
@@ -122,8 +131,15 @@ class PagerLoader @Inject constructor(
         return CompletableDeferred(file)
     }
 
-    override fun close() {
-        loaderScope.cancel()
+    private class InternalErrorHandler : AbstractCoroutineContextElement(CoroutineExceptionHandler),
+        CoroutineExceptionHandler {
+
+        override fun handleException(context: CoroutineContext, exception: Throwable) {
+            exception.printStackTrace()
+        }
+    }
+
+    override fun onCleared() {
         synchronized(tasks) {
             tasks.clear()
         }

@@ -2,25 +2,27 @@ package com.shicheeng.copymanga.ui.screen.search
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.shicheeng.copymanga.LocalMainBottomNavigationPadding
 import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.data.search.SearchResultDataModel
+import com.shicheeng.copymanga.ui.screen.compoents.EmptyDataScreen
 import com.shicheeng.copymanga.ui.screen.compoents.PlainButton
 import com.shicheeng.copymanga.ui.screen.compoents.pagingLoadingIndication
 import com.shicheeng.copymanga.ui.screen.list.CommonListItem
@@ -50,7 +52,19 @@ fun SearchResultScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = searchWord ?: stringResource(id = android.R.string.unknownName))
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = stringResource(id = R.string.search_is_empty),
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = searchWord
+                                ?: stringResource(id = android.R.string.unknownName),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 },
                 navigationIcon = {
                     PlainButton(
@@ -96,10 +110,8 @@ fun SearchResultScreen(
                     }
                 }
             } else {
-                Text(
-                    text = stringResource(R.string.search_is_empty),
-                    modifier = Modifier.align(Alignment.Center),
-                    fontStyle = FontStyle.Italic
+                EmptyDataScreen(
+                    tipText = stringResource(id = R.string.search_is_empty)
                 )
             }
         }

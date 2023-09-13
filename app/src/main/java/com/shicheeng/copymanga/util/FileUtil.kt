@@ -12,6 +12,7 @@ import com.shicheeng.copymanga.data.local.LocalSavableMangaModel
 import com.shicheeng.copymanga.resposity.MangaHistoryRepository
 import com.shicheeng.copymanga.resposity.MangaInfoRepository
 import com.shicheeng.copymanga.server.DownloadStateChapter
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Semaphore
@@ -20,19 +21,22 @@ import okhttp3.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * 下载文件的逻辑，逻辑简单易懂。
  *
  * 大部分来自Kotatsu
  */
-class FileUtil(
+@Singleton
+class FileUtil @Inject constructor(
     private val historyRepository: MangaHistoryRepository,
     private val repository: MangaInfoRepository,
-    private val context: Context,
-    private val coroutineScope: CoroutineScope,
+    @ApplicationContext private val context: Context,
 ) {
 
+    private val coroutineScope = CoroutineScope(Dispatchers.Default)
     private val semaphore = Semaphore(2)
     val file =
         File("${context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/${KeyWordSwap.SAVED_LOCAL_CHAPTER_NAME}")

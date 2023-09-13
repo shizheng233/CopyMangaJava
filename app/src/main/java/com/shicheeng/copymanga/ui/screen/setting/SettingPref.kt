@@ -4,17 +4,17 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.shicheeng.copymanga.fm.reader.ReaderMode
 import com.shicheeng.copymanga.util.ThemeMode
+import com.shicheeng.copymanga.util.booleanFlow
+import com.shicheeng.copymanga.util.stringFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Suppress("UNCHECKED_CAST")
 @Singleton
 class SettingPref @Inject constructor(
     private val sharedPreferences: SharedPreferences,
 ) {
-
 
     val readerMode: String
         get() = sharedPreferences.getString(
@@ -146,18 +146,62 @@ class SettingPref @Inject constructor(
             }
         }
 
+    var cacheSize
+        get() = sharedPreferences.getString(KEY_CACHE_SIZE, "400") ?: "400"
+        set(value) {
+            sharedPreferences.edit {
+                putString(KEY_CACHE_SIZE, value)
+            }
+        }
+
+
+    val loginPerson
+        get() = sharedPreferences.getString(KEY_LOGIN_STATUS, null)
+
+    val loginPersonalFlow
+        get() = sharedPreferences.stringFlow(KEY_LOGIN_STATUS)
+
+    fun selectedUUId(uuid: String?) {
+        sharedPreferences.edit {
+            putString(KEY_LOGIN_STATUS, uuid)
+        }
+    }
+
+    val webReadPoint
+        get() = sharedPreferences.getBoolean(
+            KEY_ENABLE_WEB_READ_POINT,
+            false
+        )
+
+
+    val webReadPointFlow
+        get() = sharedPreferences.booleanFlow(KEY_ENABLE_WEB_READ_POINT)
+
+
+    fun enableWebReadPoint(boolean: Boolean) {
+        sharedPreferences.edit {
+            putBoolean(KEY_ENABLE_WEB_READ_POINT, boolean)
+        }
+    }
+
     companion object {
         const val KEY_ENABLE_COMIC_UPDATE = "KEY_ENABLE_COMIC_UPDATE"
         const val KEY_COMIC_UPDATE_TIME = "KEY_COMIC_UPDATE_TIME"
         const val KEY_COMIC_UPDATE_CONS = "KEY_COMIC_UPDATE_CONS"
         const val KEY_APP_THEME = "KEY_APP_THEME"
         const val KEY_CUTOUT_DISPLAY = "KEY_CUTOUT_DISPLAY"
+        const val KEY_CACHE_SIZE = "KEY_CACHE_SIZE"
+        const val KEY_LOGIN_STATUS = "KEY_LOGIN_STATUS"
+        const val KEY_ENABLE_WEB_READ_POINT = "KEY_ENABLE_WEB_READ_POINT"
     }
 
+
 }
+
 
 const val IN_WIFI = "IN_WIFI"
 const val IN_CHARGING = "IN_CHARGING"
 const val IN_BATTERY_NOT_LOW = "IN_BATTERY_NOT_LOW"
+
 
 

@@ -13,16 +13,15 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,6 +39,7 @@ fun LazyListScope.chapterList(
     inSelectMode: Boolean,
     selectChapters: List<LocalChapter>,
     chapterState: UIState<List<LocalChapter>>,
+    webLookedUUID: String?,
     onLongClick: (LocalChapter) -> Unit,
     onClick: (LocalChapter) -> Unit,
 ) {
@@ -47,7 +47,11 @@ fun LazyListScope.chapterList(
         return
     }
     val successState = chapterState as UIState.Success
-    items(successState.content, key = { it.uuid }) { eachChapter ->
+    items(
+        items = successState.content,
+        key = { it.hashCode() },
+        contentType = { MangaDetailKey.LIST_CHAPTER }
+    ) { eachChapter ->
         ChapterItem(
             inSelectMode = inSelectMode,
             isSelected = selectChapters.contains(eachChapter),
@@ -57,9 +61,15 @@ fun LazyListScope.chapterList(
             onLongClick = {
                 onLongClick(eachChapter)
             },
-            readIn = if (eachChapter.isReadProgress) {
+            readIn = if (
+                eachChapter.isReadProgress
+                && !eachChapter.isReadFinish
+                && eachChapter.readIndex != (eachChapter.size - 1)
+            ) {
                 eachChapter.readIndex
-            } else null
+            } else null,
+            isRead = eachChapter.isReadFinish || eachChapter.readIndex == (eachChapter.size - 1),
+            isWebLooked = eachChapter.uuid == webLookedUUID
         ) {
             onClick(eachChapter)
         }
@@ -71,13 +81,17 @@ fun LazyListScope.chapterList(
 fun ChapterItem(
     inSelectMode: Boolean,
     isSelected: Boolean,
+    isRead: Boolean,
     title: String,
     time: String,
     readIn: Int? = null,
     isDownload: Boolean = false,
+    isWebLooked: Boolean = false,
     onLongClick: () -> Unit,
     onClick: () -> Unit,
 ) {
+    val textAlpha = remember(isRead) { if (isRead) .38f else 1f }
+    val textSubtitleAlpha = remember(isRead) { if (isRead) .38f else 0.78f }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -110,29 +124,51 @@ fun ChapterItem(
                     text = title,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.alpha(textAlpha)
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = time,
                         overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 12.sp)
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 12.sp),
+                        modifier = Modifier.alpha(textSubtitleAlpha)
                     )
-                    if (readIn != null) {
-                        Text(
-                            text = stringResource(
-                                id = R.string.read_in,
-                                formatArgs = arrayOf(readIn + 1)
-                            ),
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier
-                                .alpha(0.78f)
-                                .padding(start = 4.dp)
-                        )
+                    when {
+                        readIn != null -> {
+                            Text(
+                                text = stringResource(
+                                    id = R.string.read_in,
+                                    formatArgs = arrayOf(readIn + 1)
+                                ),
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier
+                                    .alpha(textSubtitleAlpha)
+                                    .padding(start = 4.dp)
+                            )
+                        }
+
+                        isRead -> {
+                            Text(
+                                text = stringResource(R.string.read_finished),
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.labelSmall,
+                                modifier = Modifier
+                                    .alpha(textSubtitleAlpha)
+                                    .padding(start = 4.dp)
+                            )
+                        }
                     }
                 }
+            }
+            if (isWebLooked) {
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_cloud_24),
+                    contentDescription = stringResource(id = R.string.shelf_cloud)
+                )
             }
             if (isDownload) {
                 Icon(
@@ -152,13 +188,24 @@ fun TipDialog(
 ) = AlertDialog(
     onDismissRequest = onDismiss,
     confirmButton = {
-        Button(onClick = onPositive) {
+        Button(
+            onClick = {
+                onPositive()
+                onDismiss()
+            }
+        ) {
             Text(text = stringResource(R.string.enable))
         }
+        onDismiss()
     },
     properties = DialogProperties(),
     dismissButton = {
-        Button(onClick = onNegative) {
+        Button(
+            onClick = {
+                onNegative()
+                onDismiss()
+            }
+        ) {
             Text(text = stringResource(R.string.not_enabled))
         }
     },

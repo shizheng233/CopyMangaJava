@@ -26,11 +26,12 @@ data class LocalChapter(
     val type: Int,
     @PrimaryKey val uuid: String,
     val isDownloaded: Boolean,
+    val isReadFinish: Boolean,
 )
 
 fun LocalChapter.toMangaState(): MangaState {
     return MangaState(
         uuid = uuid,
-        page = readIndex
+        page = if (isReadFinish) 0 else readIndex
     )
 }

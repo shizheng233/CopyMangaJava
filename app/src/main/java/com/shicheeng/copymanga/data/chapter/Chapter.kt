@@ -46,6 +46,7 @@ fun Chapter.toLocalChapter(
     readIndex: Int,
     isReadInProgress: Boolean,
     isDownloaded: Boolean,
+    isReadFinish: Boolean,
 ): LocalChapter {
     return LocalChapter(
         comicId = comicId,
@@ -66,6 +67,7 @@ fun Chapter.toLocalChapter(
         size = size,
         type = type,
         uuid = uuid,
-        isDownloaded = isDownloaded
+        isDownloaded = isDownloaded,
+        isReadFinish = isReadFinish
     )
 }

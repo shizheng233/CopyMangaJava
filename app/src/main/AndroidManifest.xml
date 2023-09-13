@@ -36,8 +36,31 @@
                     android:host="download"
                     android:scheme="shicheengcmdm" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="detail"
+                    android:scheme="shicheengcmdm" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="copymanga.site"
+                    android:pathPrefix="/h5/details/comic"
+                    android:scheme="https" />
+            </intent-filter>
+
         </activity>
         <activity android:name=".MangaReaderActivity" />
+        <activity
+            android:name=".error.ErrorActivity"
+            android:process=":exception_process" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"

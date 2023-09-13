@@ -1,25 +1,36 @@
 package com.shicheeng.copymanga.ui.screen
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import com.shicheeng.copymanga.R
+import androidx.navigation.navDeepLink
+import com.shicheeng.copymanga.ui.screen.Router.COMMENT.toCommentScreen
+import com.shicheeng.copymanga.ui.screen.Router.EXPLORE.toExplore
+import com.shicheeng.copymanga.ui.screen.authorsmanga.AuthorsMangaScreen
+import com.shicheeng.copymanga.ui.screen.comment.CommentScreen
 import com.shicheeng.copymanga.ui.screen.download.DownloadScreen
 import com.shicheeng.copymanga.ui.screen.downloaded.DownloadedScreen
+import com.shicheeng.copymanga.ui.screen.history.HistoryScreen
 import com.shicheeng.copymanga.ui.screen.list.NewestScreen
 import com.shicheeng.copymanga.ui.screen.list.RecommendScreen
+import com.shicheeng.copymanga.ui.screen.login.LoginScreen
+import com.shicheeng.copymanga.ui.screen.login.loginlist.LoginPersonalListScreen
 import com.shicheeng.copymanga.ui.screen.main.MainScreen
 import com.shicheeng.copymanga.ui.screen.main.explore.ExploreScreen
 import com.shicheeng.copymanga.ui.screen.main.home.search.SearchScreen
+import com.shicheeng.copymanga.ui.screen.main.personal.personaldetail.PersonalDetail
+import com.shicheeng.copymanga.ui.screen.main.subscribe.SubScribeScreen
 import com.shicheeng.copymanga.ui.screen.manga.MangaDetailScreen
 import com.shicheeng.copymanga.ui.screen.search.SearchResultScreen
 import com.shicheeng.copymanga.ui.screen.setting.SettingScreen
 import com.shicheeng.copymanga.ui.screen.setting.about.AboutScreen
 import com.shicheeng.copymanga.ui.screen.setting.worker.WorkerScreen
+import com.shicheeng.copymanga.ui.screen.topiclist.TopicListScreen
+import com.shicheeng.copymanga.ui.screen.topics.TopicsScreen
+import com.shicheeng.copymanga.ui.screen.webshelf.WebShelfScreen
 import soup.compose.material.motion.animation.materialSharedAxisXIn
 import soup.compose.material.motion.animation.materialSharedAxisXOut
 import soup.compose.material.motion.animation.rememberSlideDistance
@@ -75,22 +86,61 @@ fun MainComposeNavigation(
                 },
                 onDownloadedBtnClick = {
                     navController.navigate(Router.DOWNLOADED.name)
+                },
+                onTopicHeaderLineClick = {
+                    navController.navigate(Router.TOPICS.name)
+                },
+                onNewestHeaderLineClick = {
+                    navController.navigate(Router.NEWEST.name)
+                },
+                onTopicClick = { pathWord, type ->
+                    navController.navigate(Router.TopicDETAIL.pathWord(pathWord, type))
+                },
+                onSubscribedClick = {
+                    navController.navigate(Router.SUBSCRIBE.name)
+                },
+                onHistoryClick = {
+                    navController.navigate(Router.HISTORY.name)
+                },
+                onLibraryClick = {
+                    navController.navigate(Router.WebSHELF.name)
+                },
+                onPersonalHeaderClick = { login ->
+                    if (login) {
+                        navController.navigate(Router.UserShortDETAIL.name)
+                    } else {
+                        navController.navigate(Router.LOGIN.name)
+                    }
+                },
+                onFinishHeaderLineClick = {
+                    navController.toExplore(
+                        theme = null,
+                        top = "finish",
+                        order = null,
+                    )
+                },
+                onHotClick = {
+                    navController.toExplore(
+                        theme = null,
+                        top = null,
+                        order = "-popular",
+                    )
                 }
-            ) {
-                navController.navigate(Router.NEWEST.name)
-            }
+            )
         }
 
         composable(
-            route = "${Router.EXPLORE.name}?theme={theme}",
+            route = "${Router.EXPLORE.name}?theme={theme}&top={top}&order={order}",
             arguments = listOf(
-                navArgument(name = "theme") { nullable = true }
+                navArgument(name = "theme") { nullable = true },
+                navArgument(name = "top") { nullable = true },
+                navArgument(name = "order") { nullable = true }
             )
         ) { backStackEntry ->
             ExploreScreen(
-                top = null,
+                top = backStackEntry.arguments?.getString("top"),
                 theme = backStackEntry.arguments?.getString("theme"),
-                order = null,
+                order = backStackEntry.arguments?.getString("order"),
                 onNavigationIconClick = {
                     navController.popBackStack()
                 }
@@ -148,12 +198,26 @@ fun MainComposeNavigation(
 
         composable(
             route = "${Router.DETAIL.name}/{path_word}",
+            deepLinks = listOf(
+                navDeepLink { uriPattern = Router.DETAIL.deepLink },
+                navDeepLink { uriPattern = Router.DETAIL.copyMangaWebURl }
+            )
         ) { backStackEntry ->
             val pathWord = backStackEntry.arguments?.getString("path_word")
             MangaDetailScreen(
                 pathWord = pathWord,
                 onTagsClick = {
-                    navController.navigate("${Router.EXPLORE.name}?theme=${it.pathWord}")
+                    navController.toExplore(
+                        top = null,
+                        order = null,
+                        theme = it.pathWord
+                    )
+                },
+                onAuthorClick = {
+                    navController.navigate("${Router.AuthorsMANGA.name}/${it}")
+                },
+                onCommentClick = {
+                    navController toCommentScreen it
                 }
             ) {
                 navController.popBackStack()
@@ -172,6 +236,9 @@ fun MainComposeNavigation(
                 },
                 onWorkerClick = {
                     navController.navigate(Router.WORKER.name)
+                },
+                onUserClick = {
+                    navController.navigate(Router.LoginSelect.name)
                 }
             ) {
                 navController.navigate(Router.ABOUT.name)
@@ -180,7 +247,9 @@ fun MainComposeNavigation(
 
         composable(
             route = Router.DOWNLOAD.name,
-            deepLinks = listOf(NavDeepLink(uri = Router.DOWNLOAD.deepLink))
+            deepLinks = listOf(
+                NavDeepLink(uri = Router.DOWNLOAD.deepLink)
+            )
         ) {
             DownloadScreen {
                 navController.popBackStack()
@@ -215,87 +284,128 @@ fun MainComposeNavigation(
             }
         }
 
+        composable(route = Router.HISTORY.name) {
+            HistoryScreen(
+                navigationClick = {
+                    navController.popBackStack()
+                },
+                onRequestLogin = {
+                    navController.navigate(Router.LOGIN.name)
+                }
+            ) { pathWord ->
+                navController.navigate("${Router.DETAIL.name}/$pathWord")
+            }
+        }
+
+        composable(route = Router.SUBSCRIBE.name) {
+            SubScribeScreen(
+                navClick = {
+                    navController.popBackStack()
+                }
+            ) { pathWord ->
+                navController.navigate("${Router.DETAIL.name}/$pathWord")
+            }
+        }
+
+        composable(
+            route = "${Router.TopicDETAIL.name}/{pathWord}?type={type}",
+            arguments = listOf(
+                navArgument(name = "pathWord") { type = NavType.StringType },
+                navArgument(name = "type") { type = NavType.IntType }
+            )
+        ) { navBackStackEntry ->
+            val pathWord = navBackStackEntry.arguments?.getString("pathWord")
+            val type = navBackStackEntry.arguments?.getInt("type")
+            TopicsScreen(
+                pathWord = pathWord,
+                type = type,
+                onBack = {
+                    navController.popBackStack()
+                }
+            ) {
+                navController.navigate("${Router.DETAIL.name}/${it}")
+            }
+        }
+
+        composable(
+            route = Router.TOPICS.name,
+        ) {
+            TopicListScreen(
+                onBack = { navController.popBackStack() }
+            ) {
+                navController.navigate(Router.TopicDETAIL.pathWord(it.pathWord, it.type))
+            }
+        }
+
+        composable(route = Router.LOGIN.name) {
+            LoginScreen(
+                onNavClick = {
+                    navController.popBackStack()
+                }
+            ) {
+                navController.popBackStack()
+            }
+        }
+
+        composable(route = Router.LoginSelect.name) {
+            LoginPersonalListScreen(
+                onAddClicked = {
+                    navController.navigate(Router.LOGIN.name)
+                }
+            ) {
+                navController.popBackStack()
+            }
+        }
+
+        composable(route = Router.WebSHELF.name) {
+            WebShelfScreen(
+                navClick = {
+                    navController.popBackStack()
+                },
+                reLoginClick = {
+                    navController.navigate(Router.LOGIN.name)
+                }
+            ) {
+                navController.navigate("${Router.DETAIL.name}/${it}")
+            }
+        }
+
+        composable(route = Router.UserShortDETAIL.name) {
+            PersonalDetail(
+                onReLogin = {
+                    navController.navigate(Router.LOGIN.name)
+                }
+            ) {
+                navController.popBackStack()
+            }
+        }
+
+        composable(
+            route = Router.AuthorsMANGA.name + "/{author_path_word}",
+            arguments = listOf(
+                navArgument(name = "author_path_word") {
+                    nullable = true
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            AuthorsMangaScreen(
+                onNav = {
+                    navController.popBackStack()
+                }
+            ) {
+                navController.navigate("${Router.DETAIL.name}/${it}")
+            }
+        }
+
+        composable(route = Router.COMMENT.name + "/{uuid_comic}") {
+            CommentScreen(
+                navClick = navController::popBackStack
+            )
+        }
+
     }
 
 
 }
 
-/**
- * 导航路由
- * @param name 必传参数，名字。
- * @param stringId 非必传参数，适用于导航栏的字串符资源ID。
- * @param drawableRes 非必传参数，适用于导航栏的图标资源ID。
- * @param onClickIcon 非必传参数，但是如果传入[drawableRes]则必传，否则报错。在导航栏按钮被按下时显示的图标。
- */
-sealed class Router(
-    val name: String,
-    @StringRes val stringId: Int? = null,
-    @DrawableRes val drawableRes: Int? = null,
-    @DrawableRes val onClickIcon: Int? = null,
-) {
-
-    object MAIN : Router(
-        name = "MAIN"
-    )
-
-    object HOME : Router(
-        name = "HOME",
-        stringId = R.string.home_des,
-        drawableRes = R.drawable.outline_home_24,
-        onClickIcon = R.drawable.ic_baseline_home_24
-    )
-
-    object LEADERBOARD : Router(
-        name = "LEADERBOARD",
-        stringId = R.string.comic_rank,
-        drawableRes = R.drawable.baseline_insert_chart_outlined_24,
-        onClickIcon = R.drawable.baseline_insert_chart_24
-    )
-
-    object EXPLORE : Router(
-        name = "EXPLORE",
-        stringId = R.string.explore,
-        drawableRes = R.drawable.ic_explore_outline,
-        onClickIcon = R.drawable.baseline_explore_24
-    )
-
-    object SUBSCRIBE : Router(
-        name = "SUBSCRIBE",
-        stringId = R.string.subscribe,
-        drawableRes = R.drawable.baseline_rss_feed_24,
-        onClickIcon = R.drawable.baseline_rss_feed_24
-    )
-
-    object HISTORY : Router(
-        name = "HISTORY",
-        stringId = R.string.history,
-        drawableRes = R.drawable.baseline_history_24,
-        onClickIcon = R.drawable.baseline_history_24
-    )
-
-    object DOWNLOADED : Router(
-        name = "DOWNLOADED"
-    )
-
-    object RECOMMEND : Router(name = "RECOMMEND")
-
-    object NEWEST : Router(name = "NEWEST")
-
-    object DETAIL : Router(name = "DETAIL")
-
-    object SEARCH : Router(name = "SEARCH")
-
-    object SearchResult : Router(name = "SearchResult")
-
-    object SETTING : Router(name = "SETTING")
-
-    object WORKER : Router(name = "WORKER")
-
-    object DOWNLOAD : Router(name = "DOWNLOAD") {
-        const val deepLink = "shicheengcmdm://download"
-    }
-
-    object ABOUT : Router(name = "ABOUT")
-
-
-}

@@ -18,13 +18,18 @@ object RoomModula {
 
     @Provides
     @Singleton
-    fun provideHistoryDataBase(@ApplicationContext context: Context) = Room.databaseBuilder(
-        context = context,
-        klass = MangaHistoryDataBase::class.java,
-        name = "manga_history_database_2"
-    )
-        .addMigrations(VERSION1to2, VERSION2to3, VERSION3to4)
-        .build()
+    fun provideHistoryDataBase(@ApplicationContext context: Context) = Room
+        .databaseBuilder(
+            context = context,
+            klass = MangaHistoryDataBase::class.java,
+            name = "manga_history_database_2"
+        ).addMigrations(
+            VERSION1to2,
+            VERSION2to3,
+            VERSION3to4,
+            VERSION4to5,
+            VERSION5to6
+        ).build()
 
     @Provides
     @Singleton
@@ -91,6 +96,9 @@ object VERSION2to3 : Migration(2, 3) {
 
 }
 
+/**
+ * 加入搜索历史
+ */
 object VERSION3to4 : Migration(3, 4) {
 
     override fun migrate(database: SupportSQLiteDatabase) {
@@ -102,4 +110,19 @@ object VERSION3to4 : Migration(3, 4) {
         )
     }
 
+}
+
+/**
+ * 加入阅读完成
+ */
+object VERSION4to5 : Migration(4, 5) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE LocalChapter ADD COLUMN isReadFinish INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
+object VERSION5to6 : Migration(5, 6) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE manga_history_key ADD COLUMN comicUUID TEXT NOT NULL DEFAULT \"unknown\" ")
+    }
 }

@@ -6,7 +6,10 @@ import com.shicheeng.copymanga.data.MangaHistoryDataModel
 import com.shicheeng.copymanga.data.local.LocalChapter
 import com.shicheeng.copymanga.data.local.LocalSavableMangaModel
 import com.shicheeng.copymanga.data.searchhistory.SearchHistory
+import com.shicheeng.copymanga.util.processLifecycleScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -40,6 +43,19 @@ class MangaHistoryRepository @Inject constructor(
         mangeLocalHistoryDao.updateLocal(mangaLocalHistory)
     }
 
+    /**
+     * 保存漫画历史。其生命周期不随ViewModel。
+     */
+    fun updateAsync(mangaLocalHistory: MangaHistoryDataModel) {
+        processLifecycleScope.launch(Dispatchers.IO) {
+            try {
+                mangeLocalHistoryDao.updateLocal(mangaLocalHistory)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
 
     suspend fun updateLocalChapter(localChapter: LocalChapter) {
         mangeLocalHistoryDao.addLocalChapter(localChapter)
@@ -54,6 +70,10 @@ class MangaHistoryRepository @Inject constructor(
 
     suspend fun delHistory() {
         mangeLocalHistoryDao.deleteAllHistory()
+    }
+
+    suspend fun deleteSingleHistory(mangaHistoryDataModel: MangaHistoryDataModel) {
+        mangeLocalHistoryDao.deleteSingle(mangaHistoryDataModel)
     }
 
     fun historySearchedWord() = searchedWordDao.loadWordHistory()

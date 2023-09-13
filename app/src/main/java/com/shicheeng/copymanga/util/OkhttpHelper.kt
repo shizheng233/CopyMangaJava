@@ -55,4 +55,18 @@ sealed class UIState<out T> {
     object Loading : UIState<Nothing>()
 }
 
+sealed class LoginState<out T> {
+    @Immutable
+    data class Success<T>(val content: T) : LoginState<T>()
+
+    @Immutable
+    data class Error<E : Exception>(val errorMessage: E) : LoginState<Nothing>()
+
+    @Immutable
+    object Loading : LoginState<Nothing>()
+
+    @Immutable
+    object NoStatus : LoginState<Nothing>()
+}
+
 data class ResultData<T>(val maxOffset: Int, val t: T)

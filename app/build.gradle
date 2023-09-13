@@ -7,6 +7,7 @@ plugins {
     id 'com.mikepenz.aboutlibraries.plugin'
     id 'kotlin-android'
     id 'com.google.dagger.hilt.android'
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -19,7 +20,7 @@ android {
         minSdk 26
         targetSdk 34
         versionCode 2
-        versionName "1.0.4"
+        versionName "1.0.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -36,6 +37,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = '17'
+    }
+    androidResources {
+        generateLocaleConfig true
     }
     composeOptions {
         kotlinCompilerExtensionVersion '1.4.3'
@@ -67,15 +71,16 @@ dependencies {
     // define any required OkHttp artifacts without version
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
-    implementation 'com.squareup.okio:okio:3.3.0'
+    implementation 'com.squareup.okio:okio:3.5.0'
 
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.15.0'
 
     //Core
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.lifecycle:lifecycle-process:2.6.2'
 
-    kapt 'com.github.bumptech.glide:compiler:4.13.2'
+    ksp 'com.github.bumptech.glide:compiler:4.13.2'
 
 
     def lifecycle_version = "2.6.1"
@@ -87,7 +92,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     //Service
     implementation "androidx.lifecycle:lifecycle-service:$lifecycle_version"
-    implementation "androidx.fragment:fragment-ktx:1.6.0"
+    implementation "androidx.fragment:fragment-ktx:1.6.1"
     implementation "androidx.activity:activity-ktx:1.7.2"
     implementation 'androidx.palette:palette-ktx:1.0.0'
 
@@ -106,12 +111,12 @@ dependencies {
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 
     // Testing Fragments in Isolation
-    debugImplementation "androidx.fragment:fragment-testing:1.6.0"
+    debugImplementation "androidx.fragment:fragment-testing:1.6.1"
 
     //Room
-    implementation "androidx.room:room-ktx:2.5.1"
-    kapt "androidx.room:room-compiler:2.5.1"
-    androidTestImplementation "androidx.room:room-testing:2.5.1"
+    implementation "androidx.room:room-ktx:2.5.2"
+    ksp "androidx.room:room-compiler:2.5.2"
+    androidTestImplementation "androidx.room:room-testing:2.5.2"
 
     //AboutLibrary
     def latestAboutLibsRelease = "10.5.2"
@@ -124,25 +129,25 @@ dependencies {
     kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
     //Android Preference
-    implementation 'androidx.preference:preference-ktx:1.2.0'
+    implementation 'androidx.preference:preference-ktx:1.2.1'
 
     //Compose
     // Import the Compose BOM
-    implementation platform('androidx.compose:compose-bom:2023.04.01')
+    implementation platform('androidx.compose:compose-bom:2023.08.00')
     // Override Material Design 3 library version with a pre-release version
-    implementation 'androidx.compose.material3:material3:1.2.0-alpha02'
+    implementation 'androidx.compose.material3:material3:1.2.0-alpha06'
     // Import other Compose libraries without version numbers
     implementation 'androidx.compose.foundation:foundation'
-    implementation "com.google.accompanist:accompanist-themeadapter-material3:0.31.3-beta"
+    implementation "com.google.accompanist:accompanist-themeadapter-material3:0.33.0-alpha"
     implementation 'androidx.compose.ui:ui-tooling'
     implementation 'androidx.activity:activity-compose:1.7.2'
     implementation "com.google.accompanist:accompanist-pager-indicators:0.31.3-beta"
-    implementation "androidx.navigation:navigation-compose:2.7.0-beta01"
+    implementation "androidx.navigation:navigation-compose:2.7.2"
     //Optional - Jetpack Compose integration
-    implementation "androidx.paging:paging-compose:3.2.0-rc01"
+    implementation "androidx.paging:paging-compose:3.2.1"
     //Anime
     implementation "androidx.compose.animation:animation-graphics"
-    implementation "io.github.fornewid:material-motion-compose-navigation:1.0.4"
+    implementation "io.github.fornewid:material-motion-compose-navigation:1.0.6"
 
     //Coil
     implementation "io.coil-kt:coil:2.4.0"
@@ -150,15 +155,15 @@ dependencies {
 
     //Retrofit
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
-    implementation 'com.squareup.retrofit2:converter-moshi:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
 
     //Moshi
-    implementation "com.squareup.moshi:moshi-kotlin:1.14.0"
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.14.0"
+    implementation "com.squareup.moshi:moshi-kotlin:1.15.0"
+    ksp "com.squareup.moshi:moshi-kotlin-codegen:1.14.0"
 
     //Hilt
-    implementation "com.google.dagger:hilt-android:2.44.2"
-    kapt "com.google.dagger:hilt-compiler:2.44.2"
+    implementation "com.google.dagger:hilt-android:2.47"
+    kapt "com.google.dagger:hilt-compiler:2.47"
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
     testImplementation 'junit:junit:4.13.2'

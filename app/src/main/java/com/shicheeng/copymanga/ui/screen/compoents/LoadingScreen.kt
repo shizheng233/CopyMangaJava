@@ -8,12 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridScope
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -49,7 +48,7 @@ fun ErrorScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = errorMessage)
-            ElevatedButton(onClick = onTry) {
+            FilledTonalButton(onClick = onTry) {
                 Text(text = stringResource(id = R.string.retry))
             }
         }
@@ -61,7 +60,7 @@ fun ErrorScreen(
     errorMessage: String,
     onTry: () -> Unit,
     secondaryText: String,
-    onSecondaryClick: () -> Unit,
+    onSecondaryClick: () -> Unit = { },
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -76,12 +75,51 @@ fun ErrorScreen(
             Text(text = errorMessage)
             Spacer(modifier = Modifier.height(4.dp))
             Row {
-                ElevatedButton(onClick = onTry) {
+                FilledTonalButton(onClick = onTry) {
                     Text(text = stringResource(id = R.string.retry))
                 }
-                Spacer(modifier = Modifier.width(8.dp))
-                ElevatedButton(onClick = onSecondaryClick) {
+                FilledTonalButton(
+                    onClick = onSecondaryClick,
+                    modifier = Modifier.padding(start = 8.dp)
+                ) {
                     Text(text = secondaryText)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ErrorScreen(
+    errorMessage: String,
+    onTry: () -> Unit,
+    needSecondaryText: Boolean,
+    secondaryText: String,
+    onSecondaryClick: () -> Unit = { },
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(all = 16.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = errorMessage)
+            Spacer(modifier = Modifier.height(4.dp))
+            Row {
+                FilledTonalButton(onClick = onTry) {
+                    Text(text = stringResource(id = R.string.retry))
+                }
+                if (needSecondaryText) {
+                    FilledTonalButton(
+                        onClick = onSecondaryClick,
+                        modifier = Modifier.padding(start = 8.dp)
+                    ) {
+                        Text(text = secondaryText)
+                    }
                 }
             }
         }
@@ -128,7 +166,56 @@ fun LazyGridScope.pagingLoadingIndication(loadState: LoadState, onTry: () -> Uni
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(text = stringResource(id = R.string.load_failure))
-                        Button(onClick = onTry) {
+                        FilledTonalButton(onClick = onTry) {
+                            Text(text = stringResource(id = R.string.retry))
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+fun LazyListScope.pagingLoadingIndication(loadState: LoadState, onTry: () -> Unit) {
+    item(
+        contentType = "pagingLoadingIndication",
+        key = "pagingLoadingIndication"
+    ) {
+        when (loadState) {
+            is LoadState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+                }
+            }
+
+            is LoadState.NotLoading -> {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.all_clear),
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+
+            is LoadState.Error -> {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(all = 16.dp)
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = stringResource(id = R.string.load_failure))
+                        FilledTonalButton(onClick = onTry) {
                             Text(text = stringResource(id = R.string.retry))
                         }
                     }

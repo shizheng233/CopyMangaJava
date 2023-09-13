@@ -46,4 +46,7 @@ interface MangeLocalHistoryDao {
     @Query("DELETE FROM manga_history_key")
     suspend fun deleteAllHistory()
 
+    @Delete
+    suspend fun deleteSingle(manga: MangaHistoryDataModel)
+
 }

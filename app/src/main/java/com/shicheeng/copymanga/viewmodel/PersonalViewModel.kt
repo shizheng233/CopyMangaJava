@@ -1,63 +1,39 @@
 package com.shicheeng.copymanga.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.shicheeng.copymanga.R
-import com.shicheeng.copymanga.data.PersonalDataModel
-import com.shicheeng.copymanga.resposity.MangaHistoryRepository
-import com.shicheeng.copymanga.util.FileUtil
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import com.shicheeng.copymanga.resposity.LoginRepository
+import com.shicheeng.copymanga.ui.screen.setting.SettingPref
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-
-class PersonalViewModel @AssistedInject constructor(
-    @Assisted private val fileUtil: FileUtil,
-    historyRepository: MangaHistoryRepository,
+@HiltViewModel
+class PersonalViewModel @Inject constructor(
+    private val loginRepository: LoginRepository,
+    settingPref: SettingPref,
 ) : ViewModel() {
 
-    private var downloadMangaList = fileUtil.findDownloadManga()
-    private val historyList = historyRepository.allHistoryDao
-
-    val combineOfList = combine(downloadMangaList, historyList) { download, history ->
-        listOf(
-            PersonalDataModel(R.string.history, history),
-            PersonalDataModel(R.string.download_manga, download)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val user = settingPref.loginPersonalFlow
+        .stateIn(
+            scope = viewModelScope,
+            initialValue = settingPref.loginPerson,
+            started = SharingStarted.Eagerly
         )
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Lazily,
-        initialValue = emptyList()
-    )
-
-
-    fun updateDownloadList() = viewModelScope.launch {
-        downloadMangaList = fileUtil.findDownloadManga()
-    }
-
-    @AssistedFactory
-    interface Factory {
-        fun create(
-            fileUtil: FileUtil,
-        ): PersonalViewModel
-    }
-
-    companion object {
-        fun provideFactory(
-            assistedFactory: Factory,
-            fileUtil: FileUtil,
-        ) = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return assistedFactory.create(fileUtil) as T
-            }
-        }
-    }
-
+        .filter { !it.isNullOrBlank() && it.isNotEmpty() }
+        .filterNotNull()
+        .flatMapLatest {
+            loginRepository.getUserByUUid(it)
+        }.stateIn(
+            scope = viewModelScope,
+            initialValue = null,
+            started = SharingStarted.Eagerly
+        )
 }
 

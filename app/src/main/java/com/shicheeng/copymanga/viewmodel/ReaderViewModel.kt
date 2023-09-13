@@ -1,8 +1,7 @@
 package com.shicheeng.copymanga.viewmodel
 
-import androidx.annotation.AnyThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.annotation.WorkerThread
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shicheeng.copymanga.data.MangaHistoryDataModel
@@ -14,68 +13,71 @@ import com.shicheeng.copymanga.data.local.LocalChapter
 import com.shicheeng.copymanga.data.local.toMangaState
 import com.shicheeng.copymanga.fm.domain.ChapterLoader
 import com.shicheeng.copymanga.fm.domain.PagerLoader
+import com.shicheeng.copymanga.fm.reader.MangaLoader
 import com.shicheeng.copymanga.fm.reader.ReaderMode
 import com.shicheeng.copymanga.resposity.MangaHistoryRepository
 import com.shicheeng.copymanga.resposity.MangaInfoRepository
 import com.shicheeng.copymanga.ui.screen.setting.SettingPref
-import com.shicheeng.copymanga.util.FileUtil
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import javax.inject.Provider
-import javax.inject.Singleton
+import javax.inject.Inject
 import kotlin.collections.set
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
+private const val MAX_LOAD_PAGER = 4
+
 /**
- * @param pagerLoader 为创建多个实例，请勿使用[Singleton]注解。并使用[Provider]多次提供。
+ * 重新设计ReaderViewModel
  */
-class ReaderViewModel @AssistedInject constructor(
+@HiltViewModel
+class ReaderViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val repository: MangaHistoryRepository,
-    pagerLoader: Provider<PagerLoader>,
+    private val pagerLoader: PagerLoader,
     private val settingPref: SettingPref,
-    @Assisted private val fileUtil: FileUtil,
-    @Assisted("path_word") private val currentPathWord: String?,
-    @Assisted("uuid") private val currentChapterUUID: String?,
     private val mangaInfoRepository: MangaInfoRepository,
+    private val chapterLoader: ChapterLoader,
 ) : ViewModel() {
 
+    private val mangaLoader = MangaLoader(savedStateHandle)
+    private val currentPathWord = mangaLoader.mangaPathWord
+    private val currentChapterUUID = mangaLoader.mangaChapterUUID
 
     private val list by lazy {
         runBlocking {
             mangaInfoRepository.fetchMangaChapters(
-                pathWord = requireNotNull(currentPathWord)
+                pathWord = requireNotNull(mangaLoader.mangaPathWord)
             )
         }
     }
 
     private val initChapter = list.find { x -> x.uuid == currentChapterUUID } ?: list[0]
-    private val chapterLoader = ChapterLoader(fileUtil, mangaInfoRepository)
     private var loadJob: Job? = null
     private val chapters: LinkedHashMap<String, LocalChapter> get() = chapterLoader.chapters
 
-    private val _loadingCounter = MutableLiveData(false)
-    val loadingCounter: LiveData<Boolean> get() = _loadingCounter
+    private val _loadingCounter = MutableStateFlow(false)
+    val loadingCounter get() = _loadingCounter.asStateFlow()
 
-    private val _errorHandler = MutableLiveData<Throwable>()
-    val errorHandler: LiveData<Throwable> get() = _errorHandler
+    private val _errorHandler = MutableStateFlow<Throwable?>(null)
+    val errorHandler get() = _errorHandler.asStateFlow()
 
-    val information = MutableLiveData<ReaderState>(null)
-    private val historyData = MutableLiveData<MangaHistoryDataModel?>(null)
+    val information = MutableStateFlow<ReaderState?>(null)
+    private val historyData = MutableStateFlow<MangaHistoryDataModel?>(null)
     val state = MutableStateFlow(initChapter.toMangaState())
-    val mangaContent = MutableLiveData(ReaderContent(emptyList(), null))
-    val readerModel = MutableLiveData<ReaderMode>()
-    val pagerLoaderIn: PagerLoader = pagerLoader.get()
+    val mangaContent = MutableStateFlow(ReaderContent(emptyList(), null))
+    val readerModel = MutableStateFlow<ReaderMode?>(null)
 
     init {
         loadImp()
@@ -90,13 +92,13 @@ class ReaderViewModel @AssistedInject constructor(
     private fun loadPrevNextChapter(uuid: String?, isNext: Boolean) {
         loadJob = loadJop(Dispatchers.Default) {
             chapterLoader.loadPrevNextChapter(list, uuid, isNext)
-            mangaContent.postValue(ReaderContent(chapterLoader.snapshot(), null))
+            mangaContent.value = ReaderContent(chapterLoader.snapshot(), null)
         }
     }
 
     private fun loadHistory(pathWord: String) = viewModelScope.launch {
         val historyDataModel = repository.getHistoryByMangaPathWord(pathWord)
-        historyData.postValue(historyDataModel)
+        historyData.emit(historyDataModel)
     }
 
     fun getCurrentReaderState() = state.value
@@ -108,24 +110,26 @@ class ReaderViewModel @AssistedInject constructor(
         }
 
     fun onPagePositionChange(position: Int) {
-        val pages = mangaContent.value?.list ?: return
+        val pages = mangaContent.value.list
         pages.getOrNull(position)?.let {
             state.update { mangaState ->
                 mangaState.copy(uuid = it.uuid ?: return, page = it.index)
             }
         }
         onInfoChange()
-        if (pages.isEmpty() || loadJob?.isActive == true) return
-        if (position <= 2) loadPrevNextChapter(pages.first().uuid, isNext = false)
-        if (position >= pages.size - 2) loadPrevNextChapter(pages.last().uuid, isNext = true)
+        if (pages.isEmpty() || loadJob?.isActive == true) {
+            return
+        }
+        if (position <= MAX_LOAD_PAGER) {
+            loadPrevNextChapter(pages.first().uuid, isNext = false)
+        }
+        if (position >= pages.size - MAX_LOAD_PAGER) {
+            loadPrevNextChapter(pages.last().uuid, isNext = true)
+        }
     }
 
-    override fun onCleared() {
-        pagerLoaderIn.close()
-        super.onCleared()
-    }
 
-    @AnyThread
+    @WorkerThread
     private fun onInfoChange() {
         val state = getCurrentReaderState()
         val chapter = state.uuid.let(chapters::get)
@@ -139,7 +143,7 @@ class ReaderViewModel @AssistedInject constructor(
             chapterPosition = positionChapter,
             mangaName = historyData.value?.name
         )
-        information.postValue(readerState)
+        information.value = readerState
         viewModelScope.launch {
             val newHistoryData = historyData.value
                 ?.copy(
@@ -148,7 +152,7 @@ class ReaderViewModel @AssistedInject constructor(
                     time = System.currentTimeMillis()
                 )
             if (newHistoryData != null) {
-                repository.update(newHistoryData)
+                repository.updateAsync(newHistoryData)
             }
         }
     }
@@ -162,12 +166,12 @@ class ReaderViewModel @AssistedInject constructor(
 
     fun switchMode(readerMode: ReaderMode) = viewModelScope.launch {
         readerModel.value = readerMode
-        mangaContent.value?.run {
+        mangaContent.value.run {
             mangaContent.value = copy(state = getCurrentReaderState())
         }
         val renew = historyData.value?.copy(readerModeId = readerMode.id) ?: return@launch
         repository.update(renew)
-        historyData.postValue(renew)
+        historyData.emit(renew)
     }
 
     fun switchChapter(uuid: String?) {
@@ -175,9 +179,9 @@ class ReaderViewModel @AssistedInject constructor(
             val prevJob = loadJob
             loadJob = loadJop(Dispatchers.Default) {
                 prevJob?.cancelAndJoin()
-                mangaContent.postValue(ReaderContent(emptyList(), null))
+                mangaContent.value = ReaderContent(emptyList(), null)
                 chapterLoader.loadSingleChapter(initChapter.comicPathWord, uuid)
-                mangaContent.postValue(ReaderContent(chapterLoader.snapshot(), MangaState(uuid, 0)))
+                mangaContent.value = ReaderContent(chapterLoader.snapshot(), MangaState(uuid, 0))
             }
         }
     }
@@ -188,7 +192,8 @@ class ReaderViewModel @AssistedInject constructor(
                 list.find { it.uuid == getCurrentReaderState().uuid } ?: return@launch
             val newChapterTemp = currentChapter.copy(
                 readIndex = int,
-                isReadProgress = int != 0
+                isReadProgress = int != 0,
+                isReadFinish = int == (currentChapter.size - 1)
             )
             repository.updateLocalChapter(newChapterTemp)
         }
@@ -201,10 +206,10 @@ class ReaderViewModel @AssistedInject constructor(
             }
             loadHistory(initChapter.comicPathWord)
             val mode = detectReaderMode()
-            readerModel.postValue(mode)
+            readerModel.emit(mode)
             chapterLoader.loadSingleChapter(initChapter.comicPathWord, state.value.uuid)
             onInfoChange()
-            mangaContent.postValue(ReaderContent(chapterLoader.snapshot(), state.value))
+            mangaContent.emit(ReaderContent(chapterLoader.snapshot(), state.value))
         }
     }
 
@@ -213,7 +218,7 @@ class ReaderViewModel @AssistedInject constructor(
      */
     private suspend fun detectReaderMode(): ReaderMode {
         val modeId = repository.getHistoryByMangaPathWord(
-            currentPathWord ?: initChapter.comicPathWord
+            currentPathWord
         )?.readerModeId
         return ReaderMode.idOf(modeId) ?: ReaderMode.valueOf(settingPref.readerMode)
     }
@@ -222,25 +227,22 @@ class ReaderViewModel @AssistedInject constructor(
         context: CoroutineContext = EmptyCoroutineContext,
         start: CoroutineStart = CoroutineStart.DEFAULT,
         block: suspend CoroutineScope.() -> Unit,
-    ) = viewModelScope.launch(context, start) {
-        _loadingCounter.postValue(true)
+    ) = viewModelScope.launch(context + createErrorHandler(), start) {
+        _loadingCounter.emit(true)
         try {
             block()
-        } catch (e: Exception) {
-            _errorHandler.postValue(e)
         } finally {
-            _loadingCounter.postValue(false)
+            _loadingCounter.emit(false)
         }
     }
 
-    @AssistedFactory
-    interface Factory {
-        fun create(
-            fileUtil: FileUtil,
-            @Assisted("path_word") currentPathWord: String?,
-            @Assisted("uuid") currentChapterUUID: String?,
-        ): ReaderViewModel
+    private fun createErrorHandler() = CoroutineExceptionHandler { _, throwable ->
+        throwable.printStackTrace()
+        if (throwable !is CancellationException) {
+            _errorHandler.tryEmit(throwable)
+        }
     }
+
 
 }
 

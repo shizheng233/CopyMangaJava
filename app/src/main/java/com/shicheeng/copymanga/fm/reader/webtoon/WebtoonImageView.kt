@@ -1,22 +1,57 @@
 package com.shicheeng.copymanga.fm.reader.webtoon
 
 import android.content.Context
+import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewParent
 import androidx.recyclerview.widget.RecyclerView
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 
-/**
- * 如果一个图片没有加载出来，这个控件就将是最小的。那么，在这种情况下，滑倒某某页就不能使用。所以必须重写
- * [WebtoonImageView.getSuggestedMinimumHeight]方法。以达到效果。
- *
- * @author Kotatsu
- */
+private const val SCROLL_UNKNOWN = -1
+
 class WebtoonImageView @JvmOverloads constructor(
     context: Context,
     attr: AttributeSet? = null,
 ) : SubsamplingScaleImageView(context, attr) {
+
+    private val ct = PointF()
+
+    private var scrollPos = 0
+    private var scrollRange = SCROLL_UNKNOWN
+
+    fun scrollBy(delta: Int) {
+        val maxScroll = getScrollRange()
+        if (maxScroll == 0) {
+            return
+        }
+        val newScroll = scrollPos + delta
+        scrollToInternal(newScroll.coerceIn(0, maxScroll))
+    }
+
+    fun scrollTo(y: Int) {
+        val maxScroll = getScrollRange()
+        if (maxScroll == 0) {
+            resetScaleAndCenter()
+            return
+        }
+        scrollToInternal(y.coerceIn(0, maxScroll))
+    }
+
+    fun getScroll() = scrollPos
+
+    fun getScrollRange(): Int {
+        if (scrollRange == SCROLL_UNKNOWN) {
+            computeScrollRange()
+        }
+        return scrollRange.coerceAtLeast(0)
+    }
+
+    override fun recycle() {
+        scrollRange = SCROLL_UNKNOWN
+        scrollPos = 0
+        super.recycle()
+    }
 
     override fun getSuggestedMinimumHeight(): Int {
         var desiredHeight = super.getSuggestedMinimumHeight()
@@ -29,17 +64,63 @@ class WebtoonImageView @JvmOverloads constructor(
         return desiredHeight
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val widthSpecMode = MeasureSpec.getMode(widthMeasureSpec)
+        val heightSpecMode = MeasureSpec.getMode(heightMeasureSpec)
+        val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
+        val parentHeight = MeasureSpec.getSize(heightMeasureSpec)
+        val resizeWidth = widthSpecMode != MeasureSpec.EXACTLY
+        val resizeHeight = heightSpecMode != MeasureSpec.EXACTLY
+        var width = parentWidth
+        var height = parentHeight
+        if (sWidth > 0 && sHeight > 0) {
+            if (resizeWidth && resizeHeight) {
+                width = sWidth
+                height = sHeight
+            } else if (resizeHeight) {
+                height = (sHeight.toDouble() / sWidth.toDouble() * width).toInt()
+            } else if (resizeWidth) {
+                width = (sWidth.toDouble() / sHeight.toDouble() * height).toInt()
+            }
+        }
+        width = width.coerceAtLeast(suggestedMinimumWidth)
+        height = height.coerceIn(suggestedMinimumHeight, parentHeight())
+        setMeasuredDimension(width, height)
+    }
+
+    private fun scrollToInternal(pos: Int) {
+        scrollPos = pos
+        ct.set(sWidth / 2f, (height / 2f + pos.toFloat()) / minScale)
+        setScaleAndCenter(minScale, ct)
+    }
+
+    private fun computeScrollRange() {
+        if (!isReady) {
+            return
+        }
+        val totalHeight = (sHeight * minScale).toIntUp()
+        scrollRange = (totalHeight - height).coerceAtLeast(0)
+    }
+
     private fun parentHeight(): Int {
         return parents.firstNotNullOfOrNull { it as? RecyclerView }?.height ?: 0
     }
-
-    private val View.parents: Sequence<ViewParent>
-        get() = sequence {
-            var p: ViewParent? = parent
-            while (p != null) {
-                yield(p)
-                p = p.parent
-            }
-        }
-
 }
+
+fun Float.toIntUp(): Int {
+    val intValue = toInt()
+    return if (this == intValue.toFloat()) {
+        intValue
+    } else {
+        intValue + 1
+    }
+}
+
+private val View.parents: Sequence<ViewParent>
+    get() = sequence {
+        var p: ViewParent? = parent
+        while (p != null) {
+            yield(p)
+            p = p.parent
+        }
+    }

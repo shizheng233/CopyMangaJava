@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.shicheeng.copymanga.fm.reader.webtoon.WebtoonScalingFrame xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/manga_reader_webtoon_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.shicheeng.copymanga.fm.reader.webtoon.WebtoonRecyclerView
         android:id="@+id/manga_reader_webtoon_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager=".fm.reader.webtoon.WebtoonLayoutManager"
-        android:background="@color/black" />
+        android:background="@color/black"
+        app:layoutManager=".fm.reader.webtoon.WebtoonLayoutManager" />
 
-</FrameLayout>
+</com.shicheeng.copymanga.fm.reader.webtoon.WebtoonScalingFrame>

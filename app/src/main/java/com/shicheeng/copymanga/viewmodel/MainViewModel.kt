@@ -1,19 +1,29 @@
 package com.shicheeng.copymanga.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.shicheeng.copymanga.json.UpdateMetaDataJson
+import com.shicheeng.copymanga.resposity.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val updateMetaDataJson: UpdateMetaDataJson,
+    loginRepository: LoginRepository,
 ) : ViewModel() {
 
     val updateData = updateMetaDataJson.availableUpdateVersion()
+    val loginInfoStatus = loginRepository.testLoginStatus()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null
+        )
 
     init {
         viewModelScope.launch {
@@ -23,15 +33,3 @@ class MainViewModel @Inject constructor(
 
 }
 
-class MainViewModelFactory(private val updateMetaDataJson: UpdateMetaDataJson) :
-    ViewModelProvider.Factory {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return MainViewModel(updateMetaDataJson) as T
-        }
-        throw IllegalArgumentException("CLASS NO MATCH")
-    }
-
-}

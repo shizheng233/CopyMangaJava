@@ -367,7 +367,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/content_cut/baseline_content_cut_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/library_add_check/baseline_library_add_check_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -377,8 +377,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="baseline_content_cut_24" />
-                            <entry key="sourceFile" value="C:\Users\ShihCheeng\Downloads\open-source-fill-svgrepo-com.svg" />
+                            <entry key="outputName" value="baseline_library_add_check_24" />
+                            <entry key="sourceFile" value="C:\Users\ShihCheeng\Downloads\undraw_personal_file_re_5joy.svg" />
                           </map>
                         </option>
                       </PersistentState>

@@ -37,8 +37,9 @@ class MyApp : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-        notificationManager =
-            applicationContext.getSystemService(NotificationManager::class.java)
+        //CrashHandler(applicationContext)
+        notificationManager = applicationContext
+            .getSystemService(NotificationManager::class.java)
         DynamicColors.applyToActivitiesIfAvailable(this)
         appContext = applicationContext
         bindNotification()

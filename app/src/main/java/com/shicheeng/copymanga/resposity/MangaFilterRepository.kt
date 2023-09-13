@@ -37,6 +37,7 @@ class MangaFilterRepository @Inject constructor(
         val call = okHttpClient.newCall(request).await()
         call.body?.string()?.let {
             buildList {
+                add(MangaSortBean("无", ""))
                 it.parserAsJson().asJsonObject["results"].asJsonObject["theme"].asJsonArray.forEach {
                     val name = it.asJsonObject["name"].asString
                     val pathWord = it.asJsonObject["path_word"].asString
@@ -62,6 +63,6 @@ class MangaFilterRepository @Inject constructor(
 
 }
 
-fun Any.logD() {
-    Log.d("ANY_DE", "$this")
+fun Any.logD(tag: String = "com.shihcheeng.logd") {
+    Log.d(tag, "$this")
 }

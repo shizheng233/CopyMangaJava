@@ -5,16 +5,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Divider
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,10 +29,12 @@ import com.shicheeng.copymanga.data.MangaHistoryDataModel
 import com.shicheeng.copymanga.data.local.LocalChapter
 import com.shicheeng.copymanga.ui.screen.compoents.MangaCover
 import com.shicheeng.copymanga.util.UIState
+import com.shicheeng.copymanga.util.click
 
 @Composable
 fun DetailHeader(
     mangaInfoDataModel: MangaHistoryDataModel,
+    onAuthorClicked: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -60,10 +62,12 @@ fun DetailHeader(
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = mangaInfoDataModel.authorList,
+                text = mangaInfoDataModel.authorList.joinToString { it.name },
                 style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(top = 4.dp)
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .click { onAuthorClicked() }
             )
             Text(
                 text = stringResource(
@@ -83,13 +87,15 @@ fun DetailHeader(
 fun DetailRowInfo(
     mangaInfoDataModel: MangaHistoryDataModel,
     chapters: UIState<List<LocalChapter>>,
+    onCommentClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
             .padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceAround
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         VerticalIcon(
             iconId = {
@@ -109,20 +115,16 @@ fun DetailRowInfo(
             },
             text = mangaInfoDataModel.mangaStatus
         )
-        Divider(
+        VerticalDivider(
             modifier = Modifier
-                .fillMaxHeight()
-                .width(1.dp)
                 .padding(vertical = 8.dp)
         )
         VerticalIcon(
             iconId = { R.drawable.ic_baseline_region },
             text = mangaInfoDataModel.mangaRegion
         )
-        Divider(
+        VerticalDivider(
             modifier = Modifier
-                .fillMaxHeight()
-                .width(1.dp)
                 .padding(vertical = 8.dp)
         )
         if (chapters is UIState.Success) {
@@ -134,15 +136,52 @@ fun DetailRowInfo(
                 )
             )
         }
-        Divider(
+        VerticalDivider(
             modifier = Modifier
-                .fillMaxHeight()
-                .width(1.dp)
                 .padding(vertical = 8.dp)
         )
         VerticalIcon(
             iconId = { R.drawable.ic_baseline_hot },
             text = mangaInfoDataModel.mangaPopularNumber
+        )
+        VerticalDivider(
+            modifier = Modifier
+                .padding(vertical = 8.dp)
+        )
+        VerticalIcon(
+            iconId = { R.drawable.baseline_comment_24 },
+            text = stringResource(R.string.comment_text),
+            click = onCommentClick
+        )
+    }
+}
+
+@Composable
+fun RowScope.VerticalIcon(
+    modifier: Modifier = Modifier,
+    @DrawableRes iconId: () -> Int,
+    text: String,
+    color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    textColor: Color = MaterialTheme.colorScheme.onSurface,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            painter = painterResource(id = iconId()),
+            contentDescription = text,
+            modifier = Modifier.padding(4.dp),
+            tint = color
+        )
+        BasicText(
+            text = text,
+            modifier = Modifier.padding(horizontal = 4.dp),
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontWeight = FontWeight.Normal
+            ),
+            maxLines = 1,
+            color = { textColor }
         )
     }
 }
@@ -154,9 +193,10 @@ fun VerticalIcon(
     text: String,
     color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     fontSize: TextUnit = TextUnit.Unspecified,
+    click: () -> Unit,
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.click { click() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(

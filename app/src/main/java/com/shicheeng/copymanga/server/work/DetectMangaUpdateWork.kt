@@ -1,8 +1,12 @@
 package com.shicheeng.copymanga.server.work
 
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import androidx.core.app.NotificationCompat
+import androidx.core.app.TaskStackBuilder
+import androidx.core.net.toUri
 import androidx.hilt.work.HiltWorker
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
@@ -11,6 +15,7 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.shicheeng.copymanga.MainActivity
 import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.data.MangaHistoryDataModel
 import com.shicheeng.copymanga.data.local.LocalChapter
@@ -79,15 +84,6 @@ class DetectMangaUpdateWork @AssistedInject constructor(
         historyDataModel: MangaHistoryDataModel,
         exception: Throwable,
     ) {
-//        val notificationItem = NotificationCompat
-//            .Builder(appContext, DETECT_UPDATE_CHANELLE)
-//            .apply {
-//                setContentTitle(historyDataModel.name)
-//                setContentText(exception.message.toString())
-//                setOngoing(false)
-//                setSmallIcon(R.drawable.ic_outline_page)
-//            }.build()
-//        notificationManager.notify(historyDataModel.hashCode(), notificationItem)
         exception.printStackTrace()
     }
 
@@ -97,6 +93,19 @@ class DetectMangaUpdateWork @AssistedInject constructor(
         newChapter: List<LocalChapter>,
     ) {
         if (newChapter.isNotEmpty()) {
+            val pathWord = historyDataModel.pathWord
+            val link = "shicheengcmdm://detail/$pathWord"
+            val deepLinkIntent = Intent(
+                Intent.ACTION_VIEW,
+                link.toUri(),
+                appContext,
+                MainActivity::class.java
+            )
+
+            val deepLinkPendingIntent: PendingIntent? = TaskStackBuilder.create(appContext).run {
+                addNextIntentWithParentStack(deepLinkIntent)
+                getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+            }
             val notificationItem = NotificationCompat
                 .Builder(appContext, DETECT_UPDATE_CHANELLE)
                 .apply {
@@ -106,6 +115,7 @@ class DetectMangaUpdateWork @AssistedInject constructor(
                     setOngoing(false)
                     setGroup(GROUP_ITEM_CHAPTERS)
                     setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
+                    setContentIntent(deepLinkPendingIntent)
                 }.build()
             notificationManager.notify(historyDataModel.hashCode(), notificationItem)
         }

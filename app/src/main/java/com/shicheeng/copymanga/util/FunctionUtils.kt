@@ -1,8 +1,10 @@
 package com.shicheeng.copymanga.util
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.provider.Settings
 import android.util.TypedValue
 import android.view.View
@@ -60,9 +62,6 @@ fun JsonArray.authorNameReformation(): String =
     if (size() == 1) get(0).asJsonObject["name"].asString else get(0).asJsonObject["name"].asString + " 等"
 
 
-fun String.checkJsonIsEmpty(): Boolean =
-    JsonParser.parseString(this).asJsonObject["results"].asJsonObject["list"].asJsonArray.isEmpty
-
 @MainThread
 inline fun <T> Flow<T>.collectRepeatLifecycle(
     lifecycleOwner: LifecycleOwner,
@@ -84,6 +83,10 @@ inline fun <reified VM : ViewModel> Fragment.assistedViewModels(
             return requireNotNull(modelClass.cast(factoryProducer.invoke()))
         }
     }
+}
+
+infix fun Context.openUrl(string: String){
+    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(string)))
 }
 
 @MainThread
@@ -155,6 +158,7 @@ inline fun <reified T : Drawable> T.copy(context: Context): T? {
  *
  * 新旧交替检测
  */
+@Deprecated("不再使用LiveData")
 fun <T> LiveData<T>.observeWithPrevious(owner: LifecycleOwner, observer: BufferedObserver<T>) {
     var previous: T? = null
     this.observe(owner) {
@@ -223,27 +227,26 @@ fun ChipGroup.addChips(list: List<ChipTextBean>, onChipClick: ((Chip, String) ->
 
 fun String.parserAsJson(): JsonElement = JsonParser.parseString(this)
 
+/**
+ * 将大数字转化为可读性数字。没有i18n。
+ */
 fun Long.formNumberToRead(): String {
 
     return when {
         this >= 1000000000 -> {
-            String.format("%.2fB", this / 1000000000.0)
+            String.format("%.2f 亿", this / 1000000000.0)
         }
 
-        this >= 1000000 -> {
-            String.format("%.2fM", this / 1000000.0)
-        }
-
-        this >= 100000 -> {
-            String.format("%.2fL", this / 100000.0)
+        this >= 10000000 -> {
+            String.format("%.2f 千万", this / 1000000.0)
         }
 
         this >= 10000 -> {
-            String.format("%.2fW", this / 10000.0)
+            String.format("%.2f 万", this / 10000.0)
         }
 
         this >= 1000 -> {
-            String.format("%.2fK", this / 1000.0)
+            String.format("%.2f 千", this / 1000.0)
         }
 
         else -> this.toString()
@@ -277,6 +280,7 @@ fun View.hasGlobalPoint(x: Int, y: Int): Boolean {
  *
  * The format -> 2023/2/22 12:15
  */
+@Deprecated("使用更加安全的方法")
 fun Long.toTimeReadable(): String {
     val date = Date(this)
     val sfd = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.ROOT)

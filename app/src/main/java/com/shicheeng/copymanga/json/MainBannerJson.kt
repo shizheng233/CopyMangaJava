@@ -62,6 +62,10 @@ class MainBannerJson @Inject constructor(
         return jsonObject.getAsJsonObject("finishComics").getAsJsonArray("list")
     }
 
+    fun getRecTopic(jsonObject: JsonObject): JsonArray {
+        return jsonObject["topics"].asJsonObject["list"].asJsonArray
+    }
+
     fun getDayRankMain(jsonObject: JsonObject): HashMap<Int, JsonArray> {
         val map = HashMap<Int, JsonArray>()
         map[0] = jsonObject["rankDayComics"].asJsonObject.getAsJsonArray("list")

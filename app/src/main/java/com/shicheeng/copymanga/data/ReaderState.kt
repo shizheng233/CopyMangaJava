@@ -8,4 +8,8 @@ data class ReaderState(
     val totalPage: Int,
     val currentPage: Int,
     val chapterPosition: Int,
-)
+){
+    fun isSliderAvailable(): Boolean {
+        return  totalPage > 1 && currentPage < totalPage
+    }
+}

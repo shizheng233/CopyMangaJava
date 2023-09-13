@@ -19,7 +19,7 @@ data class Comic(
     @Json(name = "cover")
     val cover: String,
     @Json(name = "datetime_updated")
-    val datetimeUpdated: String,
+    val datetimeUpdated: String?,
     @Json(name = "females")
     val females: List<Any>,
     @Json(name = "free_type")

@@ -5,25 +5,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.data.MangaReaderPage
 import com.shicheeng.copymanga.data.MangaState
 import com.shicheeng.copymanga.databinding.FragmentReaderWebtoonBinding
+import com.shicheeng.copymanga.fm.domain.PagerLoader
 import com.shicheeng.copymanga.fm.reader.BaseReader
 import com.shicheeng.copymanga.fm.reader.BaseReaderAdapter
 import com.shicheeng.copymanga.util.findCurrentPagePosition
 import com.shicheeng.copymanga.util.firstVisibleItemPosition
 import com.shicheeng.copymanga.util.setFirstVisibleItemPositionSmooth
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.yield
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
 
-    private var webtoonReaderAdapter: WebtoonReaderAdapter? = null
     private val scrollInterpolator = AccelerateDecelerateInterpolator()
+
+    @Inject
+    lateinit var pagerLoader: PagerLoader
 
     override fun onCreateViewInflater(
         inflater: LayoutInflater,
@@ -34,11 +40,10 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        webtoonReaderAdapter = WebtoonReaderAdapter(viewLifecycleOwner, viewModel.pagerLoaderIn)
 
         with(binding.mangaReaderWebtoonRecyclerview) {
             setHasFixedSize(true)
-            adapter = webtoonReaderAdapter
+            adapter = readerAdapter
             addOnScrollListener(RecyclerViewScrollListener())
         }
 
@@ -52,7 +57,7 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
     }
 
     override fun onDestroyView() {
-        webtoonReaderAdapter = null
+        requireBinding().mangaReaderWebtoonRecyclerview.adapter = null
         super.onDestroyView()
     }
 
@@ -71,28 +76,39 @@ class WebtoonReaderFragment : BaseReader<FragmentReaderWebtoonBinding>() {
         )
     }
 
-    override fun onLoadUrlChangeSuccess(list: List<MangaReaderPage>, state: MangaState?) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                val items = async {
-                    webtoonReaderAdapter?.subItems(list)
-                }
-                if (state != null) {
-                    val position = list.indexOfFirst {
-                        it.uuid == state.uuid && it.index == state.page
-                    }
-                    items.await() ?: return@repeatOnLifecycle
-                    if (position != -1) {
-                        with(binding.mangaReaderWebtoonRecyclerview) {
-                            firstVisibleItemPosition = position
-                        }
-                        viewModel.onPagePositionChange(position)
-                    }
-                } else {
-                    items.await()
-                }
-            }
+    override suspend fun onLoadUrlChangeSuccess(
+        list: List<MangaReaderPage>,
+        state: MangaState?,
+    ) = coroutineScope {
+        val items = async {
+            requireAdapter().subItems(list)
+            yield()
         }
+        if (state != null) {
+            val position = list.indexOfFirst {
+                it.uuid == state.uuid && it.index == state.page
+            }
+            items.await()
+            if (position != -1) {
+                with(binding.mangaReaderWebtoonRecyclerview) {
+                    firstVisibleItemPosition = position
+                }
+                viewModel.onPagePositionChange(position)
+            } else {
+                Snackbar.make(requireView(), getString(R.string.no_content), Snackbar.LENGTH_LONG)
+                    .show()
+            }
+        } else {
+            items.await()
+        }
+
+    }
+
+    override fun createAdapter(): BaseReaderAdapter<*> {
+        return WebtoonReaderAdapter(
+            owner = viewLifecycleOwner,
+            imageLoader = pagerLoader
+        )
     }
 
     inner class RecyclerViewScrollListener : RecyclerView.OnScrollListener() {

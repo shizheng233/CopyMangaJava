@@ -22,7 +22,8 @@ import androidx.compose.ui.unit.Dp
 import com.shicheeng.copymanga.ui.theme.ElevationTokens
 
 /**
- *
+ * 从Attr中引入资源
+ * @param attrResId 资源ID。
  */
 @Composable
 @ReadOnlyComposable
@@ -53,7 +54,7 @@ fun withAppBarColor(
             ),
             fraction = FastOutLinearInEasing.transform(fraction)
         ),
-        animationSpec = spring(stiffness = Spring.StiffnessMediumLow)
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow), label = "color"
     )
     return appBarContainerColor
 }
