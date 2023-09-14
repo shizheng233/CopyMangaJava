@@ -186,6 +186,27 @@ class ReaderViewModel @Inject constructor(
         }
     }
 
+    fun loadNextPrvChapter(uuid: String?, isNext: Boolean) {
+        if (uuid != null) {
+            val prevJob = loadJob
+            loadJob = loadJop(Dispatchers.Default) {
+                prevJob?.cancelAndJoin()
+                mangaContent.value = ReaderContent(emptyList(), null)
+                val predicate: (LocalChapter) -> Boolean = { it.uuid == uuid }
+                val index = if (isNext) {
+                    list.indexOfFirst(predicate)
+                } else {
+                    list.indexOfLast(predicate)
+                }
+                if (index == -1) return@loadJop
+                val newChapter =
+                    list.getOrNull(if (isNext) index + 1 else index - 1) ?: return@loadJop
+                switchChapter(newChapter.uuid)
+                mangaContent.value = ReaderContent(chapterLoader.snapshot(), MangaState(uuid, 0))
+            }
+        }
+    }
+
     fun saveLocalChapterState(int: Int) {
         viewModelScope.launch {
             val currentChapter =

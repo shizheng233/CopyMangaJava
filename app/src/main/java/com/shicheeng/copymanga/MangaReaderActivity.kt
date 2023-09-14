@@ -280,12 +280,7 @@ class MangaReaderActivity : AppAttachCompatActivity(),
 
     private fun loadChapter(isNext: Boolean) {
         val uuid = viewModel.getCurrentReaderState().uuid
-        val predicate: ((MangaReaderPage) -> Boolean) = { it.uuid == uuid }
-        val list = viewModel.mangaContent.value.list
-        val uuidIndex = if (isNext) list.indexOfFirst(predicate) else list.indexOfLast(predicate)
-        if (uuidIndex == -1) return
-        val newChapterUUId = list.getOrNull(if (isNext) uuidIndex + 1 else uuidIndex - 1)?.uuid
-        viewModel.switchChapter(newChapterUUId)
+        viewModel.loadNextPrvChapter(uuid, isNext)
     }
 
     override fun onIdle() {

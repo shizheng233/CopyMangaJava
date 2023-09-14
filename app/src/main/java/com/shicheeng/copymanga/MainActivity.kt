@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -22,6 +23,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.text.buildSpannedString
 import androidx.core.view.WindowCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updateMargins
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.shicheeng.copymanga.app.AppAttachCompatActivity
@@ -90,13 +93,14 @@ class MainActivity : AppAttachCompatActivity() {
                     Snackbar.make(
                         window.decorView,
                         getString(R.string.login_expired),
-                        Snackbar.LENGTH_LONG
+                        Snackbar.LENGTH_SHORT
                     ).show()
+
                 } else {
                     Snackbar.make(
                         window.decorView,
                         getString(R.string.login_failure),
-                        Snackbar.LENGTH_LONG
+                        Snackbar.LENGTH_SHORT
                     ).show()
                 }
             }
@@ -136,6 +140,7 @@ class MainActivity : AppAttachCompatActivity() {
             appendLine()
             appendLine(versionUnit.description)
             appendLine("<b>大小：</b>" + FileCacheUtils.getFormatSize(versionUnit.apkSize.toDouble()))
+            appendLine("<b>类型：</b>" + versionUnit.versionId.type)
         }
         val dialog = MaterialAlertDialogBuilder(
             this,
