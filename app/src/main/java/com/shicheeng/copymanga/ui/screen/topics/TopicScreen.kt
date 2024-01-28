@@ -1,6 +1,5 @@
 package com.shicheeng.copymanga.ui.screen.topics
 
-import android.app.Activity
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,15 +19,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import com.shicheeng.copymanga.MainActivity
 import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.ui.screen.compoents.ErrorScreen
 import com.shicheeng.copymanga.ui.screen.compoents.LoadingScreen
@@ -36,14 +33,11 @@ import com.shicheeng.copymanga.ui.screen.compoents.PlainButton
 import com.shicheeng.copymanga.ui.screen.compoents.pagingLoadingIndication
 import com.shicheeng.copymanga.util.UIState
 import com.shicheeng.copymanga.util.copyComposable
-import dagger.hilt.android.EntryPointAccessors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopicsScreen(
-    pathWord: String?,
-    type: Int?,
-    topicViewModel: TopicViewModel = topicViewModel(pathWord = pathWord, type = type),
+    topicViewModel: TopicViewModel = hiltViewModel(),
     onBack: () -> Unit,
     onItemClick: (pathWord: String) -> Unit,
 ) {
@@ -62,6 +56,7 @@ fun TopicsScreen(
                 ?: stringResource(id = R.string.error)
         ) {
             topicViewModel.retry()
+            list.refresh()
         }
         return
     }
@@ -153,19 +148,4 @@ fun TopicsScreen(
             }
         }
     }
-}
-
-
-@Composable
-private fun topicViewModel(pathWord: String?, type: Int?): TopicViewModel {
-    val entryPoint = EntryPointAccessors
-        .fromActivity<MainActivity.ViewModelAssistedFactoryProvider>(LocalContext.current as Activity)
-    requireNotNull(pathWord) { "Cannot create viewModel, case of the path_word is null" }
-    return viewModel(
-        factory = TopicViewModel.inFactory(
-            pathWord = pathWord,
-            type = type ?: 1,
-            factory = entryPoint.topicDetailViewModelFactory()
-        )
-    )
 }

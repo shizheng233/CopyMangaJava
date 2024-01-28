@@ -1,6 +1,7 @@
 package com.shicheeng.copymanga.ui.screen.setting.about
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.entity.Library
 import com.mikepenz.aboutlibraries.util.author
@@ -59,6 +62,7 @@ fun AboutScreen(
     val content = LocalContext.current
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val libs = remember(Libs.Builder().withContext(content).build()::libraries)
+    val thankfulApps = rememberThankfulApps()
     val lazyState = rememberLazyListState()
 
     Scaffold(
@@ -93,6 +97,32 @@ fun AboutScreen(
                 }
                 item {
                     Text(
+                        text = stringResource(R.string.thankful_app),
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+                items(thankfulApps) { aboutUiModel ->
+                    ListItem(
+                        headlineContent = {
+                            Text(text = aboutUiModel.name)
+                        },
+                        supportingContent = {
+                            Text(text = aboutUiModel.description)
+                        },
+                        leadingContent = {
+                            Icon(
+                                painter = rememberAsyncImagePainter(model = aboutUiModel.url),
+                                contentDescription = null
+                            )
+                        },
+                        modifier = Modifier.clickable {
+                            content openUrl aboutUiModel.url
+                        }
+                    )
+                }
+                item {
+                    Text(
                         text = stringResource(R.string.open_source),
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                         color = MaterialTheme.colorScheme.primary
@@ -100,6 +130,13 @@ fun AboutScreen(
                 }
                 items(libs) { library ->
                     AboutListItem(library = library)
+                }
+                item {
+                    Text(
+                        text = stringResource(R.string.general_warning),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
         }

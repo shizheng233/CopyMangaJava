@@ -175,4 +175,20 @@
     <string name="web_point_tip">Note: If you are not logged in or your login has expired, local records will be used.</string>
     <string name="add_to_lib">Add to bookshelf</string>
     <string name="remove_add_to_lib">Remove from bookshelf</string>
+    <string name="type_send_content">Enter content…</string>
+    <string name="send_comment_bar_title">Send comment</string>
+    <string name="comic_comment_title">Comic Comment</string>
+    <string name="search_result">Search Result</string>
+    <string name="send_comment">发送</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="only_on_wifi">Download comics only under Wi-Fi</string>
+    <string name="only_on_wifi_summary">After turning on, downloading comics will only be downloaded under WI-FI</string>
+    <string name="failure_download">Downloaded failure</string>
+    <string name="prerequisites_miss">Prerequisites miss</string>
+    <string name="thankful_app">Source of inspiration</string>
+    <string name="general_warning">This open source software will not be responsible for any content in the software</string>
+    <string name="general_tips">Manga chapters, manga pictures, and other mangas data are provided by CopyManga Official</string>
+    <string name="download_list">Download list</string>
+    <string name="disclaimer">免责声明</string>
 </resources>

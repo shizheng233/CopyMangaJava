@@ -43,6 +43,13 @@ sealed class Router(
         drawableRes = R.drawable.ic_explore_outline,
         onClickIcon = R.drawable.baseline_explore_24
     ) {
+        /**
+         * 转到[EXPLORE]界面。
+         *
+         * @param top 话题
+         * @param theme 主题
+         * @param order 排序
+         */
         fun NavHostController.toExplore(top: String?, theme: String?, order: String?) {
             navigate(name + "?theme=${theme}&top=${top}&order=${order}")
         }
@@ -50,7 +57,11 @@ sealed class Router(
 
     object SUBSCRIBE : Router(name = "SUBSCRIBE")
 
-    object HISTORY : Router(name = "HISTORY")
+    object HISTORY : Router(name = "HISTORY") {
+        fun NavHostController.toHistory() {
+            navigate(name)
+        }
+    }
 
     object PERSONAL : Router(
         name = "PERSONAL",

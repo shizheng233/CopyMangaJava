@@ -34,6 +34,9 @@ interface MangaLoginDao {
     @Query("SELECT isExpired FROM LocalLoginDataModel where userID = :uuid LIMIT 1")
     fun isExpired(uuid: String): Boolean
 
+    @Query("SELECT isExpired FROM LocalLoginDataModel where userID = :uuid LIMIT 1")
+    fun isExpiredFlow(uuid: String): Flow<Boolean>
+
 
     @Delete
     suspend fun deleteLoginData(localLoginDataModel: LocalLoginDataModel)

@@ -1,9 +1,9 @@
 <component name="libraryTable">
-  <library name="Gradle: io.coil-kt:coil-base:2.4.0@aar">
+  <library name="Gradle: io.coil-kt:coil-base:2.4.0@aar" external-system-id="GRADLE">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/c7a1bc9dc25e95ee8a0a4ca41c229db8/transformed/coil-base-2.4.0/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/c7a1bc9dc25e95ee8a0a4ca41c229db8/transformed/coil-base-2.4.0/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/c7a1bc9dc25e95ee8a0a4ca41c229db8/transformed/coil-base-2.4.0/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/251cd051eb5a71fa0254dcba751603d4/transformed/coil-base-2.4.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/251cd051eb5a71fa0254dcba751603d4/transformed/coil-base-2.4.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/251cd051eb5a71fa0254dcba751603d4/transformed/coil-base-2.4.0/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.coil-kt/coil-base/2.4.0/e62d4c51a989af21b68e5bba567284a984b8be23/coil-base-2.4.0-javadoc.jar!/" />

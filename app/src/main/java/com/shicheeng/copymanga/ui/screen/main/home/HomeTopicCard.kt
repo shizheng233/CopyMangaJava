@@ -1,7 +1,5 @@
 package com.shicheeng.copymanga.ui.screen.main.home
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,7 +27,6 @@ import coil.compose.AsyncImage
 import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.data.MainTopicDataModel
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomePageTopicRow(
     list: List<MainTopicDataModel>,

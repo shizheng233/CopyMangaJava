@@ -1,8 +1,8 @@
 <component name="libraryTable">
-  <library name="Gradle: com.mikepenz:aboutlibraries-core-android-debug:10.5.2@aar">
+  <library name="Gradle: com.mikepenz:aboutlibraries-core-android-debug:10.5.2@aar" external-system-id="GRADLE">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/2aac20b232c733f6da1908bf9be47c8b/transformed/aboutlibraries-core-debug/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/2aac20b232c733f6da1908bf9be47c8b/transformed/aboutlibraries-core-debug/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/fa71d2a43325d95c6918ef49d45f000f/transformed/aboutlibraries-core-debug/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/fa71d2a43325d95c6918ef49d45f000f/transformed/aboutlibraries-core-debug/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mikepenz/aboutlibraries-core-android-debug/10.5.2/66841d233bf4a7d4291b4d602fc8c1e007b67c1f/aboutlibraries-core-android-debug-10.5.2-javadoc.jar!/" />

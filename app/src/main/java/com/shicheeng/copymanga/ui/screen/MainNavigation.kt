@@ -1,14 +1,16 @@
 package com.shicheeng.copymanga.ui.screen
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavDeepLink
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.shicheeng.copymanga.ui.screen.Router.COMMENT.toCommentScreen
 import com.shicheeng.copymanga.ui.screen.Router.EXPLORE.toExplore
+import com.shicheeng.copymanga.ui.screen.Router.HISTORY.toHistory
 import com.shicheeng.copymanga.ui.screen.authorsmanga.AuthorsMangaScreen
 import com.shicheeng.copymanga.ui.screen.comment.CommentScreen
 import com.shicheeng.copymanga.ui.screen.download.DownloadScreen
@@ -34,17 +36,14 @@ import com.shicheeng.copymanga.ui.screen.webshelf.WebShelfScreen
 import soup.compose.material.motion.animation.materialSharedAxisXIn
 import soup.compose.material.motion.animation.materialSharedAxisXOut
 import soup.compose.material.motion.animation.rememberSlideDistance
-import soup.compose.material.motion.navigation.MaterialMotionNavHost
-import soup.compose.material.motion.navigation.composable
 
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MainComposeNavigation(
-    navController: NavHostController,
+    navController: NavHostController = rememberNavController(),
 ) {
     val slide = rememberSlideDistance()
-    MaterialMotionNavHost(
+    NavHost(
         navController = navController,
         startDestination = Router.MAIN.name,
         enterTransition = {
@@ -77,6 +76,9 @@ fun MainComposeNavigation(
         ) {
             MainScreen(
                 onUUid = { navController.navigate("${Router.DETAIL.name}/$it") },
+                onDownloadedBtnClick = {
+                    navController.navigate(Router.DOWNLOADED.name)
+                },
                 onSearchButtonClick = {
                     navController.navigate(Router.SEARCH.name)
                 },
@@ -84,23 +86,14 @@ fun MainComposeNavigation(
                 onRecommendHeaderLineClick = {
                     navController.navigate(Router.RECOMMEND.name)
                 },
-                onDownloadedBtnClick = {
-                    navController.navigate(Router.DOWNLOADED.name)
-                },
-                onTopicHeaderLineClick = {
-                    navController.navigate(Router.TOPICS.name)
-                },
                 onNewestHeaderLineClick = {
                     navController.navigate(Router.NEWEST.name)
-                },
-                onTopicClick = { pathWord, type ->
-                    navController.navigate(Router.TopicDETAIL.pathWord(pathWord, type))
                 },
                 onSubscribedClick = {
                     navController.navigate(Router.SUBSCRIBE.name)
                 },
                 onHistoryClick = {
-                    navController.navigate(Router.HISTORY.name)
+                    navController.toHistory()
                 },
                 onLibraryClick = {
                     navController.navigate(Router.WebSHELF.name)
@@ -112,6 +105,12 @@ fun MainComposeNavigation(
                         navController.navigate(Router.LOGIN.name)
                     }
                 },
+                onTopicClick = { pathWord, type ->
+                    navController.navigate(Router.TopicDETAIL.pathWord(pathWord, type))
+                },
+                onTopicHeaderLineClick = {
+                    navController.navigate(Router.TOPICS.name)
+                },
                 onFinishHeaderLineClick = {
                     navController.toExplore(
                         theme = null,
@@ -119,14 +118,16 @@ fun MainComposeNavigation(
                         order = null,
                     )
                 },
-                onHotClick = {
-                    navController.toExplore(
-                        theme = null,
-                        top = null,
-                        order = "-popular",
-                    )
+                onLoginExpireClick = {
+                    navController.navigate(Router.LOGIN.name)
                 }
-            )
+            ) {
+                navController.toExplore(
+                    theme = null,
+                    top = null,
+                    order = "-popular",
+                )
+            }
         }
 
         composable(
@@ -248,12 +249,15 @@ fun MainComposeNavigation(
         composable(
             route = Router.DOWNLOAD.name,
             deepLinks = listOf(
-                NavDeepLink(uri = Router.DOWNLOAD.deepLink)
+                navDeepLink { uriPattern = Router.DOWNLOAD.deepLink }
             )
         ) {
-            DownloadScreen {
-                navController.popBackStack()
-            }
+            DownloadScreen(
+                onNavigationClick = navController::popBackStack,
+                onCardClick = {
+                    navController.navigate("${Router.DETAIL.name}/$it")
+                }
+            )
         }
 
         composable(
@@ -313,12 +317,8 @@ fun MainComposeNavigation(
                 navArgument(name = "pathWord") { type = NavType.StringType },
                 navArgument(name = "type") { type = NavType.IntType }
             )
-        ) { navBackStackEntry ->
-            val pathWord = navBackStackEntry.arguments?.getString("pathWord")
-            val type = navBackStackEntry.arguments?.getInt("type")
+        ) {
             TopicsScreen(
-                pathWord = pathWord,
-                type = type,
                 onBack = {
                     navController.popBackStack()
                 }

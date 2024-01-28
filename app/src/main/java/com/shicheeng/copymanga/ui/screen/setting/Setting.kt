@@ -32,7 +32,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.shicheeng.copymanga.LocalMainBottomNavigationPadding
 import com.shicheeng.copymanga.LocalSettingPreference
 import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.fm.domain.makeDirIfNoExist
@@ -62,7 +61,6 @@ fun SettingScreen(
 
     val settingPref = LocalSettingPreference.current
     val layoutDirection = LocalLayoutDirection.current
-    val bottomPadding = LocalMainBottomNavigationPadding.current
     val context = LocalContext.current
     val resource = context.resources
     val exCacheDir = context.cacheDir
@@ -101,7 +99,7 @@ fun SettingScreen(
             LazyColumn(
                 contentPadding = padding.copy(
                     layoutDirection = layoutDirection,
-                    bottom = padding.calculateBottomPadding() + bottomPadding
+                    bottom = padding.calculateBottomPadding()
                 ),
                 state = lazyListState,
                 modifier = Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
@@ -359,8 +357,20 @@ fun SettingScreen(
                 }
                 groupText(R.string.download_manga)
                 item {
+                    val onlyOnWifi by viewModel.onlyInWifi.collectAsState()
+                    SwitchPreference(
+                        title = stringResource(R.string.only_on_wifi),
+                        summary = stringResource(R.string.only_on_wifi_summary),
+                        selectValue = onlyOnWifi,
+                        leaderIconRes = R.drawable.outline_wifi_lock_24,
+                        onClick = {
+                            viewModel.changeDownloadConstants(it)
+                        }
+                    )
+                }
+                item {
                     Preference(
-                        title = stringResource(R.string.download_manga),
+                        title = stringResource(R.string.download_list),
                         summary = stringResource(id = R.string.see_the_download),
                         leaderIconRes = R.drawable.outline_file_download_24,
                         onClick = onDownloadClick

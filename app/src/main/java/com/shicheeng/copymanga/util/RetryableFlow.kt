@@ -4,6 +4,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.onEach
@@ -20,6 +21,7 @@ class RetryTrigger {
     enum class State { RETRYING, IDLE }
 
     val retryEvent = MutableStateFlow(State.RETRYING)
+    val retryTriggerFlow = retryEvent.asStateFlow()
 
     fun retry() {
         retryEvent.value = State.RETRYING

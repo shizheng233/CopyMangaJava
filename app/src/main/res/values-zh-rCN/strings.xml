@@ -172,4 +172,20 @@
     <string name="web_point_tip">注意：如果没有登录或是登录过期将会使用本地记录。</string>
     <string name="add_to_lib">添加到书架</string>
     <string name="remove_add_to_lib">从书架中移除</string>
+    <string name="type_send_content">输入内容…</string>
+    <string name="send_comment_bar_title">发送评论</string>
+    <string name="comic_comment_title">漫画评论</string>
+    <string name="search_result">搜索结果</string>
+    <string name="send_comment">发送</string>
+    <string name="pause">暂停</string>
+    <string name="resume">继续</string>
+    <string name="only_on_wifi">仅在Wi-Fi下下载漫画</string>
+    <string name="only_on_wifi_summary">开启后，下载漫画仅会在WI-FI下下载</string>
+    <string name="failure_download">下载失败</string>
+    <string name="prerequisites_miss">先决条件未满足</string>
+    <string name="thankful_app">灵感来源</string>
+    <string name="general_warning">本开源软件不会对软件中的任何内容负责</string>
+    <string name="general_tips">漫画章节、漫画的图片、漫画的其他数据经由拷贝漫画官方提供</string>
+    <string name="download_list">下载队列</string>
+    <string name="disclaimer">免责声明</string>
 </resources>

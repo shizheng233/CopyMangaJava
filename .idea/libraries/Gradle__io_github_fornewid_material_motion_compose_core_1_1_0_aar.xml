@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: io.github.fornewid:material-motion-compose-core:1.1.0@aar" external-system-id="GRADLE">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/ec365c0cb3da64c5d2642532588aef86/transformed/material-motion-compose-core-1.1.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/ec365c0cb3da64c5d2642532588aef86/transformed/material-motion-compose-core-1.1.0/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.github.fornewid/material-motion-compose-core/1.1.0/3fa4756831a0755e014067f5053d79a12cc3911/material-motion-compose-core-1.1.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.github.fornewid/material-motion-compose-core/1.1.0/d2ef7346bd521b742e64069cc849dec60ea7c11/material-motion-compose-core-1.1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

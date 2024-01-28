@@ -11,8 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Singleton
 
-
+@Singleton
 class MangaHistoryRepository @Inject constructor(
     private val mangeLocalHistoryDao: MangeLocalHistoryDao,
     private val searchedWordDao: SearchHistoryDao,

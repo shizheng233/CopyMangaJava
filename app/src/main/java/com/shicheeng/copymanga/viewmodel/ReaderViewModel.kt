@@ -58,7 +58,7 @@ class ReaderViewModel @Inject constructor(
     private val list by lazy {
         runBlocking {
             mangaInfoRepository.fetchMangaChapters(
-                pathWord = requireNotNull(mangaLoader.mangaPathWord)
+                pathWord = requireNotNull(mangaLoader.mangaPathWord),
             )
         }
     }
@@ -78,6 +78,7 @@ class ReaderViewModel @Inject constructor(
     val state = MutableStateFlow(initChapter.toMangaState())
     val mangaContent = MutableStateFlow(ReaderContent(emptyList(), null))
     val readerModel = MutableStateFlow<ReaderMode?>(null)
+    val nextChapterLoadStateFlow = chapterLoader.nextChapterLoadingState.asStateFlow()
 
     init {
         loadImp()

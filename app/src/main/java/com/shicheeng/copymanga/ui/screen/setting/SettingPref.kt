@@ -1,11 +1,13 @@
 package com.shicheeng.copymanga.ui.screen.setting
 
-import android.content.SharedPreferences
+import android.content.Context
 import androidx.core.content.edit
+import androidx.preference.PreferenceManager
 import com.shicheeng.copymanga.fm.reader.ReaderMode
 import com.shicheeng.copymanga.util.ThemeMode
 import com.shicheeng.copymanga.util.booleanFlow
 import com.shicheeng.copymanga.util.stringFlow
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
@@ -13,18 +15,20 @@ import javax.inject.Singleton
 
 @Singleton
 class SettingPref @Inject constructor(
-    private val sharedPreferences: SharedPreferences,
+    @ApplicationContext private val context: Context,
 ) {
+
+    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     val readerMode: String
         get() = sharedPreferences.getString(
-            "pref_orientation_key",
+            KEY_ORIENTATION_PREF,
             ReaderMode.NORMAL.name
         ) ?: ReaderMode.NORMAL.name
 
     fun setReaderMode(mode: ReaderMode) {
         sharedPreferences.edit {
-            putString("pref_orientation_key", mode.name)
+            putString(KEY_ORIENTATION_PREF, mode.name)
         }
     }
 
@@ -41,19 +45,19 @@ class SettingPref @Inject constructor(
     )
 
     var useForeignApi: Boolean
-        get() = sharedPreferences.getBoolean("pref_is_use_foreign_api", false)
+        get() = sharedPreferences.getBoolean(KEY_USE_FOREIGN_API, false)
         set(value) {
             sharedPreferences.edit {
-                putBoolean("pref_is_use_foreign_api", value)
+                putBoolean(KEY_USE_FOREIGN_API, value)
             }
         }
 
     var apiSelected: String
-        get() = sharedPreferences.getString("key_api_header_select", "copymanga.net")
+        get() = sharedPreferences.getString(KEY_API_HEADER_SELECT, "copymanga.net")
             ?: "copymanga.net"
         set(value) {
             sharedPreferences.edit {
-                putString("key_api_header_select", value)
+                putString(KEY_API_HEADER_SELECT, value)
             }
         }
 
@@ -184,6 +188,18 @@ class SettingPref @Inject constructor(
         }
     }
 
+
+    var downloadOnlyOnWifi
+        get() = sharedPreferences.getBoolean(KEY_DOWNLOAD_ONLY_ON_WIFI, true)
+        set(value) {
+            sharedPreferences.edit {
+                putBoolean(KEY_DOWNLOAD_ONLY_ON_WIFI, value)
+            }
+        }
+
+    val downloadOnlyOnWifiFlow = sharedPreferences.booleanFlow(KEY_DOWNLOAD_ONLY_ON_WIFI)
+
+
     companion object {
         const val KEY_ENABLE_COMIC_UPDATE = "KEY_ENABLE_COMIC_UPDATE"
         const val KEY_COMIC_UPDATE_TIME = "KEY_COMIC_UPDATE_TIME"
@@ -193,6 +209,10 @@ class SettingPref @Inject constructor(
         const val KEY_CACHE_SIZE = "KEY_CACHE_SIZE"
         const val KEY_LOGIN_STATUS = "KEY_LOGIN_STATUS"
         const val KEY_ENABLE_WEB_READ_POINT = "KEY_ENABLE_WEB_READ_POINT"
+        const val KEY_DOWNLOAD_ONLY_ON_WIFI = "KEY_WIFI_DOWNLOAD"
+        const val KEY_ORIENTATION_PREF = "pref_orientation_key"
+        const val KEY_USE_FOREIGN_API = "pref_is_use_foreign_api"
+        const val KEY_API_HEADER_SELECT = "key_api_header_select"
     }
 
 

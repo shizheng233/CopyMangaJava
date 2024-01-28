@@ -1,13 +1,15 @@
 package com.shicheeng.copymanga.ui.screen.history
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -58,12 +60,12 @@ fun HistoryScreen(
                         )
                     }
                 )
-                TabRow(
+                PrimaryTabRow(
                     selectedTabIndex = pagerState.currentPage,
                     containerColor = withAppBarColor(topAppBarState = topAppBarScrollBehavior.state),
-                    modifier = Modifier.fillMaxWidth()
                 ) {
                     for (i in 0 until pagerState.pageCount) {
+                        val interactionSource = remember(::MutableInteractionSource)
                         Tab(
                             selected = pagerState.currentPage == i,
                             onClick = {
@@ -73,7 +75,9 @@ fun HistoryScreen(
                             },
                             text = {
                                 Text(text = stringResource(id = stringIds[i]))
-                            }
+                            },
+                            modifier = Modifier,
+                            interactionSource = interactionSource
                         )
                     }
                 }

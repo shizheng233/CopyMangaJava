@@ -20,7 +20,8 @@ fun EmptyDataScreen(
     content: @Composable () -> Unit,
 ) {
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize(),
     ) {
         if (isEmpty) {
             Box(

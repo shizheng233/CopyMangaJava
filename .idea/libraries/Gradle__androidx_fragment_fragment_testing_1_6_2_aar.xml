@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: androidx.fragment:fragment-testing:1.6.2@aar" external-system-id="GRADLE">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/48e1a281f1caf3df416cfc2d0c24fbb6/transformed/fragment-testing-1.6.2/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/48e1a281f1caf3df416cfc2d0c24fbb6/transformed/fragment-testing-1.6.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/48e1a281f1caf3df416cfc2d0c24fbb6/transformed/fragment-testing-1.6.2/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.fragment/fragment-testing/1.6.2/ac3d30383a35e2c1b00c572f087a045c48a5a3bd/fragment-testing-1.6.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

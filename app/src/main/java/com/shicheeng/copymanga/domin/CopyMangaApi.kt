@@ -3,6 +3,7 @@ package com.shicheeng.copymanga.domin
 import androidx.annotation.Keep
 import com.shicheeng.copymanga.data.authormanga.AuthorsMangaDataModel
 import com.shicheeng.copymanga.data.chapter.ChapterDataModel
+import com.shicheeng.copymanga.data.commentpush.CommentPushDataModel
 import com.shicheeng.copymanga.data.finished.FinishedMangaDataModel
 import com.shicheeng.copymanga.data.info.MangaInfoDataModel
 import com.shicheeng.copymanga.data.lofininfo.LoginInfoDataModel
@@ -188,6 +189,14 @@ interface CopyMangaApi {
         @Field("is_collect") isCollect: Int,
         @Field("_update") update: Boolean = true,
     )
+
+    @FormUrlEncoded
+    @POST("/api/v3/member/comment")
+    suspend fun commentPush(
+        @Field("comic_id") comicId: String,
+        @Field("comment") comment: String,
+        @Field("reply_id") replyId: String = "",
+    ): CommentPushDataModel
 
 }
 

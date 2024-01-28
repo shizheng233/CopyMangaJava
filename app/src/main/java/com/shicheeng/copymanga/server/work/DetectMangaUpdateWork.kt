@@ -27,6 +27,7 @@ import com.shicheeng.copymanga.ui.screen.setting.IN_WIFI
 import com.shicheeng.copymanga.ui.screen.setting.SettingPref
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 @HiltWorker
@@ -59,8 +60,17 @@ class DetectMangaUpdateWork @AssistedInject constructor(
             DETECT_UPDATE_NOTIFICATION_ID,
             notification.build()
         )
-        iDetectManga.fetchMangaUpdate()
-        return Result.success()
+        return try {
+            iDetectManga.fetchMangaUpdate()
+            Result.success()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Result.retry()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            onError()
+            Result.failure()
+        }
     }
 
     override fun onReady() {
@@ -124,6 +134,18 @@ class DetectMangaUpdateWork @AssistedInject constructor(
     override fun onSuccess() {
         notification.setProgress(0, 0, false)
         notification.setContentText(appContext.getString(R.string.completed))
+        notification.setOngoing(false)
+        notification.setAutoCancel(true)
+        notificationManager.notify(
+            DETECT_UPDATE_NOTIFICATION_ID,
+            notification.build()
+        )
+    }
+
+
+    private fun onError() {
+        notification.setProgress(0, 0, false)
+        notification.setContentText(appContext.getString(R.string.fatal_error))
         notification.setOngoing(false)
         notification.setAutoCancel(true)
         notificationManager.notify(

@@ -1,7 +1,7 @@
 package com.shicheeng.copymanga.ui.screen.manga
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -10,36 +10,82 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.data.MangaHistoryDataModel
-import com.shicheeng.copymanga.data.local.LocalChapter
 import com.shicheeng.copymanga.ui.screen.compoents.MangaCover
-import com.shicheeng.copymanga.util.UIState
 import com.shicheeng.copymanga.util.click
+
+
+@Composable
+fun DetailInfoBox(
+    modifier: Modifier = Modifier,
+    mangaInfoDataModel: MangaHistoryDataModel,
+    topPadding: Dp,
+    onAuthorClicked: () -> Unit,
+) {
+    Box(modifier = modifier) {
+        val backDropColors = listOf(
+            Color.Transparent,
+            MaterialTheme.colorScheme.background
+        )
+        AsyncImage(
+            model = mangaInfoDataModel.url,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .matchParentSize()
+                .drawWithContent {
+                    drawContent()
+                    drawRect(
+                        brush = Brush.verticalGradient(backDropColors)
+                    )
+                }
+                .blur(4.dp)
+                .alpha(.2f)
+        )
+        DetailHeader(
+            mangaInfoDataModel = mangaInfoDataModel,
+            onAuthorClicked = onAuthorClicked,
+            topPadding = topPadding
+        )
+    }
+}
 
 @Composable
 fun DetailHeader(
     mangaInfoDataModel: MangaHistoryDataModel,
+    topPadding: Dp,
     onAuthorClicked: () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+            .padding(top = 16.dp + topPadding, start = 16.dp, end = 16.dp)
     ) {
         MangaCover.Small(
             url = mangaInfoDataModel.url,
@@ -54,12 +100,12 @@ fun DetailHeader(
                 text = mangaInfoDataModel.name,
                 style = MaterialTheme.typography.titleLarge
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = mangaInfoDataModel.alias
                     ?: stringResource(id = R.string.no_alias),
                 style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
                 text = mangaInfoDataModel.authorList.joinToString { it.name },
@@ -69,6 +115,54 @@ fun DetailHeader(
                     .padding(top = 4.dp)
                     .click { onAuthorClicked() }
             )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(
+                        id = when (mangaInfoDataModel.mangaStatusId) {
+                            0 -> {
+                                R.drawable.ic_baseline_loop
+                            }
+
+                            1 -> {
+                                R.drawable.ic_done_all
+                            }
+
+                            else -> {
+                                R.drawable.outline_do_not_disturb_24
+                            }
+                        }
+                    ),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(end = 4.dp)
+                        .size(16.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                ProvideTextStyle(value = MaterialTheme.typography.bodyMedium) {
+                    Text(
+                        text = mangaInfoDataModel.mangaStatus,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    DotText()
+                    Text(
+                        text = mangaInfoDataModel.mangaRegion,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_hot),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(end = 4.dp)
+                        .size(16.dp)
+                )
+                Text(
+                    text = mangaInfoDataModel.mangaPopularNumber,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
             Text(
                 text = stringResource(
                     R.string.last_update,
@@ -76,7 +170,7 @@ fun DetailHeader(
                 ),
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = 4.dp),
-                style = MaterialTheme.typography.titleSmall
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }
@@ -85,10 +179,14 @@ fun DetailHeader(
 
 @Composable
 fun DetailRowInfo(
-    mangaInfoDataModel: MangaHistoryDataModel,
-    chapters: UIState<List<LocalChapter>>,
+    isCollect: Boolean,
+    isSubscribed: Boolean,
+    onCollectClicked: () -> Unit,
+    onSubscribedClick: () -> Unit,
     onCommentClick: () -> Unit,
 ) {
+    /*从Tachiyomi直接复制来的，这个比较简单就不自己想办法写了*/
+    val defaultActionButtonColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .38f)
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -97,120 +195,75 @@ fun DetailRowInfo(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        VerticalIcon(
-            iconId = {
-                when (mangaInfoDataModel.mangaStatusId) {
-                    0 -> {
-                        R.drawable.ic_baseline_loop
-                    }
-
-                    1 -> {
-                        R.drawable.ic_done_all
-                    }
-
-                    else -> {
-                        R.drawable.outline_do_not_disturb_24
-                    }
+        MangaActionButton(
+            title = stringResource(if (isCollect) R.string.remove_add_to_lib else R.string.add_to_lib),
+            icon = ImageVector.vectorResource(
+                id = if (isCollect) {
+                    R.drawable.baseline_library_add_check_24
+                } else {
+                    R.drawable.baseline_library_add_24
                 }
-            },
-            text = mangaInfoDataModel.mangaStatus
+            ),
+            color = if (isCollect) MaterialTheme.colorScheme.primary else defaultActionButtonColor,
+            onClick = onCollectClicked
         )
-        VerticalDivider(
-            modifier = Modifier
-                .padding(vertical = 8.dp)
+        MangaActionButton(
+            title = stringResource(
+                id = if (isSubscribed) {
+                    R.string.unsubscribe_for_updates
+                } else {
+                    R.string.subscribe_for_updates
+                }
+            ),
+            icon = ImageVector.vectorResource(
+                id = if (isSubscribed) {
+                    R.drawable.iconmonstr_rss_feed_baseline
+                } else {
+                    R.drawable.iconmonstr_rss_feed_outline
+                }
+            ),
+            color = if (isSubscribed) MaterialTheme.colorScheme.primary else defaultActionButtonColor,
+            onClick = onSubscribedClick
         )
-        VerticalIcon(
-            iconId = { R.drawable.ic_baseline_region },
-            text = mangaInfoDataModel.mangaRegion
+        MangaActionButton(
+            title = stringResource(id = R.string.comment_text),
+            icon = ImageVector.vectorResource(R.drawable.outline_comment_24),
+            color = MaterialTheme.colorScheme.primary,
+            onClick = onCommentClick
         )
-        VerticalDivider(
-            modifier = Modifier
-                .padding(vertical = 8.dp)
-        )
-        if (chapters is UIState.Success) {
-            VerticalIcon(
-                iconId = { R.drawable.ic_outline_page },
-                text = stringResource(
-                    id = R.string.chapter,
-                    formatArgs = arrayOf(chapters.content.size.toString())
-                )
+    }
+}
+
+@Composable
+private fun RowScope.MangaActionButton(
+    title: String,
+    icon: ImageVector,
+    color: Color,
+    onClick: () -> Unit,
+) {
+    TextButton(
+        onClick = onClick,
+        modifier = Modifier.weight(1f),
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = color,
+                modifier = Modifier.size(20.dp),
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = title,
+                color = color,
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center,
             )
         }
-        VerticalDivider(
-            modifier = Modifier
-                .padding(vertical = 8.dp)
-        )
-        VerticalIcon(
-            iconId = { R.drawable.ic_baseline_hot },
-            text = mangaInfoDataModel.mangaPopularNumber
-        )
-        VerticalDivider(
-            modifier = Modifier
-                .padding(vertical = 8.dp)
-        )
-        VerticalIcon(
-            iconId = { R.drawable.baseline_comment_24 },
-            text = stringResource(R.string.comment_text),
-            click = onCommentClick
-        )
     }
 }
 
 @Composable
-fun RowScope.VerticalIcon(
-    modifier: Modifier = Modifier,
-    @DrawableRes iconId: () -> Int,
-    text: String,
-    color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    textColor: Color = MaterialTheme.colorScheme.onSurface,
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            painter = painterResource(id = iconId()),
-            contentDescription = text,
-            modifier = Modifier.padding(4.dp),
-            tint = color
-        )
-        BasicText(
-            text = text,
-            modifier = Modifier.padding(horizontal = 4.dp),
-            style = MaterialTheme.typography.labelMedium.copy(
-                fontWeight = FontWeight.Normal
-            ),
-            maxLines = 1,
-            color = { textColor }
-        )
-    }
-}
-
-@Composable
-fun VerticalIcon(
-    modifier: Modifier = Modifier,
-    @DrawableRes iconId: () -> Int,
-    text: String,
-    color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    fontSize: TextUnit = TextUnit.Unspecified,
-    click: () -> Unit,
-) {
-    Column(
-        modifier = modifier.click { click() },
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            painter = painterResource(id = iconId()),
-            contentDescription = text,
-            modifier = Modifier.padding(4.dp),
-            tint = color
-        )
-        Text(
-            text = text,
-            color = color,
-            modifier = Modifier.padding(horizontal = 4.dp),
-            fontSize = fontSize,
-            style = MaterialTheme.typography.labelMedium
-        )
-    }
+private fun DotText() {
+    Text(text = " • ")
 }

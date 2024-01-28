@@ -2,12 +2,11 @@ package com.shicheeng.copymanga.app
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.Insets
-import androidx.core.view.*
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 
 open class AppAttachCompatActivity : AppCompatActivity() {
 
@@ -16,24 +15,6 @@ open class AppAttachCompatActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
     }
 
-
-    fun windowsPaddingUp(
-        viewRoot: View,
-        bar: AppBarLayout,
-        bottomNavigationView: BottomNavigationView,
-    ) {
-        ViewCompat.setOnApplyWindowInsetsListener(viewRoot) { view: View, windowInsetsCompat: WindowInsetsCompat ->
-            val insets = windowInsetsCompat.getInsets(WindowInsetsCompat.Type.systemBars())
-            onInsetsAttach(insets)
-            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                leftMargin = insets.left
-                rightMargin = insets.right
-            }
-            bar.updatePadding(top = insets.top)
-            bottomNavigationView.updatePadding(bottom = insets.bottom)
-            WindowInsetsCompat.CONSUMED
-        }
-    }
 
     inline fun windowsInsets(
         root: View,
@@ -44,13 +25,11 @@ open class AppAttachCompatActivity : AppCompatActivity() {
             val systemGestureInsets =
                 windowInsetsCompat.getInsets(WindowInsetsCompat.Type.systemGestures())
             update(insets, view, systemGestureInsets)
-            WindowInsetsCompat.CONSUMED
+            WindowInsetsCompat.Builder()
+                .setInsets(WindowInsetsCompat.Type.systemBars(), Insets.NONE)
+                .build()
         }
     }
 
-
-    protected open fun onInsetsAttach(insets: Insets) {
-
-    }
 
 }

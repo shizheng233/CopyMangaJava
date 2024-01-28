@@ -28,16 +28,14 @@ class MyApp : Application(), Configuration.Provider {
     @Inject
     lateinit var settingPref: SettingPref
 
-
-    override fun getWorkManagerConfiguration(): Configuration {
-        return Configuration.Builder()
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .build()
-    }
+
 
     override fun onCreate() {
         super.onCreate()
-        //CrashHandler(applicationContext)
         notificationManager = applicationContext
             .getSystemService(NotificationManager::class.java)
         DynamicColors.applyToActivitiesIfAvailable(this)
@@ -51,9 +49,9 @@ class MyApp : Application(), Configuration.Provider {
         val name = getString(R.string.update_manga)
         val importance = NotificationManager.IMPORTANCE_DEFAULT
         val mChannel = NotificationChannel(
-            DetectMangaUpdateWork.DETECT_UPDATE_CHANELLE,
-            name,
-            importance
+            /* id = */ DetectMangaUpdateWork.DETECT_UPDATE_CHANELLE,
+            /* name = */ name,
+            /* importance = */ importance
         )
         notificationManager.createNotificationChannel(mChannel)
     }

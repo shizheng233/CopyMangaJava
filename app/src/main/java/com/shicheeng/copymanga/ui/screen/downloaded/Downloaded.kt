@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.shicheeng.copymanga.R
+import com.shicheeng.copymanga.data.PersonalInnerDataModel
 import com.shicheeng.copymanga.ui.screen.compoents.PlainButton
 import com.shicheeng.copymanga.ui.screen.download.EmptyScreen
 import com.shicheeng.copymanga.util.copyComposable
@@ -67,9 +69,13 @@ fun DownloadedScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(list) {
-                    DownloadedListItem(url = it.url, title = it.name) {
-                        onClick(it.pathWord)
+                items(list) { innerItem: PersonalInnerDataModel? ->
+                    innerItem?.let {
+                        DownloadedListItem(url = innerItem.url, title = innerItem.name) {
+                            if (innerItem.pathWord != null) {
+                                onClick(innerItem.pathWord)
+                            }
+                        }
                     }
                 }
             }
@@ -97,6 +103,7 @@ fun DownloadedListItem(
                 contentDescription = null,
                 placeholder = ColorPainter(MaterialTheme.colorScheme.primary),
                 modifier = Modifier
+                    .clip(MaterialTheme.shapes.medium)
                     .aspectRatio(2f / 3f),
                 contentScale = ContentScale.Crop
             )
@@ -104,7 +111,8 @@ fun DownloadedListItem(
                 text = title,
                 style = MaterialTheme.typography.titleSmall,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(4.dp)
             )
         }
     }

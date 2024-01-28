@@ -1,8 +1,8 @@
 <component name="libraryTable">
-  <library name="Gradle: dev.chrisbanes.snapper:snapper:0.2.2@aar">
+  <library name="Gradle: dev.chrisbanes.snapper:snapper:0.2.2@aar" external-system-id="GRADLE">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/8625e3762c253608f8a1e06b06f8b41e/transformed/snapper-0.2.2/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/8625e3762c253608f8a1e06b06f8b41e/transformed/snapper-0.2.2/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/1d1c3abd54beded12e26d1a666f7ff52/transformed/snapper-0.2.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/1d1c3abd54beded12e26d1a666f7ff52/transformed/snapper-0.2.2/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dev.chrisbanes.snapper/snapper/0.2.2/ba580677251df23f37fb3868f735bb558a35295e/snapper-0.2.2-javadoc.jar!/" />

@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.collection.LongSparseArray
 import androidx.collection.set
-import com.shicheeng.copymanga.util.OkhttpHelper
 import com.shicheeng.copymanga.util.RetainedLifecycleCoroutineScope
 import dagger.hilt.android.ActivityRetainedLifecycle
 import dagger.hilt.android.lifecycle.RetainedLifecycle
@@ -21,6 +20,7 @@ import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.Headers
+import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
 import java.io.InputStream
@@ -35,6 +35,7 @@ class PagerLoader @Inject constructor(
     lifecycle: ActivityRetainedLifecycle,
     private val cache: PagerCache,
     private val headers: Headers,
+    private val okHttpClient: OkHttpClient,
 ) : RetainedLifecycle.OnClearedListener {
 
     val loaderScope =
@@ -116,7 +117,7 @@ class PagerLoader @Inject constructor(
             val request = Request.Builder()
                 .headers(headers).url(url).get()
                 .build()
-            OkhttpHelper.getInstance().newCall(request).execute().use { res ->
+            okHttpClient.newCall(request).execute().use { res ->
                 val ins = checkNotNull(res.body).byteStream()
                 cache.put(url, ins)
             }

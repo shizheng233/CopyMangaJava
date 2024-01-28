@@ -167,7 +167,8 @@ fun ChapterItem(
             if (isWebLooked) {
                 Icon(
                     painter = painterResource(id = R.drawable.outline_cloud_24),
-                    contentDescription = stringResource(id = R.string.shelf_cloud)
+                    contentDescription = stringResource(id = R.string.shelf_cloud),
+                    modifier = Modifier.padding(end = 4.dp)
                 )
             }
             if (isDownload) {

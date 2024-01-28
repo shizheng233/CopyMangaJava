@@ -14,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.shicheeng.copymanga.LocalMainBottomNavigationPadding
 import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.ui.screen.compoents.PlainButton
 import com.shicheeng.copymanga.ui.screen.compoents.pagingLoadingIndication
@@ -30,7 +29,6 @@ fun NewestScreen(
 ) {
     val list = recommendViewModel.list.collectAsLazyPagingItems()
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val paddingBottom = LocalMainBottomNavigationPadding.current
     val layoutDirection = LocalLayoutDirection.current
 
     Scaffold(
@@ -52,7 +50,7 @@ fun NewestScreen(
             columns = GridCells.Fixed(3),
             contentPadding = paddingValues.copy(
                 layoutDirection = layoutDirection,
-                bottom = paddingValues.calculateBottomPadding() + paddingBottom,
+                bottom = paddingValues.calculateBottomPadding(),
                 start = 16.dp,
                 end = 16.dp
             ),

@@ -5,7 +5,6 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,12 +13,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
@@ -38,7 +33,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -50,7 +44,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import com.shicheeng.copymanga.LocalMainBottomNavigationPadding
 import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.data.finished.Item
 import com.shicheeng.copymanga.json.MangaSortJson
@@ -58,6 +51,8 @@ import com.shicheeng.copymanga.ui.screen.compoents.ErrorScreen
 import com.shicheeng.copymanga.ui.screen.compoents.LoadingScreen
 import com.shicheeng.copymanga.ui.screen.compoents.PlainButton
 import com.shicheeng.copymanga.ui.screen.compoents.pagingLoadingIndication
+import com.shicheeng.copymanga.ui.screen.compoents.pullrefresh.SwipeRefresh
+import com.shicheeng.copymanga.ui.screen.compoents.pullrefresh.rememberSwipeRefreshState
 import com.shicheeng.copymanga.ui.screen.compoents.withAppBarColor
 import com.shicheeng.copymanga.ui.theme.ElevationTokens
 import com.shicheeng.copymanga.util.UIState
@@ -65,7 +60,7 @@ import com.shicheeng.copymanga.util.copy
 import com.shicheeng.copymanga.viewmodel.ExploreMangaViewModel
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
+    ExperimentalMaterial3Api::class,
     ExperimentalFoundationApi::class
 )
 @Composable
@@ -107,16 +102,12 @@ fun ExploreScreen(
         }
     }
     var isExpand by remember { mutableStateOf(false) }
-    val paddingBottom = LocalMainBottomNavigationPadding.current
     val layoutDirection = LocalLayoutDirection.current
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = false
     )
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = mangaList.loadState.refresh is LoadState.Loading,
-        onRefresh = {
-            mangaList.refresh()
-        }
+    val pullRefreshState = rememberSwipeRefreshState(
+        isRefreshing = mangaList.loadState.refresh is LoadState.Loading,
     )
     val (orderSave, onOrderSave) = rememberSaveable {
         mutableStateOf<String?>(null)
@@ -177,16 +168,17 @@ fun ExploreScreen(
             }
         },
     ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .pullRefresh(state = pullRefreshState)
-                .fillMaxSize()
+        SwipeRefresh(
+            modifier = Modifier.fillMaxSize(),
+            state = pullRefreshState,
+            onRefresh = mangaList::refresh,
+            indicatorPadding = paddingValues
         ) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
                 contentPadding = paddingValues.copy(
                     layoutDirection = layoutDirection,
-                    bottom = paddingValues.calculateBottomPadding() + paddingBottom,
+                    bottom = paddingValues.calculateBottomPadding(),
                     start = 16.dp,
                     end = 16.dp,
                     top = paddingValues.calculateTopPadding() + 16.dp
@@ -217,14 +209,6 @@ fun ExploreScreen(
                 }
             }
 
-            PullRefreshIndicator(
-                refreshing = mangaList.loadState.refresh is LoadState.Loading,
-                state = pullRefreshState,
-                contentColor = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .padding(top = paddingValues.calculateTopPadding())
-                    .align(Alignment.TopCenter)
-            )
         }
     }
 

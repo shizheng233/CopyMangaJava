@@ -12,13 +12,20 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.isImeVisible
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -26,6 +33,7 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -35,25 +43,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import com.shicheeng.copymanga.data.ChipTextBean
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okio.Closeable
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 /**
  * 将[JsonArray]转化为[String]对象。
@@ -85,7 +93,7 @@ inline fun <reified VM : ViewModel> Fragment.assistedViewModels(
     }
 }
 
-infix fun Context.openUrl(string: String){
+infix fun Context.openUrl(string: String) {
     startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(string)))
 }
 
@@ -100,6 +108,9 @@ inline fun <reified VM : ViewModel> ComponentActivity.assistedViewModels(
     }
 }
 
+/**
+ * 复制一份[PaddingValues]。区别于[PaddingValues.copyComposable],该函数需要传递[LayoutDirection]。
+ */
 fun PaddingValues.copy(
     layoutDirection: LayoutDirection,
     top: Dp = this.calculateTopPadding(),
@@ -110,6 +121,10 @@ fun PaddingValues.copy(
     return PaddingValues(start = start, top = top, end = end, bottom = bottom)
 }
 
+/**
+ * 复制一份[PaddingValues]。区别于[PaddingValues.copy],该函数**不**需要传递[LayoutDirection]。
+ * 并且该函数是[Composable]函数。
+ */
 @Composable
 fun PaddingValues.copyComposable(
     layoutDirection: LayoutDirection = LocalLayoutDirection.current,
@@ -189,6 +204,33 @@ fun RecyclerView.findCurrentPagePosition(): Int {
     return getChildAdapterPosition(view)
 }
 
+fun String.transformToUUIDMayNull(): UUID? {
+    return try {
+        UUID.fromString(this)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
+
+fun String?.transformToUUIDMayNullSafety(): UUID? {
+    return try {
+        UUID.fromString(this)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
+
+val Exception.messageNoNull: String
+    get() {
+        return if (message == null || message.isNullOrBlank() || message.isNullOrEmpty()) {
+            "ERROR BUT NO MESSAGE"
+        } else {
+            message as String
+        }
+    }
+
 fun RecyclerView.setFirstVisibleItemPositionSmooth(position: Int, smooth: Boolean) {
     if (position != RecyclerView.NO_POSITION) {
         if (smooth) {
@@ -211,21 +253,21 @@ var RecyclerView.firstVisibleItemPosition: Int
         }
     }
 
-fun ChipGroup.addChips(list: List<ChipTextBean>, onChipClick: ((Chip, String) -> Unit)? = null) {
-    removeAllViews()
-    list.forEach { chipTextBean ->
-        val chip = Chip(context)
-        chip.text = chipTextBean.text
-        chip.setEnsureMinTouchTargetSize(false)
-        chip.chipIcon = AppCompatResources.getDrawable(context, chipTextBean.ids)
-        if (onChipClick != null) {
-            chip.setOnClickListener { onChipClick(chip, chipTextBean.pathWord) }
-        }
-        addView(chip)
-    }
+fun String.parserAsJson(): JsonElement = JsonParser.parseString(this)
+
+fun JsonElement.transformToJsonObjectSafety(): JsonObject? = try {
+    asJsonObject
+} catch (e: IllegalStateException) {
+    null
 }
 
-fun String.parserAsJson(): JsonElement = JsonParser.parseString(this)
+fun JsonObject.getOrNull(member: String): JsonElement? {
+    return if (has(member)) get(member) else null
+}
+
+fun String?.nullWillBe(newString: () -> String): String {
+    return this ?: return newString()
+}
 
 /**
  * 将大数字转化为可读性数字。没有i18n。
@@ -275,12 +317,40 @@ fun View.hasGlobalPoint(x: Int, y: Int): Boolean {
     return rect.contains(x, y)
 }
 
+suspend fun <T : Closeable?, R> T.useWithContext(
+    coroutineContext: CoroutineContext,
+    block: (t: T) -> R,
+) = withContext(coroutineContext) {
+    use(block = block)
+}
+
+fun <T : JsonElement> JsonObject.add(property: String, jsonElement: () -> T) {
+    add(property, jsonElement())
+}
+
+fun <T> List<T>.toJsonArray(
+    headerProperty: String,
+    header: (T) -> String,
+    valuesProperty: String,
+    values: (T) -> String,
+): JsonArray {
+    val jsonArray = JsonArray()
+    forEach {
+        val jsonObjects = JsonObject().apply {
+            addProperty(headerProperty, header(it))
+            addProperty(valuesProperty, values(it))
+        }
+        jsonArray.add(jsonObjects)
+    }
+    return jsonArray
+}
+
 /**
  * Format long to Time
  *
  * The format -> 2023/2/22 12:15
  */
-@Deprecated("使用更加安全的方法")
+@Deprecated("使用更加安全的方法", replaceWith = ReplaceWith("toTimeReadableCompat()"))
 fun Long.toTimeReadable(): String {
     val date = Date(this)
     val sfd = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.ROOT)
@@ -294,6 +364,11 @@ fun Long.convertToTimeGroup(): String {
 
 fun Long.convertToOnlyTime(): String {
     val sfd = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+    return sfd.format(Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()))
+}
+
+fun Long.toTimeReadableCompat(): String {
+    val sfd = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
     return sfd.format(Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()))
 }
 
@@ -317,3 +392,19 @@ val Context.animatorDurationScale: Float
         Settings.Global.ANIMATOR_DURATION_SCALE,
         1f
     )
+
+// TODO: 完美的Insets
+@OptIn(ExperimentalLayoutApi::class)
+fun Modifier.withImeNavigationBarPadding() = composed {
+    if (WindowInsets.isImeVisible) {
+        Modifier
+            .imePadding()
+            .padding(
+                bottom = WindowInsets.navigationBars
+                    .asPaddingValues()
+                    .calculateBottomPadding() + 16.dp
+            )
+    } else {
+        Modifier.navigationBarsPadding()
+    }
+}

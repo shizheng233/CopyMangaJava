@@ -19,7 +19,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.shicheeng.copymanga.LocalMainBottomNavigationPadding
 import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.data.search.SearchResultDataModel
 import com.shicheeng.copymanga.ui.screen.compoents.EmptyDataScreen
@@ -39,7 +38,6 @@ fun SearchResultScreen(
 ) {
 
     val searchResultList = viewModel.searchResult.collectAsLazyPagingItems()
-    val paddingBottom = LocalMainBottomNavigationPadding.current
 
     if (searchWord != null) {
         LaunchedEffect(key1 = searchWord) {
@@ -54,7 +52,7 @@ fun SearchResultScreen(
                 title = {
                     Column(modifier = Modifier.fillMaxWidth()) {
                         Text(
-                            text = stringResource(id = R.string.search_is_empty),
+                            text = stringResource(id = R.string.search_result),
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -84,7 +82,6 @@ fun SearchResultScreen(
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
                     contentPadding = it.copyComposable(
-                        bottom = paddingBottom,
                         end = 16.dp,
                         start = 16.dp,
                     ),

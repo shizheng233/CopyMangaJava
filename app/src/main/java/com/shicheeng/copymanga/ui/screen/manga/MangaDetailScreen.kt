@@ -1,23 +1,22 @@
 package com.shicheeng.copymanga.ui.screen.manga
 
-import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -37,44 +37,38 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.shicheeng.copymanga.LocalMainBottomNavigationPadding
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.shicheeng.copymanga.LocalSettingPreference
-import com.shicheeng.copymanga.MainActivity
 import com.shicheeng.copymanga.MangaReaderActivity
 import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.data.MangaSortBean
 import com.shicheeng.copymanga.data.local.LocalChapter
-import com.shicheeng.copymanga.server.DownloadService
 import com.shicheeng.copymanga.ui.screen.compoents.ErrorScreen
 import com.shicheeng.copymanga.ui.screen.compoents.LoadingScreen
 import com.shicheeng.copymanga.ui.screen.compoents.PlainButton
-import com.shicheeng.copymanga.ui.screen.compoents.VerticalFastScroller
+import com.shicheeng.copymanga.ui.screen.compoents.pullrefresh.SwipeRefresh
+import com.shicheeng.copymanga.ui.screen.compoents.pullrefresh.rememberSwipeRefreshState
 import com.shicheeng.copymanga.ui.screen.setting.SettingPref
 import com.shicheeng.copymanga.util.UIState
 import com.shicheeng.copymanga.util.copy
 import com.shicheeng.copymanga.viewmodel.MangaInfoViewModel
-import dagger.hilt.android.EntryPointAccessors
 import soup.compose.material.motion.MaterialFade
 
-@OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalMaterialApi::class
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MangaDetailScreen(
     pathWord: String?,
-    viewModel: MangaInfoViewModel = assistedHiltMangaInfoViewModel(pathWord = pathWord),
+    viewModel: MangaInfoViewModel = hiltViewModel(),
     onTagsClick: (MangaSortBean) -> Unit,
     onAuthorClick: (String) -> Unit,
     onCommentClick: (comicUUID: String) -> Unit,
@@ -103,15 +97,8 @@ fun MangaDetailScreen(
 
     val contentSuccess = content as UIState.Success
     val layoutDirection = LocalLayoutDirection.current
-    val bottomPadding = LocalMainBottomNavigationPadding.current
     val context = LocalContext.current
-    val topAppBarState = TopAppBarDefaults.pinnedScrollBehavior()
-    val refreshState = rememberPullRefreshState(
-        refreshing = chapters == UIState.Loading,
-        onRefresh = {
-            viewModel.chapterLoadForce()
-        }
-    )
+    val refreshState = rememberSwipeRefreshState(isRefreshing = chapters is UIState.Loading)
     var expanded by remember { mutableStateOf(false) }
     val inSelectedMode by remember { derivedStateOf { selectedChapters.isNotEmpty() } }
     var tipDialogShow by remember { mutableStateOf(false) }
@@ -123,8 +110,27 @@ fun MangaDetailScreen(
 
     Scaffold(
         topBar = {
+            val firstVisibleItemIndex by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
+            val firstVisibleItemScrollOffset by remember { derivedStateOf { lazyListState.firstVisibleItemScrollOffset } }
+            val animatedTitleAlpha by animateFloatAsState(
+                if (firstVisibleItemIndex > 0) 1f else 0f,
+                label = "titleAlpha",
+            )
+            val animatedBgAlpha by animateFloatAsState(
+                if (firstVisibleItemIndex > 0 || firstVisibleItemScrollOffset > 0) 1f else 0f,
+                label = "bgAlpha",
+            )
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.manga_detail)) },
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.manga_detail),
+                        modifier = Modifier.alpha(
+                            if (inSelectedMode) 1f else animatedTitleAlpha,
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
                 navigationIcon = {
                     if (inSelectedMode) {
                         PlainButton(
@@ -141,49 +147,8 @@ fun MangaDetailScreen(
                         )
                     }
                 },
-                scrollBehavior = topAppBarState,
                 actions = {
                     if (!inSelectedMode) {
-                        PlainButton(
-                            id = {
-                                if (lastWebWatchChapter?.results?.collect != null) {
-                                    R.string.remove_add_to_lib
-                                } else {
-                                    R.string.add_to_lib
-                                }
-                            },
-                            drawableRes = {
-                                if (lastWebWatchChapter?.results?.collect != null) {
-                                    R.drawable.baseline_library_add_check_24
-                                } else {
-                                    R.drawable.baseline_library_add_24
-                                }
-                            }
-                        ) {
-                            viewModel.comicAddWebLib(
-                                mangaUUID = contentSuccess.content.comicUUID,
-                                add = lastWebWatchChapter?.results?.collect == null
-                            )
-                        }
-                        PlainButton(
-                            id = {
-                                if (contentSuccess.content.isSubscribe) {
-                                    R.string.unsubscribe_for_updates
-                                } else {
-                                    R.string.subscribe_for_updates
-                                }
-                            },
-                            drawableRes = {
-                                if (contentSuccess.content.isSubscribe) {
-                                    R.drawable.iconmonstr_rss_feed_baseline
-                                } else {
-                                    R.drawable.iconmonstr_rss_feed_outline
-                                }
-                            }
-                        ) {
-                            tipDialogShow = true
-                            viewModel.comicUpdate(contentSuccess.content.isSubscribe.not())
-                        }
                         Box(
                             modifier = Modifier
                                 .wrapContentSize(Alignment.TopStart)
@@ -207,15 +172,11 @@ fun MangaDetailScreen(
                                     text = { Text(text = stringResource(R.string.download_first_5)) },
                                     onClick = {
                                         val firstChapters = viewModel.selectFirst5() ?: emptyList()
-                                        pathWord?.let {
-                                            DownloadService.startDownloadService(
-                                                context = context,
-                                                pathWord = it,
-                                                uuids = firstChapters
-                                                    .map { x -> x.uuid }
-                                                    .toTypedArray()
-                                            )
-                                        }
+                                        viewModel.downloadManga(
+                                            firstChapters
+                                                .map { x -> x.uuid }
+                                                .toTypedArray()
+                                        )
                                         expanded = false
                                     }
                                 )
@@ -224,13 +185,10 @@ fun MangaDetailScreen(
                                     onClick = {
                                         val lastChapters = viewModel.selectLast5() ?: emptyList()
                                         pathWord?.let {
-                                            DownloadService.startDownloadService(
-                                                context = context,
-                                                pathWord = it,
-                                                uuids = lastChapters
-                                                    .map { x -> x.uuid }
-                                                    .toTypedArray()
-                                            )
+                                            lastChapters
+                                                .map { x -> x.uuid }
+                                                .toTypedArray()
+
                                         }
                                         expanded = false
                                     }
@@ -239,15 +197,11 @@ fun MangaDetailScreen(
                                     text = { Text(text = stringResource(id = R.string.download_all)) },
                                     onClick = {
                                         if (chapters is UIState.Success) {
-                                            pathWord?.let {
-                                                DownloadService.startDownloadService(
-                                                    context = context,
-                                                    pathWord = it,
-                                                    uuids = ((chapters as UIState.Success<List<LocalChapter>>).content)
-                                                        .map { x -> x.uuid }
-                                                        .toTypedArray()
-                                                )
-                                            }
+                                            val uuids =
+                                                ((chapters as UIState.Success<List<LocalChapter>>).content)
+                                                    .map { x -> x.uuid }
+                                                    .toTypedArray()
+                                            viewModel.downloadManga(uuids)
                                         }
                                         expanded = false
                                     }
@@ -256,6 +210,11 @@ fun MangaDetailScreen(
                         }
                     }
                 },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme
+                        .surfaceColorAtElevation(3.dp)
+                        .copy(alpha = if (inSelectedMode) 1f else animatedBgAlpha),
+                ),
             )
         },
         modifier = Modifier.fillMaxSize(),
@@ -319,14 +278,8 @@ fun MangaDetailScreen(
             ) {
                 MangaDetailBottomBar(
                     onDownloadClick = {
-                        val downloadUUIDs = selectedChapters.map { it.uuid }
-                        pathWord?.let {
-                            DownloadService.startDownloadService(
-                                context = context,
-                                pathWord = it,
-                                uuids = downloadUUIDs.toTypedArray()
-                            )
-                        }
+                        val downloadUUIDs = selectedChapters.map { it.uuid }.toTypedArray()
+                        viewModel.downloadManga(downloadUUIDs)
                         viewModel.deselectedAllItem()
                     },
                     onMarkReadClick = {
@@ -338,96 +291,116 @@ fun MangaDetailScreen(
             }
         }
     ) { paddingValues ->
-        Box(
-            modifier = Modifier.pullRefresh(state = refreshState, enabled = true)
+        SwipeRefresh(
+            state = refreshState,
+            onRefresh = {
+                viewModel.chapterLoadForce()
+            },
+            indicatorPadding = paddingValues
         ) {
-            VerticalFastScroller(
-                listState = lazyListState,
-                topContentPadding = paddingValues.calculateTopPadding(),
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentPadding = paddingValues.copy(
+                    layoutDirection = layoutDirection,
+                    bottom = paddingValues.calculateBottomPadding() + 64.dp,
+                    top = 0.dp
+                ),
+                state = lazyListState
             ) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .nestedScroll(topAppBarState.nestedScrollConnection),
-                    contentPadding = paddingValues.copy(
-                        layoutDirection = layoutDirection,
-                        bottom = paddingValues.calculateBottomPadding() + bottomPadding
-                    ),
-                    state = lazyListState
+                item(
+                    key = MangaDetailKey.HEADER,
+                    contentType = MangaDetailKey.HEADER
                 ) {
-                    item(
-                        key = MangaDetailKey.HEADER,
-                        contentType = MangaDetailKey.HEADER
+                    DetailInfoBox(
+                        mangaInfoDataModel = contentSuccess.content,
+                        topPadding = paddingValues.calculateTopPadding()
                     ) {
-                        DetailHeader(mangaInfoDataModel = contentSuccess.content) {
-                            bottomAuthorsSelector = true
-                        }
-                    }
-                    item(
-                        key = MangaDetailKey.ROW_INFO,
-                        contentType = MangaDetailKey.ROW_INFO
-                    ) {
-                        DetailRowInfo(
-                            mangaInfoDataModel = contentSuccess.content,
-                            chapters = chapters
-                        ) {
-                            onCommentClick(contentSuccess.content.comicUUID)
-                        }
-                    }
-                    item(
-                        key = MangaDetailKey.SUMMARY,
-                        contentType = MangaDetailKey.SUMMARY
-                    ) {
-                        MangaExpandSummary(
-                            defaultExpandState = false,
-                            description = contentSuccess.content.mangaDetail,
-                            tags = {
-                                contentSuccess.content.themeList
-                            },
-                            onTagsClick = onTagsClick
-                        )
-                    }
-                    item(
-                        key = MangaDetailKey.LIST_DESC,
-                        contentType = MangaDetailKey.LIST_DESC
-                    ) {
-                        Text(
-                            text = stringResource(R.string.chapters_list),
-                            modifier = Modifier.padding(all = 16.dp),
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-                    chapterList(
-                        selectChapters = selectedChapters,
-                        inSelectMode = inSelectedMode,
-                        chapterState = chapters,
-                        onLongClick = {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            viewModel.selectItem(it, !selectedChapters.contains(it))
-                        },
-                        webLookedUUID = lastWebWatchChapter?.results?.browse?.chapterUuid
-                    ) {
-                        val intent =
-                            MangaReaderActivity.newInstance(context, it.comicPathWord, it.uuid)
-                        context.startActivity(intent)
+                        bottomAuthorsSelector = true
                     }
                 }
-            }
-
-            //指示器
-            Box(
-                modifier = Modifier
-                    .padding(top = paddingValues.calculateTopPadding())
-                    .matchParentSize()
-                    .clipToBounds()
-            ) {
-                PullRefreshIndicator(
-                    refreshing = chapters == UIState.Loading,
-                    state = refreshState,
-                    modifier = Modifier.align(Alignment.TopCenter),
-                    backgroundColor = MaterialTheme.colorScheme.background,
-                    contentColor = MaterialTheme.colorScheme.primary
-                )
+                item(
+                    key = MangaDetailKey.ROW_INFO,
+                    contentType = MangaDetailKey.ROW_INFO
+                ) {
+                    DetailRowInfo(
+                        onCommentClick = {
+                            onCommentClick(contentSuccess.content.comicUUID)
+                        },
+                        isCollect = lastWebWatchChapter?.results?.collect != null,
+                        onCollectClicked = {
+                            viewModel.comicAddWebLib(
+                                mangaUUID = contentSuccess.content.comicUUID,
+                                add = lastWebWatchChapter?.results?.collect == null
+                            )
+                        },
+                        isSubscribed = contentSuccess.content.isSubscribe,
+                        onSubscribedClick = {
+                            tipDialogShow = true
+                            viewModel.comicUpdate(contentSuccess.content.isSubscribe.not())
+                        }
+                    )
+                }
+                item(
+                    key = MangaDetailKey.SUMMARY,
+                    contentType = MangaDetailKey.SUMMARY
+                ) {
+                    MangaExpandSummary(
+                        defaultExpandState = false,
+                        description = contentSuccess.content.mangaDetail,
+                        tags = {
+                            contentSuccess.content.themeList
+                        },
+                        onTagsClick = onTagsClick
+                    )
+                }
+                item(
+                    key = MangaDetailKey.LIST_DESC,
+                    contentType = MangaDetailKey.LIST_DESC
+                ) {
+                    Text(
+                        text = stringResource(R.string.chapters_list),
+                        modifier = Modifier.padding(all = 16.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+                chapterList(
+                    selectChapters = selectedChapters,
+                    inSelectMode = inSelectedMode,
+                    chapterState = chapters,
+                    onLongClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        viewModel.selectItem(it, !selectedChapters.contains(it))
+                    },
+                    webLookedUUID = lastWebWatchChapter?.results?.browse?.chapterUuid
+                ) {
+                    val intent = MangaReaderActivity.newInstance(context, it.comicPathWord, it.uuid)
+                    context.startActivity(intent)
+                }
+                item(
+                    key = MangaDetailKey.BOTTOM_DESC,
+                    contentType = MangaDetailKey.BOTTOM_DESC
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_manga_info_main),
+                            contentDescription = stringResource(R.string.disclaimer)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = stringResource(R.string.general_tips),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = stringResource(R.string.general_warning),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
             }
         }
     }
@@ -461,13 +434,3 @@ fun MangaDetailScreen(
 
 }
 
-@Composable
-private fun assistedHiltMangaInfoViewModel(pathWord: String?): MangaInfoViewModel {
-    val context = LocalContext.current
-    val factory = EntryPointAccessors.fromActivity(
-        context as Activity,
-        MainActivity.ViewModelAssistedFactoryProvider::class.java
-    ).infoViewModelFactory()
-    requireNotNull(pathWord) { "PATH WORD IS EMPTY" }
-    return viewModel(factory = MangaInfoViewModel.provideAssistedViewModel(factory, pathWord))
-}

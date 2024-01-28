@@ -150,7 +150,7 @@ class MangaReaderActivity : AppAttachCompatActivity(),
         }
     }
 
-    // FIXME: 有时候没有提示
+
     private fun initializeBottomMenu() {
         setSupportActionBar(binding.mangaReaderToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -195,6 +195,7 @@ class MangaReaderActivity : AppAttachCompatActivity(),
         window.navigationBarColor = toolbarColor
     }
 
+    // FIXME: 有时候没有提示
     private fun onUIChange(pair: Pair<ReaderState?, ReaderState?>) {
         val (old: ReaderState?, state: ReaderState?) = pair
         title = state?.mangaName ?: old?.mangaName ?: getString(android.R.string.unknownName)
@@ -299,7 +300,6 @@ class MangaReaderActivity : AppAttachCompatActivity(),
     }
 
     private fun onError(e: Throwable?) {
-        e?.printStackTrace()
         with(binding.layoutErrorInclude) {
             errorTextTip.setTextColor(getThemeColor(com.google.android.material.R.attr.colorSurface))
             errorTextTipDesc.apply {

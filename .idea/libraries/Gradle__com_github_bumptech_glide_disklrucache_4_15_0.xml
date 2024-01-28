@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: com.github.bumptech.glide:disklrucache:4.15.0">
+  <library name="Gradle: com.github.bumptech.glide:disklrucache:4.15.0" external-system-id="GRADLE">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.bumptech.glide/disklrucache/4.15.0/dc9dde980bc49b0fb0ed02d67b4f321b7ae04422/disklrucache-4.15.0.jar!/" />
     </CLASSES>

@@ -133,8 +133,24 @@ class MangaInfoRepository @Inject constructor(
     ): List<MangaReaderPage> = withContext(Dispatchers.Default) {
         if (localList != null) {
             val sortedList = localList.sortedWith { text1, text2 ->
-                text1.url.split("/").last().split(".").first().toInt()
-                    .compareTo(text2.url.split("/").last().split(".").first().toInt())
+                text1.url
+                    .split("/")
+                    .last()
+                    .split("_")
+                    .last()
+                    .split(".")
+                    .first()
+                    .toInt()
+                    .compareTo(
+                        text2.url
+                            .split("/")
+                            .last()
+                            .split("_")
+                            .last()
+                            .split(".")
+                            .first()
+                            .toInt()
+                    )
             }
             val newList = buildList {
                 for (i in sortedList.indices) {
@@ -165,6 +181,7 @@ class MangaInfoRepository @Inject constructor(
 
         }
     }
+
 
 }
 

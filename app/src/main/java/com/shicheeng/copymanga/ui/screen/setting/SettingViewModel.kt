@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shicheeng.copymanga.fm.reader.ReaderMode
 import com.shicheeng.copymanga.resposity.LoginRepository
+import com.shicheeng.copymanga.server.download.woker.DownloadedWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class SettingViewModel @Inject constructor(
     private val settingPref: SettingPref,
     private val repository: LoginRepository,
+    private val callWorker: DownloadedWorker.Caller,
 ) : ViewModel() {
 
     private val _readerMode = MutableStateFlow(settingPref.readerMode)
@@ -48,6 +50,12 @@ class SettingViewModel @Inject constructor(
             scope = viewModelScope,
             initialValue = settingPref.webReadPoint,
             started = SharingStarted.Eagerly
+        )
+    val onlyInWifi = settingPref.downloadOnlyOnWifiFlow
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = settingPref.downloadOnlyOnWifi
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -96,6 +104,11 @@ class SettingViewModel @Inject constructor(
     fun setCacheSize(size: String) = viewModelScope.launch {
         settingPref.cacheSize = size
         _cacheSize.emit(size)
+    }
+
+    fun changeDownloadConstants(onlyWifi: Boolean) = viewModelScope.launch {
+        settingPref.downloadOnlyOnWifi = onlyWifi
+        callWorker.updateConstraints()
     }
 
 }

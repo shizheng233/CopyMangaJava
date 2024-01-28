@@ -46,11 +46,13 @@ fun SearchScreen(
                 },
                 onSearch = {
                     onSearch(it)
+                    searchViewModel.saveSearchWord(it)
                 },
                 onBackClick = onBack,
                 topAppBarScrollBehavior = topAppBarScrollBehavior
             ) {
                 onSaveKeyWord("")
+                searchViewModel.upWord("")
             }
         }
     ) { paddingValue ->

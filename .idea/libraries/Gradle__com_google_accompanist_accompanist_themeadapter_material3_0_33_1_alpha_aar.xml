@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: com.google.accompanist:accompanist-themeadapter-material3:0.33.1-alpha@aar" external-system-id="GRADLE">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/358512e37390ab2a4e76c03f2378b903/transformed/accompanist-themeadapter-material3-0.33.1-alpha/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/358512e37390ab2a4e76c03f2378b903/transformed/accompanist-themeadapter-material3-0.33.1-alpha/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/358512e37390ab2a4e76c03f2378b903/transformed/accompanist-themeadapter-material3-0.33.1-alpha/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.accompanist/accompanist-themeadapter-material3/0.33.1-alpha/19f2861d2d1953e25e98eef82edc918c82965b4e/accompanist-themeadapter-material3-0.33.1-alpha-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.accompanist/accompanist-themeadapter-material3/0.33.1-alpha/4bc18576d15c9269a4d280c2a528ebf4d462b6f5/accompanist-themeadapter-material3-0.33.1-alpha-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

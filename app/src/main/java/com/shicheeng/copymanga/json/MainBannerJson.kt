@@ -1,9 +1,9 @@
 package com.shicheeng.copymanga.json
 
-import android.content.SharedPreferences
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.shicheeng.copymanga.data.BannerList
+import com.shicheeng.copymanga.ui.screen.setting.SettingPref
 import com.shicheeng.copymanga.util.parserToJson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,12 +14,11 @@ import javax.inject.Singleton
 
 @Singleton
 class MainBannerJson @Inject constructor(
-    private val sharedPreferences: SharedPreferences,
+    private val settingPref: SettingPref,
 ) {
 
     private val apiHeader
-        get() = sharedPreferences.getString("key_api_header_select", "copymanga.net")
-            ?: "copymanga.net"
+        get() = settingPref.apiSelected
     private val mainPageUrl =
         "https://api.$apiHeader/api/v3/h5/homeIndex?platform=3&amp;format=json"
 

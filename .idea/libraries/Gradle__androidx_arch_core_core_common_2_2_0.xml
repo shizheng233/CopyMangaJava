@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: androidx.arch.core:core-common:2.2.0">
+  <library name="Gradle: androidx.arch.core:core-common:2.2.0" external-system-id="GRADLE">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.arch.core/core-common/2.2.0/5e1b8b81dfd5f52c56a8d53b18ca759c19a301f3/core-common-2.2.0.jar!/" />
     </CLASSES>

@@ -1,5 +1,6 @@
 package com.shicheeng.copymanga.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -7,13 +8,14 @@ import com.shicheeng.copymanga.data.MangaHistoryDataModel
 import com.shicheeng.copymanga.data.local.LocalChapter
 import com.shicheeng.copymanga.resposity.MangaHistoryRepository
 import com.shicheeng.copymanga.resposity.MangaInfoRepository
+import com.shicheeng.copymanga.server.download.woker.DownloadedWorker
 import com.shicheeng.copymanga.ui.screen.setting.SettingPref
 import com.shicheeng.copymanga.util.RetryTrigger
 import com.shicheeng.copymanga.util.UIState
 import com.shicheeng.copymanga.util.retryableFlow
-import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,14 +26,18 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MangaInfoViewModel @AssistedInject constructor(
-    @Assisted private val pathWord: String,
+@HiltViewModel
+class MangaInfoViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val repository: MangaHistoryRepository,
     private val infoRepository: MangaInfoRepository,
     private val setting: SettingPref,
+    private val downloadedWorker: DownloadedWorker.Caller,
 ) : ViewModel() {
 
+    val pathWord: String = savedStateHandle["path_word"] ?: error("无关键词")
     private val _historyFlowChapter = repository.fetchMangaChapterByPathWordFlow(pathWord)
 
     //Chapter and Information
@@ -180,24 +186,8 @@ class MangaInfoViewModel @AssistedInject constructor(
         setting.enableComicsUpdateFetch(enable)
     }
 
-
-    @AssistedFactory
-    interface InfoViewModelFactory {
-        fun create(
-            pathWord: String,
-        ): MangaInfoViewModel
-    }
-
-    companion object {
-        fun provideAssistedViewModel(
-            assistedInject: InfoViewModelFactory,
-            pathWord: String,
-        ) = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return assistedInject.create(pathWord) as T
-            }
-        }
+    fun downloadManga(chapters: Array<String>) = viewModelScope.launch {
+        downloadedWorker.download(pathWord, chapters)
     }
 
 }

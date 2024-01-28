@@ -13,7 +13,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_copy"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/Theme.CopyMangaNew"
+        android:windowSoftInputMode="adjustNothing"
         tools:targetApi="tiramisu">
         <activity
             android:name=".MainActivity"
@@ -27,11 +28,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
 
-                <!--
-                    The scheme and host must match both of the below:
-                    1. The navDeepLink declaration
-                    2. The URI defined in the PendingIntent
-                 -->
+
                 <data
                     android:host="download"
                     android:scheme="shicheengcmdm" />
@@ -50,10 +47,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="copymanga.site"
-                    android:pathPrefix="/h5/details/comic"
-                    android:scheme="https" />
+                <data android:scheme="https" />
+                <data android:pathPrefix="/h5/details/comic" />
+                <data android:host="copymanga.site" />
+                <data android:host="copymanga.org" />
+                <data android:host="copymanga.info" />
+                <data android:host="copymanga.net" />
             </intent-filter>
 
         </activity>
@@ -75,8 +74,10 @@
         </provider>
 
         <service
-            android:name=".server.DownloadService"
-            android:exported="false" />
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="dataSync"
+            tools:node="merge" />
+
     </application>
 
 </manifest>

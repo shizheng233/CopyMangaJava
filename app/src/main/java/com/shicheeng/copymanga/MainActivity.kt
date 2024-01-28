@@ -3,106 +3,56 @@ package com.shicheeng.copymanga
 import android.Manifest
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.ViewGroup
+import android.text.Html
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.text.buildSpannedString
 import androidx.core.view.WindowCompat
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updateMargins
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.shicheeng.copymanga.app.AppAttachCompatActivity
 import com.shicheeng.copymanga.data.VersionUnit
 import com.shicheeng.copymanga.ui.screen.MainComposeNavigation
 import com.shicheeng.copymanga.ui.screen.setting.SettingPref
-import com.shicheeng.copymanga.ui.screen.topics.TopicViewModel
 import com.shicheeng.copymanga.ui.theme.CopyMangaTheme
 import com.shicheeng.copymanga.util.FileCacheUtils
 import com.shicheeng.copymanga.util.collectRepeatLifecycle
-import com.shicheeng.copymanga.util.observe
-import com.shicheeng.copymanga.viewmodel.MainViewModel
-import com.shicheeng.copymanga.viewmodel.MangaInfoViewModel
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
+import com.shicheeng.copymanga.viewmodel.RootViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.components.ActivityComponent
-import retrofit2.HttpException
-import soup.compose.material.motion.navigation.rememberMaterialMotionNavController
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppAttachCompatActivity() {
 
     @Inject
-    lateinit var sharedPreferences: SharedPreferences
-
-    @Inject
     lateinit var settingPref: SettingPref
 
+    private val mainViewModel by viewModels<RootViewModel>()
 
-    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val model: MainViewModel by viewModels()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         requestNotificationsPermission()
         setContent {
-            val navController = rememberMaterialMotionNavController()
             CopyMangaTheme {
-                Scaffold {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        CompositionLocalProvider(
-                            LocalMainBottomNavigationPadding provides it.calculateBottomPadding(),
-                            LocalSettingPreference provides settingPref,
-                        ) {
-                            MainComposeNavigation(navController = navController)
-                        }
-                    }
+                CompositionLocalProvider(
+                    LocalSettingPreference provides settingPref,
+                ) {
+                    MainComposeNavigation()
                 }
             }
         }
 
         if (!settingPref.pauseUpdateDetector.value) {
-            model.updateData.collectRepeatLifecycle(this) {
+            mainViewModel.updateData.collectRepeatLifecycle(this) {
                 onUpdateAttach(it)
-            }
-        }
-
-        model.loginInfoStatus.observe(this) {
-            if (it != null) {
-                if ((it is HttpException) && (it.code() == 401)) {
-                    Snackbar.make(
-                        window.decorView,
-                        getString(R.string.login_expired),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-
-                } else {
-                    Snackbar.make(
-                        window.decorView,
-                        getString(R.string.login_failure),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                }
             }
         }
 
@@ -112,7 +62,7 @@ class MainActivity : AppAttachCompatActivity() {
         if (
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(
-                this,
+                /*context=*/this,
                 Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -137,17 +87,17 @@ class MainActivity : AppAttachCompatActivity() {
         val message = buildSpannedString {
             append("<b>版本：</b>")
             append(versionUnit.versionName)
-            appendLine()
-            appendLine(versionUnit.description)
             appendLine("<b>大小：</b>" + FileCacheUtils.getFormatSize(versionUnit.apkSize.toDouble()))
             appendLine("<b>类型：</b>" + versionUnit.versionId.type)
+            appendLine()
+            appendLine(versionUnit.description)
         }
         val dialog = MaterialAlertDialogBuilder(
             this,
             com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered
         ).apply {
             setTitle(R.string.new_version)
-            setMessage(message)
+            setMessage(Html.fromHtml(message.toString(), Html.FROM_HTML_MODE_COMPACT))
             setIcon(R.drawable.baseline_security_update_24)
         }
         dialog.setPositiveButton(R.string.update) { dialogInterface: DialogInterface, _: Int ->
@@ -167,16 +117,8 @@ class MainActivity : AppAttachCompatActivity() {
     }
 
 
-    @EntryPoint
-    @InstallIn(ActivityComponent::class)
-    interface ViewModelAssistedFactoryProvider {
-        fun infoViewModelFactory(): MangaInfoViewModel.InfoViewModelFactory
-        fun topicDetailViewModelFactory(): TopicViewModel.Factory
-    }
-
 }
 
-val LocalMainBottomNavigationPadding = staticCompositionLocalOf { 0.dp }
 val LocalSettingPreference = staticCompositionLocalOf<SettingPref> {
     error("NO LOCAL SETTING PROVIDE")
 }

@@ -25,7 +25,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.shicheeng.copymanga.LocalMainBottomNavigationPadding
 import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.data.MainTopicDataModel
 import com.shicheeng.copymanga.ui.screen.compoents.ErrorScreen
@@ -82,7 +81,6 @@ fun HomeScreen(
         mutableIntStateOf(0)
     }
     val lazyListState = rememberLazyListState()
-    val paddingBottom = LocalMainBottomNavigationPadding.current
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -130,7 +128,7 @@ fun HomeScreen(
             modifier = Modifier.fillMaxSize(),
             contentPadding = padding.copy(
                 layoutDirection = layoutDirection,
-                bottom = padding.calculateBottomPadding() + paddingBottom,
+                bottom = padding.calculateBottomPadding() ,
                 top = 0.dp
             ),
             state = lazyListState

@@ -2,20 +2,24 @@ package com.shicheeng.copymanga.fm.domain
 
 import com.shicheeng.copymanga.data.MangaReaderPage
 import com.shicheeng.copymanga.data.local.LocalChapter
+import com.shicheeng.copymanga.domin.DownloadFileDetectUtil
 import com.shicheeng.copymanga.resposity.MangaInfoRepository
-import com.shicheeng.copymanga.util.FileUtil
 import dagger.hilt.android.scopes.ViewModelScoped
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 @ViewModelScoped
 class ChapterLoader @Inject constructor(
-    private val fileUtil: FileUtil,
+    private val fileDetectUtil: DownloadFileDetectUtil,
     private val repository: MangaInfoRepository,
 ) {
 
     val chapters = LinkedHashMap<String, LocalChapter>()
+    val nextChapterLoadingState =
+        MutableStateFlow<NextChapterLoadState>(NextChapterLoadState.NotLoading)
+
     private val chapterPage = ChapterPages()
     private val mutex = Mutex()
 
@@ -31,29 +35,36 @@ class ChapterLoader @Inject constructor(
         uuid: String?,
         isNext: Boolean,
     ) {
+        nextChapterLoadingState.emit(NextChapterLoadState.Loading)
         val chapters = list ?: return
         val predicate: (LocalChapter) -> Boolean = { it.uuid == uuid }
         val index =
             if (isNext) chapters.indexOfFirst(predicate) else chapters.indexOfLast(predicate)
         if (index == -1) return
         val newChapter = chapters.getOrNull(if (isNext) index + 1 else index - 1) ?: return
-        val newPages = loadChapter(newChapter.comicPathWord, newChapter.uuid)
-        mutex.withLock {
-            if (chapterPage.chapterSize > 1) {
-                if (chapterPage.size > 130) {
-                    if (isNext) {
-                        chapterPage.removeFirst()
-                    } else {
-                        chapterPage.removeLast()
+        try {
+            val newPages = loadChapter(newChapter.comicPathWord, newChapter.uuid)
+            mutex.withLock {
+                if (chapterPage.chapterSize > 1) {
+                    if (chapterPage.size > 130) {
+                        if (isNext) {
+                            chapterPage.removeFirst()
+                        } else {
+                            chapterPage.removeLast()
+                        }
                     }
                 }
+                if (isNext) {
+                    chapterPage.addLast(newChapter.uuid, newPages)
+                } else {
+                    chapterPage.addFirst(newChapter.uuid, newPages)
+                }
+                nextChapterLoadingState.emit(NextChapterLoadState.NotLoading)
             }
-            if (isNext) {
-                chapterPage.addLast(newChapter.uuid, newPages)
-            } else {
-                chapterPage.addFirst(newChapter.uuid, newPages)
-            }
+        } catch (e: Exception) {
+            nextChapterLoadingState.emit(NextChapterLoadState.Error(e))
         }
+
     }
 
     suspend fun loadSingleChapter(pathWord: String, uuid: String) {
@@ -82,10 +93,18 @@ class ChapterLoader @Inject constructor(
 
     private suspend fun loadChapter(pathWord: String, uui: String): List<MangaReaderPage> {
         val chapter = checkNotNull(chapters[uui]) { "NO CHAPTER FOUND" }
-        val isDownload = fileUtil.isChapterDownloadedWithStringList(pathWord, chapter.uuid)
+        val isDownload = fileDetectUtil.isChapterDownloadedWithStringList(pathWord, chapter.uuid)
         val listLocal =
-            if (isDownload) fileUtil.ifChapterDownloaded(pathWord, chapter.uuid) else null
+            if (isDownload) fileDetectUtil.ifChapterDownloaded(pathWord, chapter.uuid) else null
         return repository.fetchContentMayLocal(listLocal, pathWord, chapter.uuid)
+    }
+
+    sealed class NextChapterLoadState {
+
+        object Loading : NextChapterLoadState()
+        data class Error(val e: Throwable) : NextChapterLoadState()
+        object NotLoading : NextChapterLoadState()
+
     }
 
 }

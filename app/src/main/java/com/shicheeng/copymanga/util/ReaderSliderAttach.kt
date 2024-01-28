@@ -4,6 +4,8 @@ import com.google.android.material.slider.Slider
 import com.shicheeng.copymanga.data.MangaReaderPage
 import com.shicheeng.copymanga.viewmodel.ReaderViewModel
 
+private const val FRAGMENT_MAIN = "Main"
+
 class ReaderSliderAttach(
     private val callBack: PageSelectPosition,
     private val viewModel: ReaderViewModel,

@@ -18,7 +18,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -33,6 +35,8 @@ import com.shicheeng.copymanga.data.DataBannerBean
 import com.shicheeng.copymanga.util.click
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.yield
 
 
 /**
@@ -46,18 +50,11 @@ fun Banner(
     click: (DataBannerBean) -> Unit,
 ) {
     val pageCount = list.size
-    val startPage = Int.MAX_VALUE / 2
-    val pageStateBanner = rememberPagerState(
-        initialPage = startPage
-    ) { Int.MAX_VALUE }
+    val pageStateBanner = rememberBannerState(initialCount = 0, pagerCount = { pageCount })
 
-    fun pageMapper(index: Int): Int {
-        return (index - startPage) floorMod pageCount
-    }
+    fun pageMapper(index: Int): Int = (index - 0) floorMod pageCount
 
-    var underDragging by remember {
-        mutableStateOf(false)
-    }
+    var underDragging by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = Unit) {
         pageStateBanner.interactionSource.interactions.collect { interaction ->
@@ -72,7 +69,9 @@ fun Banner(
         }
     }
 
-    Box(modifier = modifier.fillMaxWidth()) {
+    Box(
+        modifier = modifier.fillMaxWidth()
+    ) {
         HorizontalPager(
             state = pageStateBanner,
             modifier = Modifier
@@ -90,29 +89,12 @@ fun Banner(
         )
     }
 
-    if (underDragging.not()) {
-        LaunchedEffect(key1 = underDragging) {
-            try {
-                while (true) {
-                    delay(5000L)
-                    val current = pageStateBanner.currentPage
-                    val currentPos = pageMapper(current)
-                    val nextPage = current + 1
-                    if (underDragging.not()) {
-                        val toPage = nextPage.takeIf { nextPage < pageStateBanner.pageCount }
-                            ?: (currentPos + startPage + 1)
-                        if (toPage > current) {
-                            pageStateBanner.animateScrollToPage(toPage)
-                        } else {
-                            pageStateBanner.scrollToPage(toPage)
-                        }
-                    }
-                }
-            } catch (e: CancellationException) {
-                e.printStackTrace()
-            }
-        }
-    }
+    AutoScrollSideEffect(
+        autoScrollDurationMillis = 5000L,
+        pageCount = pageCount,
+        pagerState = pageStateBanner,
+        doAutoScroll = underDragging.not()
+    )
 
 }
 
@@ -156,7 +138,6 @@ fun BannerItem(
             Text(
                 text = dataBannerBean.bannerBrief,
                 modifier = Modifier
-
                     .drawWithContent {
                         drawRect(color = textBackgroundColor)
                         drawContent()
@@ -166,6 +147,39 @@ fun BannerItem(
             )
         }
     }
+}
+
+/**
+ * 使用新的自动滑动方法。
+ */
+@Composable
+private fun AutoScrollSideEffect(
+    autoScrollDurationMillis: Long,
+    pageCount: Int,
+    pagerState: BannerState,
+    doAutoScroll: Boolean,
+    onAutoScrollChange: (isAutoScrollActive: Boolean) -> Unit = {},
+) {
+    if (autoScrollDurationMillis == Long.MAX_VALUE || autoScrollDurationMillis < 0) {
+        return
+    }
+
+    // Needed to ensure that the code within LaunchedEffect receives updates to the itemCount.
+    val updatedItemCount by rememberUpdatedState(newValue = pageCount)
+    if (doAutoScroll) {
+        LaunchedEffect(pagerState) {
+            while (true) {
+                yield()
+                delay(autoScrollDurationMillis)
+                if (pagerState.activePauseHandlesCount > 0) {
+                    snapshotFlow { pagerState.activePauseHandlesCount }
+                        .first { pauseHandleCount -> pauseHandleCount == 0 }
+                }
+                pagerState.moveToNextItem(updatedItemCount)
+            }
+        }
+    }
+    onAutoScrollChange(doAutoScroll)
 }
 
 private infix fun Int.floorMod(other: Int): Int = when (other) {

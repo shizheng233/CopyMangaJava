@@ -24,14 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.shicheeng.copymanga.LocalMainBottomNavigationPadding
 import com.shicheeng.copymanga.R
 import com.shicheeng.copymanga.data.rank.Item
 import com.shicheeng.copymanga.ui.screen.compoents.ErrorScreen
@@ -61,7 +59,6 @@ fun LeaderBoardScreen(
     )
     val layoutDirection = LocalLayoutDirection.current
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val paddingBottom = LocalMainBottomNavigationPadding.current
     val scope = rememberCoroutineScope()
     val columns = GridCells.Fixed(3)
     val pagerState = rememberPagerState(
@@ -112,7 +109,7 @@ fun LeaderBoardScreen(
             ) { index ->
                 when (index) {
                     0 -> {
-                        LeaderBoradPage(day, columns, it, layoutDirection, paddingBottom, onRankItemClick)
+                        LeaderBoradPage(day, columns, it, layoutDirection, onRankItemClick)
                     }
 
                     1 -> {
@@ -121,7 +118,6 @@ fun LeaderBoardScreen(
                             columns = columns,
                             it = it,
                             layoutDirection = layoutDirection,
-                            paddingBottom = paddingBottom,
                             onRankItemClick = onRankItemClick
                         )
                     }
@@ -132,7 +128,6 @@ fun LeaderBoardScreen(
                             columns = columns,
                             it = it,
                             layoutDirection = layoutDirection,
-                            paddingBottom = paddingBottom,
                             onRankItemClick = onRankItemClick
                         )
                     }
@@ -143,7 +138,6 @@ fun LeaderBoardScreen(
                             columns = columns,
                             it = it,
                             layoutDirection = layoutDirection,
-                            paddingBottom = paddingBottom,
                             onRankItemClick = onRankItemClick
                         )
                     }
@@ -159,7 +153,6 @@ private fun LeaderBoradPage(
     columns: GridCells.Fixed,
     it: PaddingValues,
     layoutDirection: LayoutDirection,
-    paddingBottom: Dp,
     onRankItemClick: (Item) -> Unit,
 ) {
     when (day.loadState.refresh) {
@@ -180,7 +173,7 @@ private fun LeaderBoradPage(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = it.copy(
                     layoutDirection = layoutDirection,
-                    bottom = it.calculateBottomPadding() + paddingBottom,
+                    bottom = it.calculateBottomPadding(),
                     start = 16.dp,
                     end = 16.dp,
                     top = 16.dp
