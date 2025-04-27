@@ -2,6 +2,7 @@
 
 ![GitHub all releases](https://img.shields.io/github/downloads/shizheng233/CopyMangaJava/total?label=%E4%B8%8B%E8%BD%BD&style=flat-square) ![Android Version Require](https://img.shields.io/badge/%E5%AE%89%E5%8D%93%E7%89%88%E6%9C%AC-%3E%3D%209.0-brightgreen?style=flat-square)
 
+*很抱歉，本软件已不再维护。*
 一个第三方的拷贝漫画带有M3(Material You)
 风格，支持动态主题。该App已通过Kotlin来实现，只是标题没改。注意：如果您感觉加载慢的话而且没有使用VPN的话，建议打开设置中的“使用境外CDN”,说不定可以加载得出来。
 
